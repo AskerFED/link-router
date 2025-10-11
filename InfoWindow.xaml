@@ -1,0 +1,285 @@
+﻿<Window x:Class="BrowserSelector.InfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Browser Selector" 
+        Height="550" 
+        Width="550"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5"
+        ResizeMode="CanResize">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="Browser Selector" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"/>
+                <TextBlock Text="Choose your browser and profile for every link" 
+                       FontSize="12" 
+                       Foreground="#666" 
+                       HorizontalAlignment="Center"
+                       Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <!-- Registration Status -->
+            <Border Grid.Row="1" 
+                Background="White" 
+                BorderBrush="#DDD" 
+                BorderThickness="1" 
+                CornerRadius="6" 
+                Padding="20"
+                Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock x:Name="RegistrationStatusText"
+                           Text="✅ Status: Registered" 
+                           FontSize="16" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,10"
+                           Foreground="Green"/>
+                    <TextBlock x:Name="RegistrationDetailText"
+                           TextWrapping="Wrap" 
+                           FontSize="12" 
+                           Foreground="#666"
+                           Text="Browser Selector is registered and ready to use."/>
+                </StackPanel>
+            </Border>
+
+            <!-- Features -->
+            <Border Grid.Row="2" 
+                Background="White" 
+                BorderBrush="#DDD" 
+                BorderThickness="1" 
+                CornerRadius="6" 
+                Padding="20"
+                Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="✨ Features" 
+                           FontSize="16" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,10"/>
+
+                    <TextBlock TextWrapping="Wrap" Margin="0,5">
+                    <Run Text="• " FontWeight="Bold"/>
+                    <Run Text="Auto-starts with Windows"/>
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" Margin="0,5">
+                    <Run Text="• " FontWeight="Bold"/>
+                    <Run Text="Save URL patterns for automatic browser selection"/>
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" Margin="0,5">
+                    <Run Text="• " FontWeight="Bold"/>
+                    <Run Text="Manage multiple browser profiles (Chrome, Edge, Firefox, Brave, Opera)"/>
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" Margin="0,5">
+                    <Run Text="• " FontWeight="Bold"/>
+                    <Run Text="Works from any app (Teams, Word, PDF, Outlook, etc.)"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Usage Instructions -->
+            <Border Grid.Row="3" 
+                Background="#E3F2FD" 
+                BorderBrush="#90CAF9" 
+                BorderThickness="1" 
+                CornerRadius="6" 
+                Padding="20"
+                Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="📖 Usage" 
+                           FontSize="16" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,10"/>
+
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,3">
+                    <Run Text="BrowserSelector.exe &lt;url&gt;" FontFamily="Consolas" Background="#DDD"/>
+                    <LineBreak/>
+                    <Run Text="   Select browser for URL" Foreground="#666"/>
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,8,0,3">
+                    <Run Text="BrowserSelector.exe --register" FontFamily="Consolas" Background="#DDD"/>
+                    <LineBreak/>
+                    <Run Text="   Register as default browser" Foreground="#666"/>
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,8,0,3">
+                    <Run Text="BrowserSelector.exe --manage" FontFamily="Consolas" Background="#DDD"/>
+                    <LineBreak/>
+                    <Run Text="   Open rule manager" Foreground="#666"/>
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0,8,0,0">
+                    <Run Text="BrowserSelector.exe --unregister" FontFamily="Consolas" Background="#DDD"/>
+                    <LineBreak/>
+                    <Run Text="   Unregister application" Foreground="#666"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Action Buttons Row 1 -->
+            <StackPanel Grid.Row="4" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,10">
+                <Button x:Name="RegisterButton"
+                    Content="Register"
+                    Click="RegisterButton_Click"
+                    Width="120"
+                    Height="40"
+                    Margin="5"
+                    Background="#4CAF50"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    FontSize="14"
+                    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="6"
+                                            Padding="15,8">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#45A049"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Manage Rules"
+                    Click="ManageRulesButton_Click"
+                    Width="130"
+                    Height="40"
+                    Margin="5"
+                    Background="#2196F3"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    FontSize="14"
+                    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="6"
+                                            Padding="15,8">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#1976D2"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <!-- Action Buttons Row 2 -->
+            <StackPanel Grid.Row="5" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,20">
+                <Button x:Name="UnregisterButton"
+                    Content="Unregister"
+                    Click="UnregisterButton_Click"
+                    Width="120"
+                    Height="40"
+                    Margin="5"
+                    Background="#F44336"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    FontSize="14"
+                    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="6"
+                                            Padding="15,8">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#D32F2F"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Close"
+                    Click="CloseButton_Click"
+                    Width="120"
+                    Height="40"
+                    Margin="5"
+                    Background="#9E9E9E"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    FontSize="14"
+                    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="6"
+                                            Padding="15,8">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#757575"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>
