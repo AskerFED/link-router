@@ -155,17 +155,16 @@ namespace BrowserSelector
         }
 
         /// <summary>
-        /// Updates an existing URL group
+        /// Updates an existing URL group (preserves list order)
         /// </summary>
         public static void UpdateGroup(UrlGroup group)
         {
             var groups = LoadGroups();
-            var existing = groups.FirstOrDefault(g => g.Id == group.Id);
-            if (existing != null)
+            var index = groups.FindIndex(g => g.Id == group.Id);
+            if (index >= 0)
             {
-                groups.Remove(existing);
                 group.ModifiedDate = DateTime.Now;
-                groups.Add(group);
+                groups[index] = group; // Replace at same position to preserve order
                 SaveGroups(groups);
             }
         }
@@ -316,16 +315,15 @@ namespace BrowserSelector
         }
 
         /// <summary>
-        /// Updates an existing override
+        /// Updates an existing override (preserves list order)
         /// </summary>
         public static void UpdateOverride(UrlGroupOverride urlOverride)
         {
             var overrides = LoadOverrides();
-            var existing = overrides.FirstOrDefault(o => o.Id == urlOverride.Id);
-            if (existing != null)
+            var index = overrides.FindIndex(o => o.Id == urlOverride.Id);
+            if (index >= 0)
             {
-                overrides.Remove(existing);
-                overrides.Add(urlOverride);
+                overrides[index] = urlOverride; // Replace at same position to preserve order
                 SaveOverrides(overrides);
             }
         }

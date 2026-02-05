@@ -44,7 +44,6 @@ namespace BrowserSelector
 
             if (_isEditMode)
             {
-                HeaderText.Text = "Edit URL Group";
                 Title = "Edit URL Group";
                 GroupNameTextBox.Text = _group.Name;
                 DescriptionTextBox.Text = _group.Description;
@@ -54,7 +53,6 @@ namespace BrowserSelector
             }
             else
             {
-                HeaderText.Text = "New URL Group";
                 Title = "New URL Group";
             }
 

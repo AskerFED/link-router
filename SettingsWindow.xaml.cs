@@ -30,8 +30,9 @@ namespace BrowserSelector
 
             LoadAllData();
 
-            // Set initial page selection (must be after InitializeComponent completes)
-            NavigationList.SelectedItem = HomeNavItem;
+            // Restore last selected page from settings
+            var settings = SettingsManager.LoadSettings();
+            NavigateToPage(settings.LastSelectedPage ?? "Home");
         }
 
         private void LoadAllData()
@@ -131,6 +132,18 @@ namespace BrowserSelector
                     DocsPageControl.Visibility = Visibility.Visible;
                     NavigationList.SelectedItem = DocsNavItem;
                     break;
+            }
+
+            // Persist the selected page
+            try
+            {
+                var settings = SettingsManager.LoadSettings();
+                settings.LastSelectedPage = pageName;
+                SettingsManager.SaveSettings(settings);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Failed to save last selected page: {ex.Message}");
             }
         }
 

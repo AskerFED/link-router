@@ -18,6 +18,11 @@ namespace BrowserSelector
         public string LastActiveProfileName { get; set; } = string.Empty;
         public string LastActiveProfileArguments { get; set; } = string.Empty;
         public DateTime LastActiveTime { get; set; } = DateTime.MinValue;
+
+        /// <summary>
+        /// Last selected navigation page (Home, Rules, Settings, Docs)
+        /// </summary>
+        public string LastSelectedPage { get; set; } = "Home";
     }
 
     public static class SettingsManager

@@ -41,7 +41,6 @@ namespace BrowserSelector
 
             // Update UI for edit mode
             RuleEditorWindow.Title = "Edit URL Rule";
-            WindowTitle.Text = "Edit URL Rule";
 
             // Load existing data
             PatternTextBox.Text = existingRule.Pattern;

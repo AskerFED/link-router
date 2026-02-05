@@ -202,11 +202,10 @@ namespace BrowserSelector
         public static void UpdateRule(UrlRule rule)
         {
             var rules = LoadRules();
-            var existing = rules.FirstOrDefault(r => r.Id == rule.Id);
-            if (existing != null)
+            var index = rules.FindIndex(r => r.Id == rule.Id);
+            if (index >= 0)
             {
-                rules.Remove(existing);
-                rules.Add(rule);
+                rules[index] = rule; // Replace at same position to preserve order
                 SaveRules(rules);
             }
         }

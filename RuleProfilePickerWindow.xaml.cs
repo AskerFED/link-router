@@ -122,63 +122,11 @@ namespace BrowserSelector
         {
             if (sender is FrameworkElement element && element.Tag is RuleProfileDisplay profile)
             {
-                // Check if Remember is checked - save as single-profile rule
-                if (RememberCheckBox.IsChecked == true)
-                {
-                    SaveAsRule(profile);
-                }
-
                 // Open browser with selected profile
                 OpenBrowser(profile);
 
                 // Close window
                 Close();
-            }
-        }
-
-        private void SaveAsRule(RuleProfileDisplay profile)
-        {
-            try
-            {
-                // Extract domain for pattern
-                string pattern = _url;
-                try
-                {
-                    var uri = new Uri(_url);
-                    pattern = uri.Host;
-                }
-                catch { }
-
-                var ruleProfile = new RuleProfile
-                {
-                    BrowserName = profile.BrowserName,
-                    BrowserPath = profile.BrowserPath,
-                    BrowserType = profile.BrowserType,
-                    ProfileName = profile.ProfileName,
-                    ProfilePath = profile.ProfilePath,
-                    ProfileArguments = profile.ProfileArguments,
-                    DisplayOrder = 0
-                };
-
-                var rule = new UrlRule
-                {
-                    Pattern = pattern,
-                    Profiles = new List<RuleProfile> { ruleProfile },
-                    // Also set legacy fields for compatibility
-                    BrowserName = profile.BrowserName,
-                    BrowserPath = profile.BrowserPath,
-                    BrowserType = profile.BrowserType,
-                    ProfileName = profile.ProfileName,
-                    ProfilePath = profile.ProfilePath,
-                    ProfileArguments = profile.ProfileArguments
-                };
-
-                UrlRuleManager.AddRule(rule);
-                Logger.Log($"Saved rule for pattern: {pattern}");
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"Error saving rule: {ex.Message}");
             }
         }
 

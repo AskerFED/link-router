@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:BrowserSelector.Controls"
         x:Name="RuleEditorWindow"
-        Title="Add New URL Rule" Height="450" Width="550"
+        Title="Add New URL Rule" Height="400" Width="550"
         WindowStartupLocation="CenterOwner"
         Background="#F3F3F3"
         ResizeMode="NoResize">
@@ -22,14 +22,8 @@
         </Grid.RowDefinitions>
 
         <!-- Scrollable Content -->
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="24,24,24,0">
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="24,20,24,0">
             <StackPanel>
-                <!-- Title -->
-                <TextBlock x:Name="WindowTitle"
-                           Text="Add New URL Rule"
-                           Style="{StaticResource Title3TextStyle}"
-                           Margin="0,0,0,24"/>
-
                 <!-- URL Pattern -->
                 <StackPanel Margin="0,0,0,16">
                     <TextBlock Text="URL Pattern"

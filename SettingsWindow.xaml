@@ -38,17 +38,9 @@
 
                 <!-- App Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,24,20,20">
-                    <Border Width="32" Height="32"
-                            Background="#0078D4"
-                            CornerRadius="6">
-                        <Path Data="{StaticResource BrowserIcon}"
-                              Stroke="White"
-                              StrokeThickness="1.5"
-                              Width="18" Height="18"
-                              Stretch="Uniform"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
-                    </Border>
+                    <Image Source="pack://application:,,,/app.ico"
+                           Width="32" Height="32"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock Text="LinkRouter"
                                FontSize="18"
                                FontWeight="SemiBold"
