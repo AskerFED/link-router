@@ -18,15 +18,15 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="40,32,40,32" MaxWidth="800">
+        <StackPanel Margin="24,32,40,32" MaxWidth="800">
 
             <!-- Page Title -->
             <TextBlock Text="Documentation"
-                       Style="{StaticResource Title2TextStyle}"
-                       Margin="0,0,0,24"/>
+                       Style="{StaticResource Title3TextStyle}"
+                       Margin="0,0,0,16"/>
 
-            <!-- GETTING STARTED Section -->
-            <TextBlock Text="GETTING STARTED"
+            <!-- Getting Started Section -->
+            <TextBlock Text="Getting Started"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- Set as Default Browser -->
@@ -184,7 +184,7 @@
             </Border>
 
             <!-- URL PATTERN SYNTAX Section -->
-            <TextBlock Text="URL PATTERN SYNTAX"
+            <TextBlock Text="URL Pattern Syntax"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border Style="{StaticResource SettingsCardStyle}" Padding="20">
@@ -237,7 +237,7 @@
             </Border>
 
             <!-- PRIORITY ORDER Section -->
-            <TextBlock Text="RULE PRIORITY"
+            <TextBlock Text="Rule Priority"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border Style="{StaticResource SettingsCardStyle}" Padding="20">
@@ -272,7 +272,7 @@
             </Border>
 
             <!-- BROWSER & PROFILE MANAGEMENT Section -->
-            <TextBlock Text="BROWSER &amp; PROFILE MANAGEMENT"
+            <TextBlock Text="Browser &amp; Profile Management"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- Supported Browsers -->
@@ -445,7 +445,7 @@
             </Border>
 
             <!-- MULTI-PROFILE RULES Section -->
-            <TextBlock Text="MULTI-PROFILE RULES"
+            <TextBlock Text="Multi-Profile Rules"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- Adding Multiple Profiles -->
@@ -602,7 +602,7 @@
             </Border>
 
             <!-- URL GROUPS (Expanded) Section -->
-            <TextBlock Text="URL GROUPS (ADVANCED)"
+            <TextBlock Text="URL Groups (Advanced)"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- Built-in Groups -->
@@ -760,7 +760,7 @@
             </Border>
 
             <!-- QUICK ACTIONS Section -->
-            <TextBlock Text="QUICK ACTIONS"
+            <TextBlock Text="Quick Actions"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- On-the-Fly Rule Creation -->
@@ -867,7 +867,7 @@
             </Border>
 
             <!-- TESTING & VALIDATION Section -->
-            <TextBlock Text="TESTING &amp; VALIDATION"
+            <TextBlock Text="Testing &amp; Validation"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border Style="{StaticResource SettingsCardStyle}">
@@ -924,7 +924,7 @@
             </Border>
 
             <!-- DATA & STORAGE Section -->
-            <TextBlock Text="DATA &amp; STORAGE"
+            <TextBlock Text="Data &amp; Storage"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border Style="{StaticResource SettingsCardStyle}" Padding="20">
@@ -974,7 +974,7 @@
             </Border>
 
             <!-- COMMAND LINE Section -->
-            <TextBlock Text="COMMAND LINE"
+            <TextBlock Text="Command Line"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border Style="{StaticResource SettingsCardStyle}" Padding="20">

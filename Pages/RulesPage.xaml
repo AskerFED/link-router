@@ -92,8 +92,8 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Header="Browser" Binding="{Binding BrowserName}" Width="140" MinWidth="120"/>
-                                <DataGridTextColumn Header="Profile" Binding="{Binding ProfileName}" Width="120" MinWidth="100"/>
+                                <DataGridTextColumn Header="Browser" Binding="{Binding BrowserName}" Width="200" MinWidth="200"/>
+                                <DataGridTextColumn Header="Profile" Binding="{Binding ProfileName}" Width="150" MinWidth="150"/>
                                 <DataGridTemplateColumn Header="" Width="120" CanUserResize="False">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>

@@ -118,38 +118,7 @@ namespace BrowserSelector.Pages
             {
                 DefaultBrowserManager.Save(browser);
                 Logger.Log($"User changed default browser to: {browser.Name}");
-
-                // Load profiles if available
-                LoadProfilesForBrowser(browser);
             }
-        }
-
-        private void LoadProfilesForBrowser(BrowserInfo browser)
-        {
-            try
-            {
-                var profiles = BrowserDetector.GetBrowserProfiles(browser);
-                if (profiles != null && profiles.Count > 1)
-                {
-                    DefaultProfileCard.Visibility = Visibility.Visible;
-                    DefaultProfileComboBox.ItemsSource = profiles;
-                    DefaultProfileComboBox.SelectedIndex = 0;
-                }
-                else
-                {
-                    DefaultProfileCard.Visibility = Visibility.Collapsed;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"HomePage LoadProfilesForBrowser ERROR: {ex.Message}");
-                DefaultProfileCard.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void DefaultProfileComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Profile selection changed - can be saved if needed
         }
 
         private void OpenWindowsSettings_Click(object sender, RoutedEventArgs e)

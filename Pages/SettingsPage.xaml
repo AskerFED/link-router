@@ -17,15 +17,15 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="40,32,40,32" MaxWidth="800">
+        <StackPanel Margin="24,32,40,32" MaxWidth="800">
 
             <!-- Page Title -->
             <TextBlock Text="Settings"
-                       Style="{StaticResource Title2TextStyle}"
-                       Margin="0,0,0,24"/>
+                       Style="{StaticResource Title3TextStyle}"
+                       Margin="0,0,0,16"/>
 
-            <!-- APP REGISTRATION Section -->
-            <TextBlock Text="APP REGISTRATION"
+            <!-- App Registration Section -->
+            <TextBlock Text="App Registration"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- Registration Status Card -->
@@ -84,8 +84,8 @@
                 </StackPanel>
             </Border>
 
-            <!-- HOW TO SET AS DEFAULT Section -->
-            <TextBlock Text="HOW TO SET AS DEFAULT"
+            <!-- How to Set as Default Section -->
+            <TextBlock Text="How to Set as Default"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border Style="{StaticResource InfoBannerStyle}">
@@ -120,8 +120,8 @@
                 </StackPanel>
             </Border>
 
-            <!-- ABOUT Section -->
-            <TextBlock Text="ABOUT"
+            <!-- About Section -->
+            <TextBlock Text="About"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <controls:SettingsCard Header="LinkRouter"

@@ -17,15 +17,15 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="40,32,40,32" MaxWidth="800">
+        <StackPanel Margin="24,32,40,32" MaxWidth="800">
 
             <!-- Page Title -->
             <TextBlock Text="Home"
-                       Style="{StaticResource Title2TextStyle}"
-                       Margin="0,0,0,24"/>
+                       Style="{StaticResource Title3TextStyle}"
+                       Margin="0,0,0,16"/>
 
-            <!-- DEFAULT BROWSER Section -->
-            <TextBlock Text="DEFAULT BROWSER"
+            <!-- Default Browser Section -->
+            <TextBlock Text="Default Browser"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- Default Browser Card -->
@@ -69,43 +69,8 @@
                 </Grid>
             </Border>
 
-            <!-- Default Profile Card (shown when browser has profiles) -->
-            <Border x:Name="DefaultProfileCard" Style="{StaticResource SettingsCardStyle}" Padding="16" Visibility="Collapsed">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Border Grid.Column="0" Width="36" Height="36" Background="#F6F6F6" CornerRadius="4" Margin="0,0,16,0">
-                        <Ellipse Width="18" Height="18" Fill="#0078D4"/>
-                    </Border>
-
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="Default Profile" Style="{StaticResource BodyTextStyle}"/>
-                        <TextBlock Text="Profile for the default browser"
-                                   Style="{StaticResource CaptionTextStyle}"
-                                   Margin="0,2,0,0"/>
-                    </StackPanel>
-
-                    <ComboBox x:Name="DefaultProfileComboBox"
-                              Grid.Column="2"
-                              Style="{StaticResource ComboBoxStyle}"
-                              Width="200"
-                              VerticalAlignment="Center"
-                              SelectionChanged="DefaultProfileComboBox_SelectionChanged">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </Grid>
-            </Border>
-
-            <!-- QUICK STATS Section -->
-            <TextBlock Text="QUICK STATS"
+            <!-- Quick Stats Section -->
+            <TextBlock Text="Quick Stats"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Grid Margin="0,0,0,8">
@@ -166,8 +131,8 @@
                 </Border>
             </Grid>
 
-            <!-- REGISTRATION STATUS Section -->
-            <TextBlock Text="REGISTRATION STATUS"
+            <!-- Registration Status Section -->
+            <TextBlock Text="Registration Status"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border x:Name="RegistrationCard" Style="{StaticResource SettingsCardStyle}" Padding="16">
@@ -219,8 +184,8 @@
                 </Grid>
             </Border>
 
-            <!-- Quick Actions -->
-            <TextBlock Text="QUICK ACTIONS"
+            <!-- Quick Actions Section -->
+            <TextBlock Text="Quick Actions"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <controls:SettingsCard Header="Manage Rules"
