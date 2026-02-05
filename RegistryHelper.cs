@@ -7,8 +7,8 @@ namespace BrowserSelector
 {
     public static class RegistryHelper
     {
-        private const string AppName = "BrowserSelector";
-        private const string AppDescription = "Browser Selector - Choose browser and profile";
+        private const string AppName = "LinkRouter";
+        private const string AppDescription = "LinkRouter - Browser selection and URL routing utility";
 
         public static void RegisterAsDefaultBrowser()
         {
@@ -64,6 +64,7 @@ namespace BrowserSelector
                     {
                         capabilitiesKey.SetValue("ApplicationName", AppName);
                         capabilitiesKey.SetValue("ApplicationDescription", AppDescription);
+                        capabilitiesKey.SetValue("ApplicationIcon", $"{exePath},0");
 
                         using (var urlAssocKey = capabilitiesKey.CreateSubKey("URLAssociations"))
                         {
@@ -80,6 +81,14 @@ namespace BrowserSelector
                             {
                                 fileAssocKey.SetValue(".htm", $"{AppName}");
                                 fileAssocKey.SetValue(".html", $"{AppName}");
+                            }
+                        }
+
+                        using (var startMenuKey = capabilitiesKey.CreateSubKey("Startmenu"))
+                        {
+                            if (startMenuKey != null)
+                            {
+                                startMenuKey.SetValue("StartMenuInternet", AppName);
                             }
                         }
                     }
@@ -169,6 +178,56 @@ namespace BrowserSelector
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Check if the application is registered as a browser handler
+        /// </summary>
+        public static bool IsRegistered()
+        {
+            try
+            {
+                // Check both old name and new name for compatibility
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey($@"Software\Clients\StartMenuInternet\{AppName}"))
+                {
+                    if (key != null)
+                    {
+                        using (RegistryKey? commandKey = key.OpenSubKey(@"shell\open\command"))
+                        {
+                            if (commandKey != null)
+                            {
+                                string? registeredPath = commandKey.GetValue("")?.ToString();
+                                if (!string.IsNullOrEmpty(registeredPath) &&
+                                    (registeredPath.Contains("BrowserSelector.exe") || registeredPath.Contains("LinkRouter.exe")))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Clients\StartMenuInternet\LinkRouter"))
+                {
+                    if (key != null)
+                    {
+                        using (RegistryKey? commandKey = key.OpenSubKey(@"shell\open\command"))
+                        {
+                            if (commandKey != null)
+                            {
+                                string? registeredPath = commandKey.GetValue("")?.ToString();
+                                return !string.IsNullOrEmpty(registeredPath) && registeredPath.Contains("LinkRouter.exe");
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
             }
         }
 
