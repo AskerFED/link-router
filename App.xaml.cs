@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 
 namespace BrowserSelector
@@ -10,7 +11,6 @@ namespace BrowserSelector
             if (e.Args.Length > 0)
             {
                 var url = e.Args[0];
-
                 // Handle startup parameter (silent start)
                 if (url.Equals("--startup", StringComparison.OrdinalIgnoreCase))
                 {
@@ -23,63 +23,68 @@ namespace BrowserSelector
                 // Handle manage rules command
                 if (url.Equals("--manage", StringComparison.OrdinalIgnoreCase))
                 {
-                    var rulesWindow = new RulesManagerWindow();
-                    rulesWindow.ShowDialog();
+                    var settingsWindow = new SettingsWindow();
+                    settingsWindow.ShowDialog();
                     Shutdown();
                     return;
                 }
 
-                // Handle register/unregister commands
+                // Handle register command - register and show settings with App tab
                 if (url.Equals("--register", StringComparison.OrdinalIgnoreCase))
                 {
                     RegistryHelper.RegisterAsDefaultBrowser();
-
-                    var result = MessageBox.Show(
-                        "Browser Selector has been registered successfully!\n\n" +
-                        "Features:\n" +
-                        "✓ Added to Windows startup\n" +
-                        "✓ Ready to intercept links\n\n" +
-                        "To set it as default:\n" +
-                        "1. Go to Windows Settings\n" +
-                        "2. Apps > Default apps\n" +
-                        "3. Search for 'Browser Selector'\n" +
-                        "4. Set it as default for HTTP and HTTPS\n\n" +
-                        "Would you like to manage URL rules now?",
-                        "Registration Complete",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Information);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        var rulesWindow = new RulesManagerWindow();
-                        rulesWindow.ShowDialog();
-                    }
-
+                    var settingsWindow = new SettingsWindow();
+                    settingsWindow.SelectAppTab();
+                    settingsWindow.ShowDialog();
                     Shutdown();
                     return;
                 }
                 else if (url.Equals("--unregister", StringComparison.OrdinalIgnoreCase))
                 {
                     RegistryHelper.UnregisterAsDefaultBrowser();
-                    MessageBox.Show("Browser Selector has been unregistered and removed from startup.",
-                                  "Unregistration Complete",
-                                  MessageBoxButton.OK,
-                                  MessageBoxImage.Information);
                     Shutdown();
                     return;
                 }
 
                 // Normal operation - show browser selector
+                Logger.Log("Application_Startup fired with URL: " + url);
                 var mainWindow = new MainWindow();
                 mainWindow.SetUrl(url);
-                mainWindow.Show();
-            }
+             }
             else
             {
-                // Show info window with manage button
-                var infoWindow = new InfoWindow();
-                infoWindow.ShowDialog();
+                // No URL argument - show SettingsWindow directly
+                Logger.Log("Application_Startup - No URL, showing SettingsWindow");
+                var settingsWindow = new SettingsWindow();
+                settingsWindow.ShowDialog();
                 Shutdown();
+            }
+        }
+    }
+    public static class Logger
+    {
+        private static readonly string LogDirectory = @"D:\BrowserSelector";
+        private static readonly string LogFilePath =
+            Path.Combine(LogDirectory, "log.txt");
+
+        public static void Log(string message)
+        {
+            try
+            {
+                // Ensure directory exists
+                if (!Directory.Exists(LogDirectory))
+                {
+                    Directory.CreateDirectory(LogDirectory);
+                }
+
+                File.AppendAllText(
+                    LogFilePath,
+                    $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} | {message}{Environment.NewLine}"
+                );
+            }
+            catch
+            {
+                // Never crash the app because of logging
             }
         }
     }

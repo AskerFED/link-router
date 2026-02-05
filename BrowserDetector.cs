@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Text.Json;
 using Microsoft.Win32;
 
@@ -16,10 +17,20 @@ namespace BrowserSelector
 
     public class ProfileInfo
     {
-        public string Name { get; set; } = string.Empty;
-        public string Path { get; set; } = string.Empty;
-        public string Arguments { get; set; } = string.Empty;
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Path { get; set; }
+        public string Arguments { get; set; }
+
+        public string AvatarUrl { get; set; }   // NEW
+        public int ProfileIndex { get; set; }   // NEW (fallback)
+
+        public string DisplayName =>
+            string.IsNullOrWhiteSpace(Email)
+                ? Name
+                : $"{Name} ({Email})";
     }
+
 
     public static class BrowserDetector
     {
@@ -309,6 +320,7 @@ namespace BrowserSelector
                 {
                     var dirName = System.IO.Path.GetFileName(dir);
                     var profileName = GetProfileNameFromPreferences(prefsFile) ?? dirName;
+
                     profiles.Add(new ProfileInfo
                     {
                         Name = profileName,
@@ -318,8 +330,33 @@ namespace BrowserSelector
                 }
             }
 
+            // Handle duplicate names by appending profile directory
+            var duplicateNames = profiles.GroupBy(p => p.Name)
+                                         .Where(g => g.Count() > 1)
+                                         .Select(g => g.Key)
+                                         .ToHashSet();
+
+            foreach (var profile in profiles)
+            {
+                if (duplicateNames.Contains(profile.Name))
+                {
+                    // Extract profile directory name from Arguments
+                    var match = System.Text.RegularExpressions.Regex.Match(
+                        profile.Arguments,
+                        @"--profile-directory=""([^""]+)"""
+                    );
+
+                    if (match.Success)
+                    {
+                        string dirName = match.Groups[1].Value;
+                        profile.Name = $"{profile.Name} ({dirName})";
+                    }
+                }
+            }
+
             return profiles;
         }
+
 
         private static List<ProfileInfo> GetEdgeProfiles()
         {
@@ -388,26 +425,62 @@ namespace BrowserSelector
             return profiles;
         }
 
-        private static string? GetProfileNameFromPreferences(string prefsPath)
+         
+        private static string GetProfileNameFromPreferences(string preferencesPath)
         {
             try
             {
-                var json = File.ReadAllText(prefsPath);
-                using var doc = JsonDocument.Parse(json);
+                var json = File.ReadAllText(preferencesPath);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                var root = doc.RootElement;
 
-                if (doc.RootElement.TryGetProperty("profile", out var profile))
+                string profileName = null;
+                string email = null;
+
+
+                // profile.name
+                if (root.TryGetProperty("profile", out var profileProp) &&
+                    profileProp.TryGetProperty("name", out var nameProp))
                 {
-                    if (profile.TryGetProperty("name", out var name))
+                    profileName = nameProp.GetString();
+                }
+
+                // account_info[0].email
+                if (root.TryGetProperty("account_info", out var accountInfo) &&
+                    accountInfo.ValueKind == System.Text.Json.JsonValueKind.Array &&
+                    accountInfo.GetArrayLength() > 0)
+                {
+                    var account = accountInfo[0];
+
+
+                    if (account.TryGetProperty("email", out var emailProp))
                     {
-                        return name.GetString();
+                        email = emailProp.GetString();
                     }
                 }
+
+                // Compose display name
+                if (!string.IsNullOrWhiteSpace(profileName) &&
+                    !string.IsNullOrWhiteSpace(email))
+                {
+                    return $"{profileName} ({email})";
+                }
+
+                return profileName;
             }
             catch
             {
-                // Ignore parsing errors
+                return null;
             }
+        }
 
+        public static BrowserInfo MatchBrowserByPath(string path)
+        {
+            foreach (var browser in GetInstalledBrowsers())
+            {
+                if (browser.ExecutablePath == path)
+                    return browser;
+            }
             return null;
         }
     }

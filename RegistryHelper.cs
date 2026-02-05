@@ -12,6 +12,8 @@ namespace BrowserSelector
 
         public static void RegisterAsDefaultBrowser()
         {
+            Logger.Log("Register fired");
+            DefaultBrowserRegistrar.EnsureDefaultBrowserRegistered();
             var exePath = Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe");
 
             if (!File.Exists(exePath))
@@ -194,4 +196,202 @@ namespace BrowserSelector
             }
         }
     }
+    public static class SystemDefaultBrowserDetector
+    {
+        public static BrowserInfo Get()
+        {
+            try
+            {
+                return BrowserDetector.MatchBrowserByPath(GetSystemDefaultBrowser().ExecutablePath);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public static BrowserInfo GetSystemDefaultBrowser()
+        {
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice");
+
+                var progId = key?.GetValue("ProgId")?.ToString();
+
+                Logger.Log($"System default browser ProgId: {progId}");
+
+                if (string.IsNullOrEmpty(progId))
+                    return null;
+
+                return ResolveProgIdToExe(progId);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Default browser detection failed: {ex}");
+                return null;
+            }
+        }
+
+        private static BrowserInfo ResolveProgIdToExe(string progId)
+        {
+            using var key = Registry.ClassesRoot.OpenSubKey(
+                $@"{progId}\shell\open\command");
+
+            var command = key?.GetValue(null)?.ToString();
+
+            if (string.IsNullOrEmpty(command))
+                return null;
+
+            var exePath = ExtractExePath(command);
+
+            if (!File.Exists(exePath))
+                return null;
+
+            return new BrowserInfo
+            {
+                Name = progId,
+                ExecutablePath = exePath
+            };
+        }
+
+        private static string ExtractExePath(string command)
+        {
+            command = command.Trim();
+
+            if (command.StartsWith("\""))
+            {
+                return command.Substring(1, command.IndexOf("\"", 1) - 1);
+            }
+
+            return command.Split(' ')[0];
+        }
+    }
+    public static class DefaultBrowserRegistrar
+    {
+        public static void EnsureDefaultBrowserRegistered()
+        {
+            var existing = DefaultBrowserManager.Load();
+            if (existing != null)
+            {
+                Logger.Log($"Default browser already set: {existing.Name}");
+                return;
+            }
+
+            Logger.Log("No default browser in registry. Resolving one.");
+
+            var systemDefault = SystemDefaultBrowserDetector.Get();
+            if (systemDefault != null)
+            {
+                DefaultBrowserManager.Save(systemDefault);
+                Logger.Log($"Saved system default browser: {systemDefault.Name}");
+                return;
+            }
+
+            var browsers = BrowserDetector.GetInstalledBrowsers();
+            if (browsers.Count > 0)
+            {
+                DefaultBrowserManager.Save(browsers[0]);
+                Logger.Log($"Saved fallback browser: {browsers[0].Name}");
+            }
+        }
+    }
+   
+        public static class DefaultBrowserManager
+        {
+            private const string RegistryPath = @"Software\BrowserSelector";
+            private const string BrowserNameKey = "DefaultBrowserName";
+            private const string BrowserExeKey = "DefaultBrowserExe";
+
+            /// <summary>
+            /// Save user-selected default browser to registry
+            /// </summary>
+            public static void Save(BrowserInfo browser)
+            {
+                if (browser == null)
+                {
+                    Logger.Log("DefaultBrowserManager.Save called with null browser");
+                    return;
+                }
+
+                try
+                {
+                    using (var key = Registry.CurrentUser.CreateSubKey(RegistryPath))
+                    {
+                        key.SetValue(BrowserNameKey, browser.Name);
+                        key.SetValue(BrowserExeKey, browser.ExecutablePath);
+                    }
+
+                    Logger.Log($"Saved default browser: {browser.Name} ({browser.ExecutablePath})");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Failed to save default browser: {ex}");
+                }
+            }
+
+            /// <summary>
+            /// Load default browser from registry
+            /// </summary>
+            public static BrowserInfo Load()
+            {
+                try
+                {
+                    using (var key = Registry.CurrentUser.OpenSubKey(RegistryPath))
+                    {
+                        if (key == null)
+                        {
+                            Logger.Log("Default browser registry key not found");
+                            return null;
+                        }
+
+                        var name = key.GetValue(BrowserNameKey) as string;
+                        var exePath = key.GetValue(BrowserExeKey) as string;
+
+                        if (string.IsNullOrWhiteSpace(name) ||
+                            string.IsNullOrWhiteSpace(exePath))
+                        {
+                            Logger.Log("Default browser registry values are missing");
+                            return null;
+                        }
+
+                        Logger.Log($"Loaded default browser: {name} ({exePath})");
+
+                        return new BrowserInfo
+                        {
+                            Name = name,
+                            ExecutablePath = exePath
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Failed to load default browser: {ex}");
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Check if a default browser is saved
+            /// </summary>
+            public static bool HasDefault()
+            {
+                return Load() != null;
+            }
+
+            /// <summary>
+            /// Remove saved default browser
+            /// </summary>
+            public static void Clear()
+            {
+                try
+                {
+                    Registry.CurrentUser.DeleteSubKeyTree(RegistryPath, false);
+                    Logger.Log("Cleared default browser registry entry");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Failed to clear default browser: {ex}");
+                }
+            }
+        }
 }
