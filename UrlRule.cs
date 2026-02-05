@@ -47,6 +47,11 @@ namespace BrowserSelector
         public string Pattern { get; set; } = string.Empty;
 
         /// <summary>
+        /// Whether this rule is enabled and should be used for URL matching.
+        /// </summary>
+        public bool IsEnabled { get; set; } = true;
+
+        /// <summary>
         /// List of browser/profile combinations for this rule.
         /// If count is 1, auto-opens. If count > 1, shows picker.
         /// </summary>
@@ -215,7 +220,8 @@ namespace BrowserSelector
 
         public static UrlRule FindMatchingRule(string url)
         {
-            var rules = LoadRules();
+            // Only consider enabled rules for matching
+            var rules = LoadRules().Where(r => r.IsEnabled).ToList();
 
             // Try exact match first
             var exactMatch = rules.FirstOrDefault(r =>

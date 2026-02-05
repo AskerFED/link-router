@@ -195,6 +195,11 @@ namespace BrowserSelector
 
                 Process.Start(startInfo);
                 Logger.Log($"Opened {profile.BrowserName} with profile {profile.ProfileName}");
+
+                // Save last active browser/profile for future auto-selection
+                var browserInfo = new BrowserInfo { Name = profile.BrowserName, ExecutablePath = profile.BrowserPath, Type = profile.BrowserType };
+                var profileInfo = new ProfileInfo { Name = profile.ProfileName, Path = profile.ProfilePath, Arguments = profile.ProfileArguments };
+                SettingsManager.UpdateLastActiveBrowser(browserInfo, profileInfo);
             }
             catch (Exception ex)
             {

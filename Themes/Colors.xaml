@@ -1,0 +1,233 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ========================================
+         Windows 11 Fluent 2 Design System Colors
+         Based on Microsoft Fluent 2 Design Tokens
+         ======================================== -->
+
+    <!-- Accent Colors -->
+    <Color x:Key="AccentColor">#0078D4</Color>
+    <Color x:Key="AccentColorLight1">#429CE3</Color>
+    <Color x:Key="AccentColorLight2">#8DC6F0</Color>
+    <Color x:Key="AccentColorLight3">#B4D6FA</Color>
+    <Color x:Key="AccentColorDark1">#005A9E</Color>
+    <Color x:Key="AccentColorDark2">#004578</Color>
+    <Color x:Key="AccentColorDark3">#003054</Color>
+
+    <!-- Background Fill Colors (Mica-inspired) -->
+    <Color x:Key="SolidBackgroundFillColorBase">#F3F3F3</Color>
+    <Color x:Key="SolidBackgroundFillColorSecondary">#EEEEEE</Color>
+    <Color x:Key="SolidBackgroundFillColorTertiary">#F9F9F9</Color>
+    <Color x:Key="SolidBackgroundFillColorQuarternary">#FFFFFF</Color>
+
+    <!-- Card/Surface Colors -->
+    <Color x:Key="CardBackgroundFillColorDefault">#FFFFFF</Color>
+    <Color x:Key="CardBackgroundFillColorSecondary">#F6F6F6</Color>
+
+    <!-- Stroke/Border Colors -->
+    <Color x:Key="CardStrokeColorDefault">#E4E4E4</Color>
+    <Color x:Key="CardStrokeColorDefaultSolid">#EBEBEB</Color>
+    <Color x:Key="ControlStrokeColorDefault">#CACACA</Color>
+    <Color x:Key="ControlStrokeColorSecondary">#E0E0E0</Color>
+    <Color x:Key="DividerStrokeColorDefault">#E0E0E0</Color>
+    <Color x:Key="SurfaceStrokeColorDefault">#757575</Color>
+    <Color x:Key="SurfaceStrokeColorFlyout">#CCCCCC</Color>
+    <Color x:Key="FocusStrokeColorOuter">#0078D4</Color>
+    <Color x:Key="FocusStrokeColorInner">#FFFFFF</Color>
+
+    <!-- Text Fill Colors -->
+    <Color x:Key="TextFillColorPrimary">#1A1A1A</Color>
+    <Color x:Key="TextFillColorSecondary">#5D5D5D</Color>
+    <Color x:Key="TextFillColorTertiary">#8A8A8A</Color>
+    <Color x:Key="TextFillColorDisabled">#C5C5C5</Color>
+    <Color x:Key="TextFillColorInverse">#FFFFFF</Color>
+
+    <!-- Accent Text Colors -->
+    <Color x:Key="AccentTextFillColorPrimary">#003D6D</Color>
+    <Color x:Key="AccentTextFillColorSecondary">#005294</Color>
+    <Color x:Key="AccentTextFillColorTertiary">#0067B8</Color>
+    <Color x:Key="AccentTextFillColorDisabled">#C5C5C5</Color>
+
+    <!-- Text On Accent Colors -->
+    <Color x:Key="TextOnAccentFillColorPrimary">#FFFFFF</Color>
+    <Color x:Key="TextOnAccentFillColorSecondary">#FFFFFFB2</Color>
+    <Color x:Key="TextOnAccentFillColorDisabled">#FFFFFF87</Color>
+
+    <!-- Control Fill Colors -->
+    <Color x:Key="ControlFillColorDefault">#FFFFFF</Color>
+    <Color x:Key="ControlFillColorSecondary">#F9F9F9</Color>
+    <Color x:Key="ControlFillColorTertiary">#F3F3F3</Color>
+    <Color x:Key="ControlFillColorDisabled">#FAFAFA</Color>
+    <Color x:Key="ControlFillColorTransparent">#00FFFFFF</Color>
+    <Color x:Key="ControlFillColorInputActive">#FFFFFF</Color>
+
+    <!-- Control Alt Fill Colors -->
+    <Color x:Key="ControlAltFillColorTransparent">#00FFFFFF</Color>
+    <Color x:Key="ControlAltFillColorSecondary">#06000000</Color>
+    <Color x:Key="ControlAltFillColorTertiary">#0F000000</Color>
+    <Color x:Key="ControlAltFillColorQuarternary">#18000000</Color>
+    <Color x:Key="ControlAltFillColorDisabled">#00000000</Color>
+
+    <!-- Subtle Fill Colors (for hover states) -->
+    <Color x:Key="SubtleFillColorTransparent">#00000000</Color>
+    <Color x:Key="SubtleFillColorSecondary">#0A000000</Color>
+    <Color x:Key="SubtleFillColorTertiary">#06000000</Color>
+    <Color x:Key="SubtleFillColorDisabled">#00000000</Color>
+
+    <!-- Navigation View Colors -->
+    <Color x:Key="NavigationViewSelectionIndicator">#0078D4</Color>
+    <Color x:Key="NavigationViewItemBackgroundTransparent">#00000000</Color>
+    <Color x:Key="NavigationViewItemBackgroundHover">#F2F2F2</Color>
+    <Color x:Key="NavigationViewItemBackgroundSelected">#E8E8E8</Color>
+    <Color x:Key="NavigationViewItemBackgroundPressed">#DDDDDD</Color>
+    <Color x:Key="NavigationViewContentBackground">#FAFAFA</Color>
+    <Color x:Key="NavigationViewPaneBackground">#F3F3F3</Color>
+
+    <!-- System/Semantic Colors - Success -->
+    <Color x:Key="SystemFillColorSuccess">#107C10</Color>
+    <Color x:Key="SystemFillColorSuccessBackground">#DFF6DD</Color>
+
+    <!-- System/Semantic Colors - Caution/Warning -->
+    <Color x:Key="SystemFillColorCaution">#797519</Color>
+    <Color x:Key="SystemFillColorCautionBackground">#FFF4CE</Color>
+
+    <!-- System/Semantic Colors - Critical/Error -->
+    <Color x:Key="SystemFillColorCritical">#C42B1C</Color>
+    <Color x:Key="SystemFillColorCriticalBackground">#FDE7E9</Color>
+
+    <!-- System/Semantic Colors - Attention/Info -->
+    <Color x:Key="SystemFillColorAttention">#0078D4</Color>
+    <Color x:Key="SystemFillColorAttentionBackground">#F0F6FC</Color>
+
+    <!-- System/Semantic Colors - Neutral -->
+    <Color x:Key="SystemFillColorNeutral">#8A8A8A</Color>
+    <Color x:Key="SystemFillColorNeutralBackground">#F3F3F3</Color>
+
+    <!-- Accent Fill Colors -->
+    <Color x:Key="AccentFillColorDefault">#0078D4</Color>
+    <Color x:Key="AccentFillColorSecondary">#0067B8</Color>
+    <Color x:Key="AccentFillColorTertiary">#005A9E</Color>
+    <Color x:Key="AccentFillColorDisabled">#BFBFBF</Color>
+
+    <!-- ========================================
+         Brush Definitions
+         ======================================== -->
+
+    <!-- Accent Brushes -->
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentLight1Brush" Color="{StaticResource AccentColorLight1}"/>
+    <SolidColorBrush x:Key="AccentLight2Brush" Color="{StaticResource AccentColorLight2}"/>
+    <SolidColorBrush x:Key="AccentDark1Brush" Color="{StaticResource AccentColorDark1}"/>
+    <SolidColorBrush x:Key="AccentDark2Brush" Color="{StaticResource AccentColorDark2}"/>
+
+    <!-- Background Brushes -->
+    <SolidColorBrush x:Key="SolidBackgroundFillBaseBrush" Color="{StaticResource SolidBackgroundFillColorBase}"/>
+    <SolidColorBrush x:Key="SolidBackgroundFillSecondaryBrush" Color="{StaticResource SolidBackgroundFillColorSecondary}"/>
+    <SolidColorBrush x:Key="SolidBackgroundFillTertiaryBrush" Color="{StaticResource SolidBackgroundFillColorTertiary}"/>
+    <SolidColorBrush x:Key="SolidBackgroundFillQuarternaryBrush" Color="{StaticResource SolidBackgroundFillColorQuarternary}"/>
+
+    <!-- Card Brushes -->
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundFillColorDefault}"/>
+    <SolidColorBrush x:Key="CardBackgroundSecondaryBrush" Color="{StaticResource CardBackgroundFillColorSecondary}"/>
+    <SolidColorBrush x:Key="CardStrokeBrush" Color="{StaticResource CardStrokeColorDefault}"/>
+
+    <!-- Control Stroke Brushes -->
+    <SolidColorBrush x:Key="ControlStrokeBrush" Color="{StaticResource ControlStrokeColorDefault}"/>
+    <SolidColorBrush x:Key="ControlStrokeSecondaryBrush" Color="{StaticResource ControlStrokeColorSecondary}"/>
+    <SolidColorBrush x:Key="DividerStrokeBrush" Color="{StaticResource DividerStrokeColorDefault}"/>
+    <SolidColorBrush x:Key="FocusStrokeBrush" Color="{StaticResource FocusStrokeColorOuter}"/>
+
+    <!-- Text Brushes -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextFillColorPrimary}"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextFillColorSecondary}"/>
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="{StaticResource TextFillColorTertiary}"/>
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="{StaticResource TextFillColorDisabled}"/>
+    <SolidColorBrush x:Key="TextInverseBrush" Color="{StaticResource TextFillColorInverse}"/>
+
+    <!-- Accent Text Brushes -->
+    <SolidColorBrush x:Key="AccentTextPrimaryBrush" Color="{StaticResource AccentTextFillColorPrimary}"/>
+    <SolidColorBrush x:Key="AccentTextSecondaryBrush" Color="{StaticResource AccentTextFillColorSecondary}"/>
+
+    <!-- Control Fill Brushes -->
+    <SolidColorBrush x:Key="ControlFillBrush" Color="{StaticResource ControlFillColorDefault}"/>
+    <SolidColorBrush x:Key="ControlFillSecondaryBrush" Color="{StaticResource ControlFillColorSecondary}"/>
+    <SolidColorBrush x:Key="ControlFillTertiaryBrush" Color="{StaticResource ControlFillColorTertiary}"/>
+    <SolidColorBrush x:Key="ControlFillDisabledBrush" Color="{StaticResource ControlFillColorDisabled}"/>
+
+    <!-- Subtle Fill Brushes -->
+    <SolidColorBrush x:Key="SubtleFillSecondaryBrush" Color="{StaticResource SubtleFillColorSecondary}"/>
+    <SolidColorBrush x:Key="SubtleFillTertiaryBrush" Color="{StaticResource SubtleFillColorTertiary}"/>
+
+    <!-- Navigation Brushes -->
+    <SolidColorBrush x:Key="NavigationSelectionIndicatorBrush" Color="{StaticResource NavigationViewSelectionIndicator}"/>
+    <SolidColorBrush x:Key="NavigationItemHoverBrush" Color="{StaticResource NavigationViewItemBackgroundHover}"/>
+    <SolidColorBrush x:Key="NavigationItemSelectedBrush" Color="{StaticResource NavigationViewItemBackgroundSelected}"/>
+    <SolidColorBrush x:Key="NavigationItemPressedBrush" Color="{StaticResource NavigationViewItemBackgroundPressed}"/>
+    <SolidColorBrush x:Key="NavigationPaneBackgroundBrush" Color="{StaticResource NavigationViewPaneBackground}"/>
+    <SolidColorBrush x:Key="NavigationContentBackgroundBrush" Color="{StaticResource NavigationViewContentBackground}"/>
+
+    <!-- Semantic/Status Brushes -->
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SystemFillColorSuccess}"/>
+    <SolidColorBrush x:Key="SuccessBackgroundBrush" Color="{StaticResource SystemFillColorSuccessBackground}"/>
+    <SolidColorBrush x:Key="CautionBrush" Color="{StaticResource SystemFillColorCaution}"/>
+    <SolidColorBrush x:Key="CautionBackgroundBrush" Color="{StaticResource SystemFillColorCautionBackground}"/>
+    <SolidColorBrush x:Key="CriticalBrush" Color="{StaticResource SystemFillColorCritical}"/>
+    <SolidColorBrush x:Key="CriticalBackgroundBrush" Color="{StaticResource SystemFillColorCriticalBackground}"/>
+    <SolidColorBrush x:Key="AttentionBrush" Color="{StaticResource SystemFillColorAttention}"/>
+    <SolidColorBrush x:Key="AttentionBackgroundBrush" Color="{StaticResource SystemFillColorAttentionBackground}"/>
+    <SolidColorBrush x:Key="NeutralBrush" Color="{StaticResource SystemFillColorNeutral}"/>
+    <SolidColorBrush x:Key="NeutralBackgroundBrush" Color="{StaticResource SystemFillColorNeutralBackground}"/>
+
+    <!-- Accent Fill Brushes -->
+    <SolidColorBrush x:Key="AccentFillBrush" Color="{StaticResource AccentFillColorDefault}"/>
+    <SolidColorBrush x:Key="AccentFillSecondaryBrush" Color="{StaticResource AccentFillColorSecondary}"/>
+    <SolidColorBrush x:Key="AccentFillTertiaryBrush" Color="{StaticResource AccentFillColorTertiary}"/>
+    <SolidColorBrush x:Key="AccentFillDisabledBrush" Color="{StaticResource AccentFillColorDisabled}"/>
+
+    <!-- ========================================
+         Spacing Constants (4px Base Unit)
+         Fluent 2 Global Spacing Ramp
+         ======================================== -->
+    <sys:Double x:Key="SpacingSize20" xmlns:sys="clr-namespace:System;assembly=mscorlib">2</sys:Double>
+    <sys:Double x:Key="SpacingSize40" xmlns:sys="clr-namespace:System;assembly=mscorlib">4</sys:Double>
+    <sys:Double x:Key="SpacingSize60" xmlns:sys="clr-namespace:System;assembly=mscorlib">6</sys:Double>
+    <sys:Double x:Key="SpacingSize80" xmlns:sys="clr-namespace:System;assembly=mscorlib">8</sys:Double>
+    <sys:Double x:Key="SpacingSize100" xmlns:sys="clr-namespace:System;assembly=mscorlib">10</sys:Double>
+    <sys:Double x:Key="SpacingSize120" xmlns:sys="clr-namespace:System;assembly=mscorlib">12</sys:Double>
+    <sys:Double x:Key="SpacingSize160" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
+    <sys:Double x:Key="SpacingSize200" xmlns:sys="clr-namespace:System;assembly=mscorlib">20</sys:Double>
+    <sys:Double x:Key="SpacingSize240" xmlns:sys="clr-namespace:System;assembly=mscorlib">24</sys:Double>
+    <sys:Double x:Key="SpacingSize280" xmlns:sys="clr-namespace:System;assembly=mscorlib">28</sys:Double>
+    <sys:Double x:Key="SpacingSize320" xmlns:sys="clr-namespace:System;assembly=mscorlib">32</sys:Double>
+    <sys:Double x:Key="SpacingSize360" xmlns:sys="clr-namespace:System;assembly=mscorlib">36</sys:Double>
+    <sys:Double x:Key="SpacingSize400" xmlns:sys="clr-namespace:System;assembly=mscorlib">40</sys:Double>
+    <sys:Double x:Key="SpacingSize480" xmlns:sys="clr-namespace:System;assembly=mscorlib">48</sys:Double>
+
+    <!-- ========================================
+         Corner Radius Constants
+         ======================================== -->
+    <CornerRadius x:Key="OverlayCornerRadius">8</CornerRadius>
+    <CornerRadius x:Key="ControlCornerRadius">4</CornerRadius>
+    <CornerRadius x:Key="SmallCornerRadius">2</CornerRadius>
+
+    <!-- ========================================
+         Typography Constants (Segoe UI)
+         Fluent 2 Type Ramp
+         ======================================== -->
+    <sys:Double x:Key="Caption2FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">10</sys:Double>
+    <sys:Double x:Key="Caption1FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">12</sys:Double>
+    <sys:Double x:Key="Body1FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">14</sys:Double>
+    <sys:Double x:Key="Subtitle2FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
+    <sys:Double x:Key="Subtitle1FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">20</sys:Double>
+    <sys:Double x:Key="Title3FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">24</sys:Double>
+    <sys:Double x:Key="Title2FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">28</sys:Double>
+    <sys:Double x:Key="Title1FontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">32</sys:Double>
+    <sys:Double x:Key="LargeTitleFontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">40</sys:Double>
+    <sys:Double x:Key="DisplayFontSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">68</sys:Double>
+
+    <!-- Font Family -->
+    <FontFamily x:Key="ContentControlThemeFontFamily">Segoe UI, Segoe UI Variable, Arial</FontFamily>
+
+</ResourceDictionary>

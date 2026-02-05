@@ -105,6 +105,27 @@ namespace BrowserSelector
                 return "Not set";
             }
         }
+
+        /// <summary>
+        /// Display-friendly mode (Auto-open or Picker)
+        /// </summary>
+        public string ModeDisplay => HasMultipleProfiles || Behavior == UrlGroupBehavior.ShowProfilePicker
+            ? "Picker mode"
+            : "Auto-open";
+
+        /// <summary>
+        /// Display-friendly profile count
+        /// </summary>
+        public string ProfileCountDisplay
+        {
+            get
+            {
+                var count = Profiles?.Count ?? 0;
+                if (count == 0 && !string.IsNullOrEmpty(DefaultBrowserName))
+                    count = 1;
+                return count == 1 ? "1 profile configured" : $"{count} profiles configured";
+            }
+        }
     }
 
     /// <summary>

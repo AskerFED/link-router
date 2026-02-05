@@ -3,591 +3,185 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:pages="clr-namespace:BrowserSelector.Pages"
         mc:Ignorable="d"
-        Title="Settings" Height="650" Width="950"
-        WindowStartupLocation="CenterOwner"
-        Background="#F5F5F5">
+        Title="LinkRouter" Height="700" Width="1050"
+        MinHeight="500" MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F3F3">
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/BrowserSelector;component/Themes/Generic.xaml"/>
+                <ResourceDictionary Source="/LinkRouter;component/Themes/Windows11Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-
-            <!-- Reusable Icon Geometries -->
-            <Geometry x:Key="EditIcon">M12.5,2.5 L13.5,3.5 L5,12 L2,13 L3,10 L11.5,1.5 L12.5,2.5 Z M10,4 L12,6</Geometry>
-            <Geometry x:Key="DeleteIcon">M3,4 L13,4 M5,4 L5,2 L11,2 L11,4 M4,4 L5,14 L11,14 L12,4 M7,6 L7,12 M9,6 L9,12</Geometry>
-            <Geometry x:Key="ExportIcon">M4,2 L12,2 L12,10 M12,2 L4,10</Geometry>
-            <Geometry x:Key="ArrowRightIcon">M5,2 L11,8 L5,14 M11,8 L1,8</Geometry>
-
-            <!-- Tab Button Style with Count -->
-            <Style x:Key="TabButtonStyle" TargetType="RadioButton">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="#666"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Padding" Value="20,10"/>
-                <Setter Property="Margin" Value="0,0,5,0"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="RadioButton">
-                            <Border x:Name="Border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderThickness="0,0,0,3"
-                                    BorderBrush="Transparent"
-                                    Padding="{TemplateBinding Padding}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="Foreground" Value="#0078D4"/>
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="#0078D4"/>
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#E8E8E8"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Dropdown Button Style -->
-            <Style x:Key="DropdownButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="#0078D4"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="Padding" Value="15,8"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Border"
-                                    Background="{TemplateBinding Background}"
-                                    CornerRadius="4"
-                                    Padding="{TemplateBinding Padding}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#106EBE"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Accordion Header Style -->
-            <Style x:Key="AccordionToggleStyle" TargetType="ToggleButton">
-                <Setter Property="Background" Value="#FAFAFA"/>
-                <Setter Property="BorderBrush" Value="#E0E0E0"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Border x:Name="Border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="4"
-                                    Padding="12,10">
-                                <ContentPresenter/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#F0F0F0"/>
-                                </Trigger>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#E3F2FD"/>
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="#90CAF9"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Minimalist Icon Button - Blue -->
-            <Style x:Key="IconButtonBlueStyle" TargetType="Button">
-                <Setter Property="Width" Value="24"/>
-                <Setter Property="Height" Value="24"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="#666"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="3">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#E3F2FD"/>
-                                    <Setter Property="Foreground" Value="#1976D2"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Minimalist Icon Button - Red -->
-            <Style x:Key="IconButtonRedStyle" TargetType="Button">
-                <Setter Property="Width" Value="24"/>
-                <Setter Property="Height" Value="24"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="#999"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="3">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#FFEBEE"/>
-                                    <Setter Property="Foreground" Value="#D32F2F"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Minimalist Icon Button - Orange -->
-            <Style x:Key="IconButtonOrangeStyle" TargetType="Button">
-                <Setter Property="Width" Value="24"/>
-                <Setter Property="Height" Value="24"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="#666"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="3">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#FFF3E0"/>
-                                    <Setter Property="Foreground" Value="#E65100"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Enable/Disable Toggle Style -->
-            <Style x:Key="EnableToggleStyle" TargetType="ToggleButton">
-                <Setter Property="Width" Value="44"/>
-                <Setter Property="Height" Value="22"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Grid>
-                                <Border x:Name="Track"
-                                        Background="#CCC"
-                                        CornerRadius="11"
-                                        Width="44"
-                                        Height="22"/>
-                                <Ellipse x:Name="Thumb"
-                                         Fill="White"
-                                         Width="18"
-                                         Height="18"
-                                         HorizontalAlignment="Left"
-                                         Margin="2,0,0,0"/>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter TargetName="Track" Property="Background" Value="#4CAF50"/>
-                                    <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right"/>
-                                    <Setter TargetName="Thumb" Property="Margin" Value="0,0,2,0"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- Tab Header with Test Button -->
-        <Border Grid.Row="0" Background="White" BorderBrush="#DDD" BorderThickness="0,0,0,1">
-            <Grid Margin="20,10,20,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <!-- Navigation Pane -->
+        <Border Grid.Column="0"
+                Background="#EEEEEE"
+                BorderBrush="#E0E0E0"
+                BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <!-- Tab Buttons -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <RadioButton x:Name="UrlTab" GroupName="Tabs"
-                                 IsChecked="True" Style="{StaticResource TabButtonStyle}"
-                                 Checked="Tab_Checked">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="UrlTabText" Text="URL"/>
-                            <TextBlock x:Name="UrlTabCount" Text=" (0)" Foreground="#999"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton x:Name="AppTab" GroupName="Tabs"
-                                 Style="{StaticResource TabButtonStyle}"
-                                 Checked="Tab_Checked">
-                        <TextBlock Text="App"/>
-                    </RadioButton>
+                <!-- App Header -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,24,20,20">
+                    <Border Width="32" Height="32"
+                            Background="#0078D4"
+                            CornerRadius="6">
+                        <Path Data="{StaticResource BrowserIcon}"
+                              Stroke="White"
+                              StrokeThickness="1.5"
+                              Width="18" Height="18"
+                              Stretch="Uniform"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="LinkRouter"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="#1A1A1A"
+                               VerticalAlignment="Center"
+                               Margin="12,0,0,0"/>
                 </StackPanel>
 
-                <!-- Test Button -->
-                <Button Grid.Column="1"
-                        Content="Test All"
-                        Click="TestButton_Click"
-                        Background="#FF9800"
-                        Foreground="White"
-                        FontWeight="SemiBold"
-                        Padding="15,8"
-                        Cursor="Hand"
-                        Margin="0,0,0,10">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Border"
-                                    Background="{TemplateBinding Background}"
-                                    CornerRadius="4"
-                                    Padding="{TemplateBinding Padding}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="&#x1F9EA; " FontSize="14"/>
-                                    <ContentPresenter VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#F57C00"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                <!-- Navigation Items -->
+                <ListBox x:Name="NavigationList"
+                         Grid.Row="1"
+                         Style="{StaticResource NavigationListBoxStyle}"
+                         SelectionChanged="NavigationList_SelectionChanged"
+                         Margin="0,8,0,0">
+
+                    <ListBoxItem x:Name="HomeNavItem" Tag="Home">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource HomeIcon}"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                  StrokeThickness="1.5"
+                                  Width="18" Height="18"
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="Home"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0,0,0"/>
+                        </StackPanel>
+                    </ListBoxItem>
+
+                    <ListBoxItem x:Name="RulesNavItem" Tag="Rules">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource RulesIcon}"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                  StrokeThickness="1.5"
+                                  Width="18" Height="18"
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="Manage Rules"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0,0,0"/>
+                            <TextBlock x:Name="RulesCountBadge"
+                                       Text="0"
+                                       FontSize="11"
+                                       Foreground="#5D5D5D"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </ListBoxItem>
+
+                    <ListBoxItem x:Name="SettingsNavItem" Tag="Settings">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource SettingsIcon}"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                  StrokeThickness="1.5"
+                                  Width="18" Height="18"
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="Settings"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0,0,0"/>
+                        </StackPanel>
+                    </ListBoxItem>
+
+                    <ListBoxItem x:Name="DocsNavItem" Tag="Docs">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource DocsIcon}"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                  StrokeThickness="1.5"
+                                  Width="18" Height="18"
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="Documentation"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0,0,0"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
+
+                <!-- Test Button at Bottom -->
+                <Border Grid.Row="2" Margin="16,0,16,16">
+                    <Button x:Name="TestButton"
+                            Click="TestButton_Click"
+                            Cursor="Hand"
+                            HorizontalAlignment="Stretch">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#FFF3E0"/>
+                                <Setter Property="Foreground" Value="#E65100"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="BorderBrush" Value="#FFCC80"/>
+                                <Setter Property="Height" Value="36"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Border"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="4"
+                                                    Padding="12,0">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="&#x1F9EA;" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Test All Rules" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="#FFE0B2"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Border>
             </Grid>
         </Border>
 
-        <!-- Tab Content Area -->
-        <Grid Grid.Row="1" Margin="20,20,0,20">
-
-            <!-- URL Panel (Rules + URL Groups) -->
-            <ScrollViewer x:Name="UrlPanel" VerticalScrollBarVisibility="Auto" Visibility="Visible" Padding="0,0,20,0">
-                <StackPanel>
-                    <!-- Action Buttons Row -->
-                    <Grid Margin="0,0,0,20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Grid.Column="1"
-                                Content="Clear All Rules"
-                                Style="{StaticResource DangerButtonStyle}"
-                                Click="ClearAllRules_Click"
-                                Margin="0,0,10,0"/>
-
-                        <ComboBox x:Name="AddUrlDropdown"
-                                  Grid.Column="2"
-                                  Style="{StaticResource ModernActionDropdownStyle}"
-                                  Width="95"
-                                  SelectedIndex="-1"
-                                  SelectionChanged="AddUrlDropdown_SelectionChanged">
-                            <ComboBox.Items>
-                                <ComboBoxItem Content="URL Rule" Tag="Rule"/>
-                                <ComboBoxItem Content="URL Group" Tag="Group"/>
-                            </ComboBox.Items>
-                        </ComboBox>
-                    </Grid>
-
-                    <!-- Individual Rules Section -->
-                    <TextBlock Text="INDIVIDUAL RULES"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               Foreground="#666"
-                               Margin="0,0,0,10"/>
-
-                    <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Margin="0,0,0,25">
-                        <DataGrid x:Name="RulesDataGrid"
-                                  Style="{StaticResource StandardDataGridStyle}"
-                                  IsReadOnly="True"
-                                  MaxHeight="200"
-                                  BorderThickness="0">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="URL Pattern" Binding="{Binding Pattern}" Width="*"/>
-                                <DataGridTextColumn Header="Browser" Binding="{Binding BrowserName}" Width="100"/>
-                                <DataGridTextColumn Header="Profile" Binding="{Binding ProfileName}" Width="100"/>
-                                <DataGridTemplateColumn Header="" Width="78">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Style="{StaticResource IconButtonOrangeStyle}" ToolTip="Move to Group" Tag="{Binding Id}" Click="MoveRuleToGroup_Click">
-                                                    <Path Data="{StaticResource ExportIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.5" Width="14" Height="14" Stretch="Uniform"/>
-                                                </Button>
-                                                <Button Style="{StaticResource IconButtonBlueStyle}" ToolTip="Edit" Tag="{Binding Id}" Margin="2,0,0,0" Click="EditRule_Click">
-                                                    <Path Data="{StaticResource EditIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
-                                                </Button>
-                                                <Button Style="{StaticResource IconButtonRedStyle}" ToolTip="Delete" Tag="{Binding Id}" Margin="2,0,0,0" Click="DeleteRule_Click">
-                                                    <Path Data="{StaticResource DeleteIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
-                                                </Button>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Border>
-
-                    <!-- URL Groups Section -->
-                    <TextBlock Text="URL GROUPS"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               Foreground="#666"
-                               Margin="0,0,0,10"/>
-
-                    <ItemsControl x:Name="UrlGroupsItemsControl">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Margin="0,0,0,8">
-                                    <StackPanel>
-                                        <!-- Accordion Header -->
-                                        <ToggleButton x:Name="GroupExpander" Style="{StaticResource AccordionToggleStyle}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <!-- Expand Arrow -->
-                                                <TextBlock Grid.Column="0"
-                                                           Text=">"
-                                                           FontFamily="Consolas"
-                                                           FontSize="12"
-                                                           VerticalAlignment="Center"
-                                                           Margin="0,0,10,0"
-                                                           RenderTransformOrigin="0.5,0.5">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsChecked, ElementName=GroupExpander}" Value="True">
-                                                                    <Setter Property="RenderTransform">
-                                                                        <Setter.Value>
-                                                                            <RotateTransform Angle="90"/>
-                                                                        </Setter.Value>
-                                                                    </Setter>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-
-                                                <!-- Name and Badges -->
-                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"/>
-                                                    <Border Background="#E3F2FD" CornerRadius="3" Padding="6,2" Margin="8,0,0,0"
-                                                            Visibility="{Binding IsBuiltIn, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                        <TextBlock Text="Built-in" FontSize="10" Foreground="#1976D2"/>
-                                                    </Border>
-                                                    <TextBlock Text="{Binding PatternCount, StringFormat=' ({0} URLs)'}"
-                                                               Foreground="#888"
-                                                               FontSize="12"
-                                                               VerticalAlignment="Center"
-                                                               Margin="8,0,0,0"/>
-                                                </StackPanel>
-
-                                                <!-- Enable Toggle -->
-                                                <ToggleButton Grid.Column="2"
-                                                              Style="{StaticResource EnableToggleStyle}"
-                                                              IsChecked="{Binding IsEnabled, Mode=TwoWay}"
-                                                              Click="UrlGroupEnabled_Click"
-                                                              Tag="{Binding Id}"
-                                                              Margin="0,0,15,0"/>
-
-                                                <!-- Edit Button -->
-                                                <Button Grid.Column="3" Style="{StaticResource IconButtonBlueStyle}" ToolTip="Edit" Tag="{Binding Id}" Margin="0,0,5,0" Click="EditUrlGroup_Click">
-                                                    <Path Data="{StaticResource EditIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
-                                                </Button>
-
-                                                <!-- Delete Button -->
-                                                <Button Grid.Column="4" Style="{StaticResource IconButtonRedStyle}" ToolTip="Delete" Tag="{Binding Id}" Click="DeleteUrlGroup_Click">
-                                                    <Path Data="{StaticResource DeleteIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
-                                                </Button>
-                                            </Grid>
-                                        </ToggleButton>
-
-                                        <!-- Accordion Content (URL patterns) -->
-                                        <Border Background="White"
-                                                BorderBrush="#E0E0E0"
-                                                BorderThickness="1,0,1,1"
-                                                CornerRadius="0,0,4,4"
-                                                Padding="0"
-                                                Visibility="{Binding IsChecked, ElementName=GroupExpander, Converter={StaticResource BoolToVisibilityConverter}}">
-                                            <StackPanel>
-                                                <!-- URL Patterns as DataGrid -->
-                                                <DataGrid ItemsSource="{Binding UrlPatternsIndexed}"
-                                                          Style="{StaticResource StandardDataGridStyle}"
-                                                          IsReadOnly="True"
-                                                          MaxHeight="200"
-                                                          BorderThickness="0"
-                                                          Background="White">
-                                                    <DataGrid.Columns>
-                                                        <DataGridTextColumn Header="URL Pattern" Binding="{Binding Pattern}" Width="*">
-                                                            <DataGridTextColumn.ElementStyle>
-                                                                <Style TargetType="TextBlock">
-                                                                    <Setter Property="FontFamily" Value="Consolas"/>
-                                                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                                                </Style>
-                                                            </DataGridTextColumn.ElementStyle>
-                                                        </DataGridTextColumn>
-                                                        <DataGridTemplateColumn Header="" Width="40">
-                                                            <DataGridTemplateColumn.CellTemplate>
-                                                                <DataTemplate>
-                                                                    <Button Style="{StaticResource IconButtonBlueStyle}" ToolTip="Move to Individual Rule" Tag="{Binding}" HorizontalAlignment="Center" Click="MovePatternToIndividualRule_Click">
-                                                                        <Path Data="{StaticResource ExportIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.5" Width="14" Height="14" Stretch="Uniform"/>
-                                                                    </Button>
-                                                                </DataTemplate>
-                                                            </DataGridTemplateColumn.CellTemplate>
-                                                        </DataGridTemplateColumn>
-                                                    </DataGrid.Columns>
-                                                </DataGrid>
-
-                                                <!-- Auto-open Info -->
-                                                <Border Background="#E8F5E9"
-                                                        CornerRadius="0,0,4,4"
-                                                        Padding="10,6"
-                                                        Margin="0,0,0,0">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="Auto-open: " FontWeight="SemiBold" Foreground="#2E7D32"/>
-                                                        <TextBlock Text="{Binding DefaultDisplay}" Foreground="#2E7D32"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </StackPanel>
-                                        </Border>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- Empty State for URL Groups -->
-                    <Border x:Name="UrlGroupsEmptyState"
-                            Background="#F5F5F5"
-                            CornerRadius="4"
-                            Padding="30"
-                            Visibility="Collapsed">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock Text="No URL Groups" FontSize="16" FontWeight="SemiBold" Foreground="#666" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Click '+ Add' to create a URL group" Foreground="#999" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </ScrollViewer>
-
-            <!-- App Panel (Settings + Registration) -->
-            <ScrollViewer x:Name="AppPanel" VerticalScrollBarVisibility="Auto" Visibility="Collapsed" Padding="0,0,20,0">
-                <StackPanel>
-                    <!-- Default Browser Section -->
-                    <TextBlock Text="DEFAULT BROWSER"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               Foreground="#666"
-                               Margin="0,0,0,10"/>
-
-                    <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="20" Margin="0,0,0,25">
-                        <StackPanel>
-                            <TextBlock Text="Used when no rules match:" Style="{StaticResource LabelTextStyle}" Margin="0,0,0,10"/>
-                            <ComboBox x:Name="DefaultBrowserComboBox"
-                                      Style="{StaticResource StandardComboBoxStyle}"
-                                      SelectionChanged="DefaultBrowserComboBox_SelectionChanged"
-                                      Width="350"
-                                      HorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Margin="5">
-                                            <TextBlock Text="{Binding Name}" FontSize="13" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                            <TextBlock Text="This browser will be used automatically when a URL doesn't match any rules."
-                                       Foreground="#888"
-                                       FontSize="11"
-                                       Margin="0,10,0,0"
-                                       TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Registration Section -->
-                    <TextBlock Text="REGISTRATION STATUS"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               Foreground="#666"
-                               Margin="0,0,0,10"/>
-
-                    <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="20" Margin="0,0,0,25">
-                        <StackPanel>
-                            <TextBlock x:Name="RegistrationStatusText"
-                                       FontSize="14"
-                                       FontWeight="SemiBold"
-                                       Margin="0,0,0,10"/>
-                            <TextBlock x:Name="RegistrationDetailText"
-                                       TextWrapping="Wrap"
-                                       Foreground="#666"
-                                       Margin="0,0,0,15"/>
-
-                            <StackPanel Orientation="Horizontal">
-                                <Button x:Name="RegisterButton"
-                                        Content="Register"
-                                        Style="{StaticResource SuccessButtonStyle}"
-                                        Click="RegisterButton_Click"
-                                        Width="120"
-                                        Margin="0,0,10,0"/>
-                                <Button x:Name="UnregisterButton"
-                                        Content="Unregister"
-                                        Style="{StaticResource DangerButtonStyle}"
-                                        Click="UnregisterButton_Click"
-                                        Width="120"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Instructions Section -->
-                    <TextBlock Text="HOW TO SET AS DEFAULT"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               Foreground="#666"
-                               Margin="0,0,0,10"/>
-
-                    <Border Background="#E3F2FD" BorderBrush="#90CAF9" BorderThickness="1" CornerRadius="4" Padding="20">
-                        <StackPanel>
-                            <TextBlock Text="After registering Browser Selector:" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                            <TextBlock Text="1. Open Windows Settings" Margin="0,0,0,5"/>
-                            <TextBlock Text="2. Go to Apps > Default apps" Margin="0,0,0,5"/>
-                            <TextBlock Text="3. Search for 'Browser Selector'" Margin="0,0,0,5"/>
-                            <TextBlock Text="4. Set it as default for HTTP and HTTPS links" Margin="0,0,0,0"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </ScrollViewer>
-        </Grid>
+        <!-- Content Area -->
+        <Border Grid.Column="1" Background="#FAFAFA">
+            <Grid>
+                <!-- Page containers (we use visibility instead of Frame for simplicity) -->
+                <pages:HomePage x:Name="HomePageControl" Visibility="Visible"/>
+                <pages:RulesPage x:Name="RulesPageControl" Visibility="Collapsed"/>
+                <pages:SettingsPage x:Name="SettingsPageControl" Visibility="Collapsed"/>
+                <pages:DocsPage x:Name="DocsPageControl" Visibility="Collapsed"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

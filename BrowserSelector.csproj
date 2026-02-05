@@ -6,6 +6,15 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 
+    <!-- Application Info -->
+    <AssemblyName>LinkRouter</AssemblyName>
+    <Product>LinkRouter</Product>
+    <AssemblyTitle>LinkRouter</AssemblyTitle>
+    <Description>Browser selection and URL routing utility</Description>
+    <Company>LinkRouter</Company>
+    <Copyright>Copyright © 2025</Copyright>
+    <Version>1.0.0</Version>
+
     <!-- 👇 Single-file build settings -->
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
