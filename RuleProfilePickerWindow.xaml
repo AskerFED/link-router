@@ -1,0 +1,119 @@
+<Window x:Class="BrowserSelector.RuleProfilePickerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BrowserSelector"
+        mc:Ignorable="d"
+        Title="Select Profile" Height="450" Width="400"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5"
+        Topmost="True">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/BrowserSelector;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Select Profile" Style="{StaticResource HeaderTextStyle}"/>
+
+        <!-- URL Display -->
+        <Border Grid.Row="1" Background="White" BorderBrush="#DDD" BorderThickness="1"
+                CornerRadius="4" Padding="10" Margin="0,0,0,10">
+            <TextBlock x:Name="UrlTextBlock"
+                       TextWrapping="Wrap"
+                       FontSize="12"
+                       Foreground="#666"/>
+        </Border>
+
+        <!-- Matched Rule Info -->
+        <Border Grid.Row="2" Style="{StaticResource InfoBannerStyle}">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Width="10" Height="10" Fill="#0078D4" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                <TextBlock x:Name="MatchedRuleTextBlock" FontSize="13" VerticalAlignment="Center">
+                    <Run Text="Matched Rule:" FontWeight="SemiBold"/>
+                    <Run x:Name="RulePatternRun"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <!-- Profile List -->
+        <Border Grid.Row="3" Background="White" BorderBrush="#DDD" BorderThickness="1"
+                CornerRadius="4" Margin="0,10,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="5">
+                <ItemsControl x:Name="ProfilesItemsControl">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="ProfileBorder"
+                                    Background="White"
+                                    BorderBrush="#EEE"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="12"
+                                    Margin="0,0,0,5"
+                                    Cursor="Hand"
+                                    MouseLeftButtonUp="Profile_Click"
+                                    Tag="{Binding}">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#E3F2FD"/>
+                                                <Setter Property="BorderBrush" Value="#0078D4"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Browser Color Indicator -->
+                                    <Ellipse Grid.Column="0" Width="8" Height="8"
+                                             Fill="{Binding BrowserColor}"
+                                             Margin="0,0,12,0"
+                                             VerticalAlignment="Center"/>
+
+                                    <!-- Profile Info -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="14"/>
+                                        <TextBlock Text="{Binding BrowserProfileDescription}" FontSize="11" Foreground="#666" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Remember Checkbox -->
+        <CheckBox Grid.Row="4" x:Name="RememberCheckBox"
+                  Content="Remember this choice for this URL"
+                  Margin="0,10,0,0"
+                  FontSize="12"/>
+
+        <!-- Footer Buttons -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Cancel"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Click="Cancel_Click"
+                    Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>

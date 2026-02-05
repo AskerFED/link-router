@@ -1,0 +1,135 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace BrowserSelector
+{
+    /// <summary>
+    /// Helper class for displaying indexed URL patterns in lists
+    /// </summary>
+    public class IndexedUrlPattern
+    {
+        public int Index { get; set; }
+        public string Pattern { get; set; } = string.Empty;
+        public string GroupId { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Defines the behavior when a URL matches a URL group
+    /// </summary>
+    public enum UrlGroupBehavior
+    {
+        /// <summary>
+        /// Auto-open with the default browser/profile configured for this group
+        /// </summary>
+        UseDefault = 0,
+
+        /// <summary>
+        /// Show profile picker when URL matches (multiple profiles configured)
+        /// </summary>
+        ShowProfilePicker = 1
+    }
+
+    /// <summary>
+    /// Represents a group of URL patterns that share common browser/profile settings
+    /// </summary>
+    public class UrlGroup
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool IsBuiltIn { get; set; } = false;
+        public bool IsEnabled { get; set; } = true;
+        public List<string> UrlPatterns { get; set; } = new List<string>();
+
+        // Default browser/profile for this group (used when Behavior = UseDefault)
+        public string DefaultBrowserName { get; set; } = string.Empty;
+        public string DefaultBrowserPath { get; set; } = string.Empty;
+        public string DefaultBrowserType { get; set; } = string.Empty;
+        public string DefaultProfileName { get; set; } = string.Empty;
+        public string DefaultProfilePath { get; set; } = string.Empty;
+        public string DefaultProfileArguments { get; set; } = string.Empty;
+
+        // Profile group link (used when Behavior = ShowProfilePicker)
+        public string LinkedProfileGroupId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Multiple browser/profile options for this group.
+        /// When more than one profile is configured, user will be shown a picker.
+        /// </summary>
+        public List<RuleProfile> Profiles { get; set; } = new List<RuleProfile>();
+
+        // Behavior mode
+        public UrlGroupBehavior Behavior { get; set; } = UrlGroupBehavior.UseDefault;
+
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Display-friendly count of URL patterns
+        /// </summary>
+        public int PatternCount => UrlPatterns?.Count ?? 0;
+
+        /// <summary>
+        /// URL patterns with index for numbered list display
+        /// </summary>
+        public List<IndexedUrlPattern> UrlPatternsIndexed =>
+            UrlPatterns?.Select((p, i) => new IndexedUrlPattern { Index = i + 1, Pattern = p, GroupId = this.Id }).ToList()
+            ?? new List<IndexedUrlPattern>();
+
+        /// <summary>
+        /// Returns true if this group has multiple profiles configured
+        /// </summary>
+        public bool HasMultipleProfiles => Profiles?.Count > 1;
+
+        /// <summary>
+        /// Display-friendly behavior description
+        /// </summary>
+        public string BehaviorDisplay => HasMultipleProfiles || Behavior == UrlGroupBehavior.ShowProfilePicker
+            ? "Show picker"
+            : "Auto-open";
+
+        /// <summary>
+        /// Display-friendly default setting
+        /// </summary>
+        public string DefaultDisplay
+        {
+            get
+            {
+                if (HasMultipleProfiles)
+                    return $"{Profiles.Count} profiles configured";
+                if (!string.IsNullOrEmpty(DefaultBrowserName))
+                    return $"{DefaultBrowserName} / {DefaultProfileName}";
+                if (Profiles?.Count == 1)
+                    return $"{Profiles[0].BrowserName} / {Profiles[0].ProfileName}";
+                return "Not set";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Represents a URL-specific override within a URL group
+    /// Allows specific URLs to have different behavior than the group default
+    /// </summary>
+    public class UrlGroupOverride
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string UrlGroupId { get; set; } = string.Empty;
+        public string UrlPattern { get; set; } = string.Empty;
+
+        // Override browser/profile (used when Behavior = UseDefault)
+        public string BrowserName { get; set; } = string.Empty;
+        public string BrowserPath { get; set; } = string.Empty;
+        public string BrowserType { get; set; } = string.Empty;
+        public string ProfileName { get; set; } = string.Empty;
+        public string ProfilePath { get; set; } = string.Empty;
+        public string ProfileArguments { get; set; } = string.Empty;
+
+        // Or override to use a different profile group
+        public string LinkedProfileGroupId { get; set; } = string.Empty;
+
+        public UrlGroupBehavior Behavior { get; set; } = UrlGroupBehavior.UseDefault;
+
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+    }
+}
