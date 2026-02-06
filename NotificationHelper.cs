@@ -71,7 +71,17 @@ namespace BrowserSelector
                     // Rule was created - show SettingsWindow with Rules page
                     var settingsWindow = new SettingsWindow();
                     settingsWindow.NavigateToRules();
+                    settingsWindow.Closed += (s, args) =>
+                    {
+                        Logger.Log("SettingsWindow closed (from notification)");
+                        Application.Current.Shutdown();
+                    };
                     settingsWindow.Show();
+                }
+                else
+                {
+                    // User cancelled - shutdown the app
+                    Application.Current.Shutdown();
                 }
             }
             catch (Exception ex)

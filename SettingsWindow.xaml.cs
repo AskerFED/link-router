@@ -11,6 +11,10 @@ namespace BrowserSelector
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        private EventHandler? _navigateToRulesHandler;
+        private EventHandler? _testAllRulesHandler;
+        private EventHandler? _dataChangedHandler;
+
         public SettingsWindow()
         {
             InitializeComponent();
@@ -25,9 +29,15 @@ namespace BrowserSelector
             UrlGroupManager.EnsureBuiltInGroupsExist();
 
             // Wire up events from pages
-            HomePageControl.NavigateToRulesRequested += (s, e) => NavigateToPage("Rules");
-            HomePageControl.TestAllRulesRequested += (s, e) => OpenTestWindow();
-            RulesPageControl.DataChanged += (s, e) => UpdateRulesCount();
+            _navigateToRulesHandler = (s, e) => NavigateToPage("Rules");
+            _testAllRulesHandler = (s, e) => OpenTestWindow();
+            _dataChangedHandler = (s, e) => UpdateRulesCount();
+
+            HomePageControl.NavigateToRulesRequested += _navigateToRulesHandler;
+            HomePageControl.TestAllRulesRequested += _testAllRulesHandler;
+            RulesPageControl.DataChanged += _dataChangedHandler;
+
+            Closing += SettingsWindow_Closing;
 
             LoadAllData();
             UpdateNavigationStatus();
@@ -233,6 +243,21 @@ namespace BrowserSelector
             {
                 Logger.Log($"UpdateNavigationStatus ERROR: {ex.Message}");
             }
+        }
+
+        #endregion
+
+        #region Cleanup
+
+        private void SettingsWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Unsubscribe from page events to prevent memory leaks
+            if (_navigateToRulesHandler != null)
+                HomePageControl.NavigateToRulesRequested -= _navigateToRulesHandler;
+            if (_testAllRulesHandler != null)
+                HomePageControl.TestAllRulesRequested -= _testAllRulesHandler;
+            if (_dataChangedHandler != null)
+                RulesPageControl.DataChanged -= _dataChangedHandler;
         }
 
         #endregion
