@@ -110,7 +110,7 @@ namespace BrowserSelector
         /// Display-friendly mode (Auto-open or Picker)
         /// </summary>
         public string ModeDisplay => HasMultipleProfiles || Behavior == UrlGroupBehavior.ShowProfilePicker
-            ? "Picker mode"
+            ? "Shows Prompt"
             : "Auto-open";
 
         /// <summary>

@@ -120,7 +120,13 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="5">
-                                <Ellipse Width="14" Height="14" Fill="{Binding Color}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                <Grid Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center">
+                                    <Image Source="{Binding Icon}" Width="16" Height="16"
+                                           Visibility="{Binding Icon, Converter={StaticResource NullToCollapsedConverter}}"
+                                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Ellipse Width="14" Height="14" Fill="{Binding Color}"
+                                             Visibility="{Binding Icon, Converter={StaticResource NullToVisibleConverter}}"/>
+                                </Grid>
                                 <TextBlock Text="{Binding Name}" FontSize="13" VerticalAlignment="Center"/>
                             </StackPanel>
                         </DataTemplate>

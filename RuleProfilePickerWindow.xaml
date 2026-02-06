@@ -96,11 +96,14 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- Browser Color Indicator -->
-                                    <Ellipse Grid.Column="0" Width="10" Height="10"
-                                             Fill="{Binding BrowserColor}"
-                                             Margin="0,0,14,0"
-                                             VerticalAlignment="Center"/>
+                                    <!-- Browser Icon with Fallback -->
+                                    <Grid Grid.Column="0" Width="16" Height="16" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <Image Source="{Binding BrowserIcon}" Width="16" Height="16"
+                                               Visibility="{Binding BrowserIcon, Converter={StaticResource NullToCollapsedConverter}}"
+                                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <Ellipse Width="10" Height="10" Fill="{Binding BrowserColor}"
+                                                 Visibility="{Binding BrowserIcon, Converter={StaticResource NullToVisibleConverter}}"/>
+                                    </Grid>
 
                                     <!-- Profile Info -->
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">

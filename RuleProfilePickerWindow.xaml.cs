@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using BrowserSelector.Services;
 
 namespace BrowserSelector
@@ -70,7 +71,8 @@ namespace BrowserSelector
                     ProfileArguments = p.ProfileArguments,
                     DisplayOrder = p.DisplayOrder,
                     CustomDisplayName = p.CustomDisplayName,
-                    BrowserColor = BrowserService.BrowserColors.TryGetValue(p.BrowserName, out var color) ? color : "#666666"
+                    BrowserColor = BrowserService.BrowserColors.TryGetValue(p.BrowserName, out var color) ? color : "#666666",
+                    BrowserIcon = BrowserIconService.GetBrowserIcon(p.BrowserPath)
                 })
                 .ToList();
 
@@ -106,7 +108,8 @@ namespace BrowserSelector
                     ProfileArguments = p.ProfileArguments,
                     DisplayOrder = p.DisplayOrder,
                     CustomDisplayName = p.CustomDisplayName,
-                    BrowserColor = BrowserService.BrowserColors.TryGetValue(p.BrowserName, out var color) ? color : "#666666"
+                    BrowserColor = BrowserService.BrowserColors.TryGetValue(p.BrowserName, out var color) ? color : "#666666",
+                    BrowserIcon = BrowserIconService.GetBrowserIcon(p.BrowserPath)
                 })
                 .ToList();
 
@@ -169,6 +172,7 @@ namespace BrowserSelector
     internal class RuleProfileDisplay : RuleProfile
     {
         public string BrowserColor { get; set; } = "#666666";
+        public ImageSource? BrowserIcon { get; set; }
 
         /// <summary>
         /// Gets the display name - uses CustomDisplayName if set, otherwise defaults to "BrowserName - ProfileName"

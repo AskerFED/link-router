@@ -5,12 +5,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BrowserSelector.Pages
 {
     public partial class RulesPage : UserControl
     {
         public event EventHandler? DataChanged;
+        private UrlRule? _ruleBeingMoved = null;
+        private List<UrlRule> _allRules = new List<UrlRule>();
+        private List<UrlGroup> _allGroups = new List<UrlGroup>();
 
         public RulesPage()
         {
@@ -34,10 +38,11 @@ namespace BrowserSelector.Pages
         {
             try
             {
-                var rules = UrlRuleManager.LoadRules();
-                var groups = UrlGroupManager.LoadGroups();
-                IndividualRulesTab.Header = $"Individual Rules ({rules.Count})";
-                UrlGroupsTab.Header = $"URL Groups ({groups.Count})";
+                var rulesCount = _allRules?.Count ?? 0;
+                var groupsCount = _allGroups?.Count ?? 0;
+
+                RulesCountBadge.Text = rulesCount.ToString();
+                GroupsCountBadge.Text = groupsCount.ToString();
             }
             catch { }
         }
@@ -46,13 +51,17 @@ namespace BrowserSelector.Pages
         {
             try
             {
-                var rules = UrlRuleManager.LoadRules();
+                _allRules = UrlRuleManager.LoadRules();
                 RulesDataGrid.ItemsSource = null;
-                RulesDataGrid.ItemsSource = rules;
+                RulesDataGrid.ItemsSource = _allRules;
+
+                // Clear search box
+                if (RulesSearchBox != null)
+                    RulesSearchBox.Text = "";
 
                 // Show/hide empty state
-                RulesEmptyState.Visibility = rules.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-                RulesDataGrid.Visibility = rules.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+                RulesEmptyState.Visibility = _allRules.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                RulesDataGrid.Visibility = _allRules.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
                 UpdateCounts();
             }
@@ -66,12 +75,16 @@ namespace BrowserSelector.Pages
         {
             try
             {
-                var groups = UrlGroupManager.LoadGroups();
+                _allGroups = UrlGroupManager.LoadGroups();
                 UrlGroupsItemsControl.ItemsSource = null;
-                UrlGroupsItemsControl.ItemsSource = groups;
+                UrlGroupsItemsControl.ItemsSource = _allGroups;
+
+                // Clear search box
+                if (GroupsSearchBox != null)
+                    GroupsSearchBox.Text = "";
 
                 // Show/hide empty state
-                UrlGroupsEmptyState.Visibility = groups.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                UrlGroupsEmptyState.Visibility = _allGroups.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
                 UpdateCounts();
             }
@@ -250,51 +263,58 @@ namespace BrowserSelector.Pages
         {
             if (sender is Button button && button.Tag is string ruleId)
             {
-                var rules = UrlRuleManager.LoadRules();
-                var rule = rules.Find(r => r.Id == ruleId);
-
+                var rule = UrlRuleManager.LoadRules().FirstOrDefault(r => r.Id == ruleId);
                 if (rule == null) return;
 
-                if (ConfirmationDialog.Show(Window.GetWindow(this), "Move to Group",
-                    $"Move rule '{rule.Pattern}' to a URL Group?", "Move", "Cancel"))
+                var groups = UrlGroupManager.LoadGroups().Where(g => g.IsEnabled).ToList();
+
+                if (groups.Count == 0)
                 {
-                    MoveRuleToUrlGroup(rule, ruleId);
+                    MessageBox.Show("No URL Groups exist. Create a group first in the 'URL Groups' tab.",
+                        "No Groups", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
                 }
+
+                _ruleBeingMoved = rule;
+                GroupSelectionList.ItemsSource = groups;
+
+                // Position popup near the button
+                MoveToGroupPopup.PlacementTarget = button;
+                MoveToGroupPopup.IsOpen = true;
             }
         }
 
-        private void MoveRuleToUrlGroup(UrlRule rule, string ruleId)
+        private void GroupSelectionItem_Click(object sender, RoutedEventArgs e)
         {
-            var urlGroups = UrlGroupManager.LoadGroups();
-            if (urlGroups.Count == 0)
-            {
-                ConfirmationDialog.Show(Window.GetWindow(this), "No Groups",
-                    "No URL Groups exist. Create one first.", "OK", "Cancel");
-                return;
-            }
+            MoveToGroupPopup.IsOpen = false;
 
-            foreach (var group in urlGroups)
+            if (sender is Button button && button.Tag is string groupId && _ruleBeingMoved != null)
             {
-                if (ConfirmationDialog.Show(Window.GetWindow(this), "Select URL Group",
-                    $"Add pattern '{rule.Pattern}' to URL Group '{group.Name}'?", "Add", "Skip"))
+                var group = UrlGroupManager.GetGroup(groupId);
+                if (group == null) return;
+
+                // Add pattern to group
+                if (!group.UrlPatterns.Contains(_ruleBeingMoved.Pattern))
                 {
-                    if (!group.UrlPatterns.Contains(rule.Pattern))
-                    {
-                        group.UrlPatterns.Add(rule.Pattern);
-                        UrlGroupManager.UpdateGroup(group);
-                    }
-
-                    if (ConfirmationDialog.Show(Window.GetWindow(this), "Delete Original",
-                        $"Pattern added to '{group.Name}'.\n\nDelete the original individual rule?", "Delete", "Keep"))
-                    {
-                        UrlRuleManager.DeleteRule(ruleId);
-                    }
-
-                    LoadRules();
-                    LoadUrlGroups();
-                    NotifyDataChanged();
-                    return;
+                    group.UrlPatterns.Add(_ruleBeingMoved.Pattern);
+                    UrlGroupManager.UpdateGroup(group);
                 }
+
+                // Ask to delete original rule
+                var result = MessageBox.Show(
+                    $"Pattern added to '{group.Name}'.\n\nDelete the original individual rule?",
+                    "Rule Moved",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    UrlRuleManager.DeleteRule(_ruleBeingMoved.Id);
+                }
+
+                _ruleBeingMoved = null;
+                LoadData();
+                NotifyDataChanged();
             }
         }
 
@@ -432,9 +452,117 @@ namespace BrowserSelector.Pages
 
         #endregion
 
-        private void RulesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        #region Search Filtering
 
+        private void RulesSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var filter = RulesSearchBox.Text?.Trim().ToLowerInvariant() ?? "";
+            if (string.IsNullOrEmpty(filter))
+            {
+                RulesDataGrid.ItemsSource = _allRules;
+            }
+            else
+            {
+                RulesDataGrid.ItemsSource = _allRules
+                    .Where(r => r.Pattern.ToLowerInvariant().Contains(filter) ||
+                               (r.BrowserName?.ToLowerInvariant().Contains(filter) ?? false) ||
+                               (r.ProfileName?.ToLowerInvariant().Contains(filter) ?? false))
+                    .ToList();
+            }
         }
+
+        private void GroupsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var filter = GroupsSearchBox.Text?.Trim().ToLowerInvariant() ?? "";
+            if (string.IsNullOrEmpty(filter))
+            {
+                UrlGroupsItemsControl.ItemsSource = _allGroups;
+            }
+            else
+            {
+                UrlGroupsItemsControl.ItemsSource = _allGroups
+                    .Where(g => g.Name.ToLowerInvariant().Contains(filter) ||
+                               (g.Description?.ToLowerInvariant().Contains(filter) ?? false) ||
+                                g.UrlPatterns.Any(p => p.ToLowerInvariant().Contains(filter)))
+                    .ToList();
+            }
+        }
+
+        #endregion
+
+        #region Pattern Testing
+
+        private void TestUrlTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TestUrl_Click(sender, e);
+            }
+        }
+
+        private void TestUrl_Click(object sender, RoutedEventArgs e)
+        {
+            var url = TestUrlTextBox.Text?.Trim();
+            if (string.IsNullOrEmpty(url))
+            {
+                ShowTestResult(null, "Enter a URL to test");
+                return;
+            }
+
+            try
+            {
+                // Check URL Groups first (higher priority)
+                var (matchedGroup, _) = UrlGroupManager.FindMatchingGroup(url);
+                if (matchedGroup != null && matchedGroup.IsEnabled)
+                {
+                    ShowTestResult(true, $"Matches group: {matchedGroup.Name}");
+                    return;
+                }
+
+                // Check Individual Rules
+                var matchedRule = UrlRuleManager.FindMatchingRule(url);
+                if (matchedRule != null && matchedRule.IsEnabled)
+                {
+                    ShowTestResult(true, $"Matches rule: {matchedRule.Pattern}");
+                    return;
+                }
+
+                ShowTestResult(false, "No matching rule or group");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"TestUrl_Click ERROR: {ex.Message}");
+                ShowTestResult(false, "Error testing URL");
+            }
+        }
+
+        private void ShowTestResult(bool? isMatch, string message)
+        {
+            TestResultPanel.Visibility = Visibility.Visible;
+
+            if (isMatch == null)
+            {
+                // Neutral state (e.g., empty input)
+                TestResultIcon.Text = "\uE946"; // Info icon
+                TestResultIcon.Foreground = (Brush)FindResource("TextSecondaryBrush");
+                TestResultText.Foreground = (Brush)FindResource("TextSecondaryBrush");
+            }
+            else if (isMatch == true)
+            {
+                TestResultIcon.Text = "\uE73E"; // Checkmark
+                TestResultIcon.Foreground = (Brush)FindResource("SuccessBrush");
+                TestResultText.Foreground = (Brush)FindResource("SuccessBrush");
+            }
+            else
+            {
+                TestResultIcon.Text = "\uE711"; // X mark
+                TestResultIcon.Foreground = (Brush)FindResource("DangerBrush");
+                TestResultText.Foreground = (Brush)FindResource("DangerBrush");
+            }
+
+            TestResultText.Text = message;
+        }
+
+        #endregion
     }
 }

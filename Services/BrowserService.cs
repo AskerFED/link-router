@@ -33,7 +33,7 @@ namespace BrowserSelector.Services
         }
 
         /// <summary>
-        /// Gets all installed browsers with color information
+        /// Gets all installed browsers with color and icon information
         /// </summary>
         public static List<BrowserInfoWithColor> GetBrowsersWithColors()
         {
@@ -43,7 +43,8 @@ namespace BrowserSelector.Services
                 Name = b.Name,
                 ExecutablePath = b.ExecutablePath,
                 Type = b.Type,
-                Color = GetBrowserColor(b.Name)
+                Color = GetBrowserColor(b.Name),
+                Icon = BrowserIconService.GetBrowserIcon(b.ExecutablePath)
             }).ToList();
         }
 

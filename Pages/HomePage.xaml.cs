@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using BrowserSelector.Services;
 
 namespace BrowserSelector.Pages
 {
@@ -34,7 +35,7 @@ namespace BrowserSelector.Pages
         {
             try
             {
-                var browsers = BrowserDetector.GetInstalledBrowsers();
+                var browsers = BrowserService.GetBrowsersWithColors();
                 DefaultBrowserComboBox.ItemsSource = browsers;
 
                 var savedBrowser = DefaultBrowserManager.Load();
@@ -114,8 +115,14 @@ namespace BrowserSelector.Pages
 
         private void DefaultBrowserComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DefaultBrowserComboBox.SelectedItem is BrowserInfo browser)
+            if (DefaultBrowserComboBox.SelectedItem is BrowserInfoWithColor browserWithColor)
             {
+                var browser = new BrowserInfo
+                {
+                    Name = browserWithColor.Name,
+                    ExecutablePath = browserWithColor.ExecutablePath,
+                    Type = browserWithColor.Type
+                };
                 DefaultBrowserManager.Save(browser);
                 Logger.Log($"User changed default browser to: {browser.Name}");
             }
