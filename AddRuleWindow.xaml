@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:BrowserSelector.Controls"
         x:Name="RuleEditorWindow"
-        Title="Add New URL Rule" Height="400" Width="550"
+        Title="Add New URL Rule" Height="480" Width="600"
         WindowStartupLocation="CenterOwner"
         Background="#F3F3F3"
         ResizeMode="NoResize">

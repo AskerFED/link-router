@@ -52,13 +52,12 @@
                             Background="#0078D4"
                             CornerRadius="4"
                             Margin="0,0,12,0">
-                        <Path Data="{StaticResource BrowserIcon}"
-                              Stroke="White"
-                              StrokeThickness="1.2"
-                              Width="14" Height="14"
-                              Stretch="Uniform"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
+                        <TextBlock Text="&#xE774;"
+                                   FontFamily="{StaticResource SegoeFluentIcons}"
+                                   FontSize="14"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
                     </Border>
 
                     <!-- Title -->
@@ -83,13 +82,12 @@
                                             <Border x:Name="Border"
                                                     Background="{TemplateBinding Background}"
                                                     CornerRadius="4">
-                                                <Path Data="{StaticResource CloseIcon}"
-                                                      Stroke="#8A8A8A"
-                                                      StrokeThickness="1.5"
-                                                      Width="10" Height="10"
-                                                      Stretch="Uniform"
-                                                      HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center"/>
+                                                <TextBlock Text="&#xE711;"
+                                                           FontFamily="{StaticResource SegoeFluentIcons}"
+                                                           FontSize="10"
+                                                           Foreground="#8A8A8A"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">

@@ -182,6 +182,24 @@ namespace BrowserSelector
         }
 
         /// <summary>
+        /// Check if LinkRouter is the system default browser (UserChoice points to us)
+        /// </summary>
+        public static bool IsSystemDefaultBrowser()
+        {
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice");
+                var progId = key?.GetValue("ProgId")?.ToString();
+                return progId == AppName;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Check if the application is registered as a browser handler
         /// </summary>
         public static bool IsRegistered()

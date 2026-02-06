@@ -147,7 +147,7 @@
             <!-- Advanced Pick Link with Info Icon -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                 <Button x:Name="AdvancedPickButton"
-                        Content="+ Show picker on match"
+                        Content="+ Multi Mode"
                         Click="AdvancedPick_Click"
                         Style="{StaticResource LinkButtonStyle}"/>
                 <TextBlock Text="ℹ" FontSize="12" Foreground="#888" Margin="6,0,0,0"

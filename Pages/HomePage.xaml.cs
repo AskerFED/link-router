@@ -88,8 +88,8 @@ namespace BrowserSelector.Pages
                     {
                         iconBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
                     }
-                    RegistrationIcon.Stroke = new SolidColorBrush(Color.FromRgb(16, 124, 16));
-                    RegistrationIcon.Data = (System.Windows.Media.Geometry)FindResource("CheckIcon");
+                    RegistrationIcon.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
+                    RegistrationIcon.Text = "\uE73E"; // Check icon
                 }
                 else
                 {
@@ -102,8 +102,8 @@ namespace BrowserSelector.Pages
                     {
                         iconBorder.Background = new SolidColorBrush(Color.FromRgb(253, 231, 233));
                     }
-                    RegistrationIcon.Stroke = new SolidColorBrush(Color.FromRgb(196, 43, 28));
-                    RegistrationIcon.Data = (System.Windows.Media.Geometry)FindResource("CloseIcon");
+                    RegistrationIcon.Foreground = new SolidColorBrush(Color.FromRgb(196, 43, 28));
+                    RegistrationIcon.Text = "\uE711"; // Close icon
                 }
             }
             catch (Exception ex)

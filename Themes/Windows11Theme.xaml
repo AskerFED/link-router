@@ -1099,19 +1099,18 @@
 
     <Style x:Key="TabItemStyle" TargetType="TabItem">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
         <Setter Property="FontSize" Value="{StaticResource Body1FontSize}"/>
         <Setter Property="FontWeight" Value="Normal"/>
-        <Setter Property="Padding" Value="0,8,4,12"/>
-        <Setter Property="Margin" Value="0,0,20,0"/>
+        <Setter Property="Padding" Value="8,8,8,12"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
-                    <Grid>
+                    <Grid x:Name="TabRoot">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <!-- Tab Text -->
@@ -1119,8 +1118,10 @@
                                           Grid.Row="0"
                                           ContentSource="Header"
                                           VerticalAlignment="Center"
-                                          HorizontalAlignment="Left"
-                                          Margin="{TemplateBinding Padding}"/>
+                                          HorizontalAlignment="Stretch"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}"/>
                         <!-- Underline Indicator -->
                         <Border x:Name="Indicator"
                                 Grid.Row="1"

@@ -34,6 +34,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- App Header -->
@@ -58,12 +59,13 @@
 
                     <ListBoxItem x:Name="HomeNavItem" Tag="Home">
                         <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource HomeIcon}"
-                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                                  StrokeThickness="1.5"
-                                  Width="18" Height="18"
-                                  Stretch="Uniform"
-                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="&#xE80F;"
+                                       FontFamily="{StaticResource SegoeFluentIcons}"
+                                       FontSize="18"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                       Width="18" Height="18"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
                             <TextBlock Text="Home"
                                        FontSize="14"
                                        VerticalAlignment="Center"
@@ -73,12 +75,13 @@
 
                     <ListBoxItem x:Name="RulesNavItem" Tag="Rules">
                         <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource RulesIcon}"
-                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                                  StrokeThickness="1.5"
-                                  Width="18" Height="18"
-                                  Stretch="Uniform"
-                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="&#xE8FD;"
+                                       FontFamily="{StaticResource SegoeFluentIcons}"
+                                       FontSize="18"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                       Width="18" Height="18"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
                             <TextBlock Text="Manage Rules"
                                        FontSize="14"
                                        VerticalAlignment="Center"
@@ -94,12 +97,13 @@
 
                     <ListBoxItem x:Name="SettingsNavItem" Tag="Settings">
                         <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource SettingsIcon}"
-                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                                  StrokeThickness="1.5"
-                                  Width="18" Height="18"
-                                  Stretch="Uniform"
-                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="&#xE713;"
+                                       FontFamily="{StaticResource SegoeFluentIcons}"
+                                       FontSize="18"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                       Width="18" Height="18"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
                             <TextBlock Text="Settings"
                                        FontSize="14"
                                        VerticalAlignment="Center"
@@ -109,12 +113,13 @@
 
                     <ListBoxItem x:Name="DocsNavItem" Tag="Docs">
                         <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource DocsIcon}"
-                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                                  StrokeThickness="1.5"
-                                  Width="18" Height="18"
-                                  Stretch="Uniform"
-                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="&#xE8A5;"
+                                       FontFamily="{StaticResource SegoeFluentIcons}"
+                                       FontSize="18"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                       Width="18" Height="18"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
                             <TextBlock Text="Documentation"
                                        FontSize="14"
                                        VerticalAlignment="Center"
@@ -123,8 +128,26 @@
                     </ListBoxItem>
                 </ListBox>
 
+                <!-- Status Section -->
+                <Border Grid.Row="2" Margin="16,8,16,12">
+                    <StackPanel>
+                        <TextBlock Text="Status" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#666" Margin="0,0,0,8"/>
+                        <Border x:Name="StatusIndicatorBorder" Padding="10,8" CornerRadius="6"
+                                Background="#DFF6DD">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse x:Name="StatusDot" Width="8" Height="8"
+                                         Fill="#107C10" Margin="0,0,10,0"
+                                         VerticalAlignment="Center"/>
+                                <TextBlock x:Name="StatusText" Text="Active"
+                                           FontSize="13" Foreground="#1A1A1A"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
                 <!-- Test Button at Bottom -->
-                <Border Grid.Row="2" Margin="16,0,16,16">
+                <Border Grid.Row="3" Margin="16,0,16,16">
                     <Button x:Name="TestButton"
                             Click="TestButton_Click"
                             Cursor="Hand"

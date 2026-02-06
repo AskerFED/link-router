@@ -431,5 +431,10 @@ namespace BrowserSelector.Pages
         }
 
         #endregion
+
+        private void RulesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

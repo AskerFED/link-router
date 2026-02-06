@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace BrowserSelector
 {
@@ -29,6 +30,7 @@ namespace BrowserSelector
             RulesPageControl.DataChanged += (s, e) => UpdateRulesCount();
 
             LoadAllData();
+            UpdateNavigationStatus();
 
             // Restore last selected page from settings
             var settings = SettingsManager.LoadSettings();
@@ -126,6 +128,7 @@ namespace BrowserSelector
                     SettingsPageControl.Visibility = Visibility.Visible;
                     SettingsPageControl.LoadData();
                     NavigationList.SelectedItem = SettingsNavItem;
+                    UpdateNavigationStatus();
                     break;
 
                 case "Docs":
@@ -145,6 +148,14 @@ namespace BrowserSelector
             {
                 Logger.Log($"Failed to save last selected page: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Public method to navigate to the Rules page (used by NotificationHelper)
+        /// </summary>
+        public void NavigateToRules()
+        {
+            NavigateToPage("Rules");
         }
 
         #endregion
@@ -182,6 +193,45 @@ namespace BrowserSelector
                 Logger.Log($"OpenTestWindow ERROR: {ex.Message}");
                 MessageBox.Show($"Error opening Test window: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        #endregion
+
+        #region Status Indicator
+
+        public void UpdateNavigationStatus()
+        {
+            try
+            {
+                bool isRegistered = RegistryHelper.IsRegistered();
+                bool isDefault = RegistryHelper.IsSystemDefaultBrowser();
+
+                if (!isRegistered)
+                {
+                    // Red - Not Registered
+                    StatusDot.Fill = new SolidColorBrush(Color.FromRgb(196, 43, 28));
+                    StatusText.Text = "Not Registered";
+                    StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(253, 231, 233));
+                }
+                else if (!isDefault)
+                {
+                    // Orange - Registered but Not Default
+                    StatusDot.Fill = new SolidColorBrush(Color.FromRgb(202, 133, 0));
+                    StatusText.Text = "Not Default";
+                    StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(255, 244, 206));
+                }
+                else
+                {
+                    // Green - Active as Default
+                    StatusDot.Fill = new SolidColorBrush(Color.FromRgb(16, 124, 16));
+                    StatusText.Text = "Active";
+                    StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"UpdateNavigationStatus ERROR: {ex.Message}");
             }
         }
 

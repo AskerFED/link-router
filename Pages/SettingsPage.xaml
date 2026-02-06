@@ -44,14 +44,13 @@
                                 Background="#DFF6DD"
                                 CornerRadius="4"
                                 Margin="0,0,16,0">
-                            <Path x:Name="StatusIcon"
-                                  Data="{StaticResource CheckIcon}"
-                                  Stroke="#107C10"
-                                  StrokeThickness="2"
-                                  Width="16" Height="16"
-                                  Stretch="Uniform"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
+                            <TextBlock x:Name="StatusIcon"
+                                       Text="&#xE73E;"
+                                       FontFamily="{StaticResource SegoeFluentIcons}"
+                                       FontSize="16"
+                                       Foreground="#107C10"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
                         </Border>
 
                         <!-- Status Text -->
@@ -75,6 +74,13 @@
                                 Click="RegisterButton_Click"
                                 Width="120"
                                 Margin="0,0,12,0"/>
+                        <Button x:Name="SetDefaultButton"
+                                Content="Set as Default"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="OpenWindowsSettings_Click"
+                                Width="130"
+                                Margin="0,0,12,0"
+                                Visibility="Collapsed"/>
                         <Button x:Name="UnregisterButton"
                                 Content="Unregister"
                                 Style="{StaticResource DangerButtonStyle}"
@@ -128,13 +134,12 @@
                                    Description="Browser selection and URL routing utility">
                 <controls:SettingsCard.Icon>
                     <Border Width="18" Height="18" Background="#0078D4" CornerRadius="4">
-                        <Path Data="{StaticResource BrowserIcon}"
-                              Stroke="White"
-                              StrokeThickness="1"
-                              Width="12" Height="12"
-                              Stretch="Uniform"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
+                        <TextBlock Text="&#xE774;"
+                                   FontFamily="{StaticResource SegoeFluentIcons}"
+                                   FontSize="12"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
                     </Border>
                 </controls:SettingsCard.Icon>
                 <controls:SettingsCard.ActionContent>

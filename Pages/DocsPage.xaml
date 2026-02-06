@@ -46,9 +46,9 @@
                                 <TextBlock Text="Set as Default Browser" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="How to configure LinkRouter as your default browser handler" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=DefaultBrowserExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -59,8 +59,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=DefaultBrowserExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -99,9 +99,9 @@
                                 <TextBlock Text="Creating URL Rules" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="How to create rules for specific URLs" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=CreateRulesExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -112,8 +112,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=CreateRulesExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -150,9 +150,9 @@
                                 <TextBlock Text="Using URL Groups" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Organize multiple URLs with similar rules" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=UrlGroupsExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -163,8 +163,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=UrlGroupsExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -292,9 +292,9 @@
                                 <TextBlock Text="Supported Browsers" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Browsers that LinkRouter can detect and route to" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=SupportedBrowsersExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -305,8 +305,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=SupportedBrowsersExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -355,9 +355,9 @@
                                 <TextBlock Text="Profile Auto-Detection" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="How browser profiles are discovered" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=ProfileDetectionExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -368,8 +368,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=ProfileDetectionExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -411,9 +411,9 @@
                                 <TextBlock Text="Default Browser Selection" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Fallback browser for unmatched URLs" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=DefaultBrowserSelectionExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -424,8 +424,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=DefaultBrowserSelectionExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -465,9 +465,9 @@
                                 <TextBlock Text="Adding Multiple Profiles" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Configure multiple browser/profile options for a rule" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=MultiProfileExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -478,8 +478,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=MultiProfileExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -518,9 +518,9 @@
                                 <TextBlock Text="Profile Picker Behavior" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="What happens when a rule has multiple profiles" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=ProfilePickerExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -531,8 +531,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=ProfilePickerExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -568,9 +568,9 @@
                                 <TextBlock Text="Custom Display Names" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Rename profiles within specific rules" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=DisplayNamesExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -581,8 +581,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=DisplayNamesExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -622,9 +622,9 @@
                                 <TextBlock Text="Built-in URL Groups" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Pre-configured groups for common services" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=BuiltInGroupsExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -635,8 +635,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=BuiltInGroupsExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -675,9 +675,9 @@
                                 <TextBlock Text="URL Overrides within Groups" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Exceptions for specific URLs in a group" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=GroupOverridesExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -688,8 +688,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=GroupOverridesExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -725,9 +725,9 @@
                                 <TextBlock Text="Moving Rules to Groups" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Organize individual rules into groups" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=MoveToGroupExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -738,8 +738,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=MoveToGroupExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -780,9 +780,9 @@
                                 <TextBlock Text="On-the-Fly Rule Creation" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Create rules while opening URLs" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=QuickRuleExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -793,8 +793,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=QuickRuleExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -830,9 +830,9 @@
                                 <TextBlock Text="Enable/Disable Rules" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Toggle rules without deleting them" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=ToggleRulesExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -843,8 +843,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=ToggleRulesExpander, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -886,9 +886,9 @@
                                 <TextBlock Text="Test All Rules" Style="{StaticResource BodyStrongTextStyle}"/>
                                 <TextBlock Text="Verify your rules are working correctly" Style="{StaticResource CaptionTextStyle}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Path Grid.Column="2" Data="{StaticResource ChevronDownIcon}" Stroke="#8A8A8A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.Style>
-                                    <Style TargetType="Path">
+                            <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="12" Foreground="#8A8A8A" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsChecked, ElementName=TestingExpander}" Value="True">
                                                 <Setter Property="RenderTransform">
@@ -899,8 +899,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Path.Style>
-                            </Path>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </ToggleButton>
                     <Border Background="#F9F9F9" CornerRadius="4" Padding="16" Margin="52,12,0,0" Visibility="{Binding IsChecked, ElementName=TestingExpander, Converter={StaticResource BoolToVisibilityConverter}}">

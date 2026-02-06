@@ -179,7 +179,9 @@ namespace BrowserSelector
                 Shutdown();
             }
         }
+
     }
+
     public static class Logger
     {
         private static readonly string LogDirectory = @"D:\BrowserSelector";

@@ -31,29 +31,44 @@ namespace BrowserSelector.Pages
             try
             {
                 bool isRegistered = IsApplicationRegistered();
+                bool isSystemDefault = RegistryHelper.IsSystemDefaultBrowser();
 
                 // Show/Hide buttons based on registration status
                 RegisterButton.Visibility = isRegistered ? Visibility.Collapsed : Visibility.Visible;
                 UnregisterButton.Visibility = isRegistered ? Visibility.Visible : Visibility.Collapsed;
+                SetDefaultButton.Visibility = (isRegistered && !isSystemDefault) ? Visibility.Visible : Visibility.Collapsed;
 
-                if (isRegistered)
+                if (!isRegistered)
                 {
-                    RegistrationStatusText.Text = "Registered";
-                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
-                    RegistrationDetailText.Text = "LinkRouter is registered and ready to use. Set it as default for HTTP and HTTPS links in Windows Settings.";
-                    StatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
-                    StatusIcon.Stroke = new SolidColorBrush(Color.FromRgb(16, 124, 16));
-                    StatusIcon.Data = (System.Windows.Media.Geometry)FindResource("CheckIcon");
-                }
-                else
-                {
+                    // State 1: Not Registered (Red)
                     RegistrationStatusText.Text = "Not Registered";
                     RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(196, 43, 28));
                     RegistrationDetailText.Text = "Click the Register button below to set up LinkRouter.";
                     StatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(253, 231, 233));
-                    StatusIcon.Stroke = new SolidColorBrush(Color.FromRgb(196, 43, 28));
-                    StatusIcon.Data = (System.Windows.Media.Geometry)FindResource("CloseIcon");
+                    StatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(196, 43, 28));
+                    StatusIcon.Text = "\uE711"; // Close icon
                 }
+                else if (!isSystemDefault)
+                {
+                    // State 2: Registered but Not Default (Orange)
+                    RegistrationStatusText.Text = "Registered - Not Default";
+                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(202, 133, 0));
+                    RegistrationDetailText.Text = "LinkRouter is registered but not set as the system default browser. Click 'Set as Default' to open Windows Settings.";
+                    StatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(255, 244, 206));
+                    StatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(202, 133, 0));
+                    StatusIcon.Text = "\uE7BA"; // Warning icon
+                }
+                else
+                {
+                    // State 3: Active as Default (Green)
+                    RegistrationStatusText.Text = "Active (Default Browser)";
+                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
+                    RegistrationDetailText.Text = "LinkRouter is the system default browser. All HTTP/HTTPS links will be routed through LinkRouter.";
+                    StatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
+                    StatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
+                    StatusIcon.Text = "\uE73E"; // Check icon
+                }
+
             }
             catch (Exception ex)
             {
@@ -222,5 +237,6 @@ namespace BrowserSelector.Pages
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
     }
 }

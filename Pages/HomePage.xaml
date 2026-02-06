@@ -38,13 +38,12 @@
                     </Grid.ColumnDefinitions>
 
                     <Border Grid.Column="0" Width="36" Height="36" Background="#F6F6F6" CornerRadius="4" Margin="0,0,16,0">
-                        <Path Data="{StaticResource BrowserIcon}"
-                              Stroke="#5D5D5D"
-                              StrokeThickness="1.5"
-                              Width="18" Height="18"
-                              Stretch="Uniform"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
+                        <TextBlock Text="&#xE774;"
+                                   FontFamily="{StaticResource SegoeFluentIcons}"
+                                   FontSize="18"
+                                   Foreground="#5D5D5D"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
                     </Border>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -153,14 +152,13 @@
                                 <Setter Property="Background" Value="#DFF6DD"/>
                             </Style>
                         </Border.Style>
-                        <Path x:Name="RegistrationIcon"
-                              Data="{StaticResource CheckIcon}"
-                              Stroke="#107C10"
-                              StrokeThickness="2"
-                              Width="16" Height="16"
-                              Stretch="Uniform"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
+                        <TextBlock x:Name="RegistrationIcon"
+                                   Text="&#xE73E;"
+                                   FontFamily="{StaticResource SegoeFluentIcons}"
+                                   FontSize="16"
+                                   Foreground="#107C10"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
                     </Border>
 
                     <!-- Status Text -->
@@ -193,18 +191,16 @@
                                    IsClickable="True"
                                    Click="ManageRules_Click">
                 <controls:SettingsCard.Icon>
-                    <Path Data="{StaticResource RulesIcon}"
-                          Stroke="#5D5D5D"
-                          StrokeThickness="1.5"
-                          Width="18" Height="18"
-                          Stretch="Uniform"/>
+                    <TextBlock Text="&#xE8FD;"
+                               FontFamily="{StaticResource SegoeFluentIcons}"
+                               FontSize="18"
+                               Foreground="#5D5D5D"/>
                 </controls:SettingsCard.Icon>
                 <controls:SettingsCard.ActionContent>
-                    <Path Data="{StaticResource ChevronRightIcon}"
-                          Stroke="#8A8A8A"
-                          StrokeThickness="1.5"
-                          Width="12" Height="12"
-                          Stretch="Uniform"/>
+                    <TextBlock Text="&#xE76C;"
+                               FontFamily="{StaticResource SegoeFluentIcons}"
+                               FontSize="12"
+                               Foreground="#8A8A8A"/>
                 </controls:SettingsCard.ActionContent>
             </controls:SettingsCard>
 
@@ -213,14 +209,16 @@
                                    IsClickable="True"
                                    Click="TestAllRules_Click">
                 <controls:SettingsCard.Icon>
-                    <TextBlock Text="&#x1F9EA;" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="&#xE714;"
+                               FontFamily="{StaticResource SegoeFluentIcons}"
+                               FontSize="18"
+                               Foreground="#5D5D5D"/>
                 </controls:SettingsCard.Icon>
                 <controls:SettingsCard.ActionContent>
-                    <Path Data="{StaticResource ChevronRightIcon}"
-                          Stroke="#8A8A8A"
-                          StrokeThickness="1.5"
-                          Width="12" Height="12"
-                          Stretch="Uniform"/>
+                    <TextBlock Text="&#xE76C;"
+                               FontFamily="{StaticResource SegoeFluentIcons}"
+                               FontSize="12"
+                               Foreground="#8A8A8A"/>
                 </controls:SettingsCard.ActionContent>
             </controls:SettingsCard>
 

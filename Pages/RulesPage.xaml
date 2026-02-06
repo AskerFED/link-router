@@ -35,8 +35,25 @@
 
             <!-- Individual Rules Tab -->
             <TabItem x:Name="IndividualRulesTab"
-                     Header="Individual Rules"
                      Style="{StaticResource TabItemStyle}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Individual Rules"
+                                Margin="0,0,6,0"/>
+
+                        <Border Background="{StaticResource AccentBrush}"
+                                CornerRadius="10"
+                                Padding="6,2"
+                                MinWidth="20"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="12"
+                                    FontSize="12"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    TextAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -47,7 +64,7 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,16">
                         <Button Content="Clear Rules"
                                 Style="{StaticResource DangerButtonStyle}"
-                                Margin="0,0,8,0"
+                                Margin="0,0,15,0"
                                 Click="ClearIndividualRules_Click"/>
                         <Button Content="+ Add Rule"
                                 Style="{StaticResource PrimaryButtonStyle}"
@@ -70,7 +87,7 @@
                                   CanUserResizeColumns="True"
                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                  MouseDoubleClick="RulesDataGrid_MouseDoubleClick">
+                                  MouseDoubleClick="RulesDataGrid_MouseDoubleClick" SelectionChanged="RulesDataGrid_SelectionChanged">
                             <DataGrid.Columns>
                                 <!-- Enable/Disable Toggle -->
                                 <DataGridTemplateColumn Header="" Width="64" CanUserResize="False">
@@ -97,15 +114,15 @@
                                 <DataGridTemplateColumn Header="" Width="120" CanUserResize="False">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" UseLayoutRounding="True" SnapsToDevicePixels="True">
                                                 <Button Style="{StaticResource IconButtonOrangeStyle}" ToolTip="Move to Group" Tag="{Binding Id}" Click="MoveRuleToGroup_Click">
-                                                    <Path Data="{StaticResource ExportIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="11" Height="11" Stretch="Uniform"/>
+                                                    <TextBlock Text="&#xE8A7;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" UseLayoutRounding="True" SnapsToDevicePixels="True"/>
                                                 </Button>
                                                 <Button Style="{StaticResource IconButtonBlueStyle}" ToolTip="Edit" Tag="{Binding Id}" Margin="4,0,0,0" Click="EditRule_Click">
-                                                    <Path Data="{StaticResource EditIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.5" Width="14" Height="14" Stretch="Uniform"/>
+                                                    <TextBlock Text="&#xE70F;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" UseLayoutRounding="True" SnapsToDevicePixels="True"/>
                                                 </Button>
                                                 <Button Style="{StaticResource IconButtonRedStyle}" ToolTip="Delete" Tag="{Binding Id}" Margin="4,0,0,0" Click="DeleteRule_Click">
-                                                    <Path Data="{StaticResource DeleteIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.5" Width="14" Height="14" Stretch="Uniform"/>
+                                                    <TextBlock Text="&#xE74D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" UseLayoutRounding="True" SnapsToDevicePixels="True"/>
                                                 </Button>
                                             </StackPanel>
                                         </DataTemplate>
@@ -138,9 +155,26 @@
             </TabItem>
 
             <!-- URL Groups Tab -->
-            <TabItem x:Name="UrlGroupsTab"
-                     Header="URL Groups"
-                     Style="{StaticResource TabItemStyle}">
+           <TabItem x:Name="UrlGroupsTab" 
+            Style="{StaticResource TabItemStyle}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="URL Groups"
+                                Margin="0,0,6,0"/>
+
+                        <Border Background="{StaticResource AccentBrush}"
+                                CornerRadius="10"
+                                Padding="6,2"
+                                MinWidth="20"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="12"
+                                    FontSize="12"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    TextAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -151,7 +185,7 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,16">
                         <Button Content="Clear Groups"
                                 Style="{StaticResource DangerButtonStyle}"
-                                Margin="0,0,8,0"
+                                Margin="0,0,15,0"
                                 Click="ClearUrlGroups_Click"/>
                         <Button Content="+ Add Group"
                                 Style="{StaticResource PrimaryButtonStyle}"
@@ -270,12 +304,12 @@
 
                                                     <!-- Edit Button -->
                                                     <Button Grid.Column="3" Style="{StaticResource IconButtonBlueStyle}" ToolTip="Edit" Tag="{Binding Id}" Margin="0,0,4,0" Click="EditUrlGroup_Click">
-                                                        <Path Data="{StaticResource EditIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
+                                                        <TextBlock Text="&#xE70F;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" UseLayoutRounding="True" SnapsToDevicePixels="True"/>
                                                     </Button>
 
                                                     <!-- Delete Button -->
                                                     <Button Grid.Column="4" Style="{StaticResource IconButtonRedStyle}" ToolTip="Delete" Tag="{Binding Id}" Click="DeleteUrlGroup_Click">
-                                                        <Path Data="{StaticResource DeleteIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="14" Height="14" Stretch="Uniform"/>
+                                                        <TextBlock Text="&#xE74D;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" UseLayoutRounding="True" SnapsToDevicePixels="True"/>
                                                     </Button>
                                                 </Grid>
                                             </ToggleButton>
@@ -309,7 +343,7 @@
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <Button Style="{StaticResource IconButtonBlueStyle}" ToolTip="Move to Individual Rule" Tag="{Binding}" HorizontalAlignment="Center" Click="MovePatternToIndividualRule_Click">
-                                                                            <Path Data="{StaticResource ExportIcon}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Width="11" Height="11" Stretch="Uniform"/>
+                                                                            <TextBlock Text="&#xE8A7;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" UseLayoutRounding="True" SnapsToDevicePixels="True"/>
                                                                         </Button>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>

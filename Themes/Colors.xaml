@@ -229,5 +229,6 @@
 
     <!-- Font Family -->
     <FontFamily x:Key="ContentControlThemeFontFamily">Segoe UI, Segoe UI Variable, Arial</FontFamily>
+    <FontFamily x:Key="SegoeFluentIcons">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
 
 </ResourceDictionary>
