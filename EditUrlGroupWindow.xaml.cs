@@ -5,6 +5,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using BrowserSelector.Dialogs;
+using BrowserSelector.Models;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
@@ -144,30 +147,48 @@ namespace BrowserSelector
 
         private void AddPattern()
         {
-            string pattern = NewPatternTextBox.Text.Trim().ToLower();
+            string pattern = NewPatternTextBox.Text.Trim();
 
             if (string.IsNullOrEmpty(pattern))
             {
                 return;
             }
 
-            // Remove protocol if included
-            if (pattern.StartsWith("http://"))
-                pattern = pattern.Substring(7);
-            if (pattern.StartsWith("https://"))
-                pattern = pattern.Substring(8);
+            // Hide previous warning
+            PatternWarningBorder.Visibility = Visibility.Collapsed;
 
-            // Remove trailing slash
-            pattern = pattern.TrimEnd('/');
+            // Validate pattern format AND check for individual rule conflicts
+            var result = ValidationService.ValidatePatternForGroup(pattern);
 
-            if (_patterns.Contains(pattern))
+            // Show error if format invalid
+            if (!result.IsValid)
+            {
+                var errorMessage = string.Join("\n", result.Errors.Select(e => e.Message));
+                MessageBox.Show(errorMessage, "Invalid Pattern", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Use normalized pattern
+            var normalizedPattern = result.NormalizedValue ?? pattern.ToLower();
+
+            // Check for duplicate in current list
+            if (_patterns.Contains(normalizedPattern))
             {
                 MessageBox.Show("This pattern is already in the list.",
                     "Duplicate", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            _patterns.Add(pattern);
+            // Show warning if pattern exists as individual rule (but still add)
+            if (result.HasWarnings)
+            {
+                var warning = result.Warnings.First();
+                PatternWarningText.Text = warning.Message;
+                PatternWarningBorder.Visibility = Visibility.Visible;
+            }
+
+            // Add pattern (even with warning)
+            _patterns.Add(normalizedPattern);
             NewPatternTextBox.Clear();
             NewPatternTextBox.Focus();
             RefreshPatternsList();
@@ -234,37 +255,42 @@ namespace BrowserSelector
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            // Validate name
-            string name = GroupNameTextBox.Text.Trim();
-            if (string.IsNullOrEmpty(name))
-            {
-                MessageBox.Show("Please enter a group name.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                GroupNameTextBox.Focus();
-                return;
-            }
-
-            // Validate patterns
-            if (_patterns.Count == 0)
-            {
-                MessageBox.Show("Please add at least one URL pattern.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                NewPatternTextBox.Focus();
-                return;
-            }
-
-            // Validate browser/profile selection
-            if (!ProfileSelector.HasValidSelection())
-            {
-                MessageBox.Show("Please select a browser and profile.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // Update group
-            _group.Name = name;
-            _group.Description = DescriptionTextBox.Text.Trim();
-            _group.UrlPatterns = _patterns.ToList();
+            // Clear previous validation messages
+            ValidationPanel.Clear();
 
             // Get profiles from the selector
             var profiles = ProfileSelector.GetAllProfiles();
+
+            // Validate using ValidationService
+            var result = ValidationService.ValidateUrlGroup(
+                GroupNameTextBox.Text,
+                _patterns.ToList(),
+                profiles,
+                _isEditMode ? _group?.Id : null
+            );
+
+            // Show validation messages
+            ValidationPanel.SetValidationResult(result);
+
+            // Block on errors
+            if (!result.IsValid)
+            {
+                return;
+            }
+
+            // Confirm warnings
+            if (result.HasWarnings)
+            {
+                if (!ValidationWarningDialog.ShowWarnings(this, result.Warnings))
+                {
+                    return;
+                }
+            }
+
+            // Update group
+            _group.Name = GroupNameTextBox.Text.Trim();
+            _group.Description = DescriptionTextBox.Text.Trim();
+            _group.UrlPatterns = _patterns.ToList();
             _group.Profiles = profiles;
 
             // Set behavior based on profile count

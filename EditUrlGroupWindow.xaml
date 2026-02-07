@@ -83,6 +83,9 @@
 
         <!-- Header Section: Group Name + Description (outside tabs) -->
         <StackPanel Grid.Row="0" Margin="24,20,24,0">
+            <!-- Validation Messages -->
+            <controls:ValidationMessagePanel x:Name="ValidationPanel" Margin="0,0,0,8"/>
+
             <!-- Group Name -->
             <StackPanel Margin="0,0,0,16">
                 <TextBlock Text="Group Name"
@@ -170,6 +173,35 @@
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Width="80"/>
                     </Grid>
+
+                    <!-- Inline pattern warning -->
+                    <Border x:Name="PatternWarningBorder"
+                            Background="#FFF8E6"
+                            BorderBrush="#F0A500"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="10"
+                            Margin="0,0,0,12"
+                            Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="&#x26A0;"
+                                       FontSize="14"
+                                       Foreground="#B37400"
+                                       Margin="0,0,8,0"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock x:Name="PatternWarningText"
+                                       Grid.Column="1"
+                                       FontSize="12"
+                                       Foreground="#8A5A00"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
 
                     <!-- Patterns List -->
                     <Border Background="#FFFFFF"

@@ -24,6 +24,9 @@
         <!-- Scrollable Content -->
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="24,20,24,0">
             <StackPanel>
+                <!-- Validation Messages -->
+                <controls:ValidationMessagePanel x:Name="ValidationPanel" Margin="0,0,0,8"/>
+
                 <!-- URL Pattern -->
                 <StackPanel Margin="0,0,0,16">
                     <TextBlock Text="URL Pattern"

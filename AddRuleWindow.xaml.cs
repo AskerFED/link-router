@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using BrowserSelector.Dialogs;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
@@ -59,29 +61,44 @@ namespace BrowserSelector
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // Validate pattern
-            if (string.IsNullOrWhiteSpace(PatternTextBox.Text))
-            {
-                MessageBox.Show("Please enter a URL pattern.", "Validation Error",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // Validate profile selection
-            if (!ProfileSelector.HasValidSelection())
-            {
-                MessageBox.Show("Please select a browser and profile.", "Validation Error",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            // Clear previous validation messages
+            ValidationPanel.Clear();
 
             // Get profiles from the selector
             var profiles = ProfileSelector.GetAllProfiles();
 
+            // Validate using ValidationService
+            var result = ValidationService.ValidateIndividualRule(
+                PatternTextBox.Text,
+                profiles,
+                _isEditMode ? _existingRule?.Id : null
+            );
+
+            // Show validation messages
+            ValidationPanel.SetValidationResult(result);
+
+            // Block on errors
+            if (!result.IsValid)
+            {
+                return;
+            }
+
+            // Confirm warnings
+            if (result.HasWarnings)
+            {
+                if (!ValidationWarningDialog.ShowWarnings(this, result.Warnings))
+                {
+                    return;
+                }
+            }
+
+            // Use normalized pattern
+            var normalizedPattern = result.NormalizedValue ?? PatternTextBox.Text.Trim();
+
             if (_isEditMode && _existingRule != null)
             {
                 // Update existing rule
-                _existingRule.Pattern = PatternTextBox.Text.Trim();
+                _existingRule.Pattern = normalizedPattern;
                 _existingRule.Profiles = profiles;
 
                 // Update legacy fields from first profile for compatibility
@@ -113,7 +130,7 @@ namespace BrowserSelector
                 // Create new rule
                 var rule = new UrlRule
                 {
-                    Pattern = PatternTextBox.Text.Trim(),
+                    Pattern = normalizedPattern,
                     Profiles = profiles
                 };
 
