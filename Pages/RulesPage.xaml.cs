@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using BrowserSelector.Services;
 
 namespace BrowserSelector.Pages
 {
@@ -409,6 +410,13 @@ namespace BrowserSelector.Pages
                 if (group != null)
                 {
                     group.IsEnabled = toggle.IsChecked ?? false;
+
+                    // Auto-assign first browser profile when enabling a group with no profiles
+                    if (group.IsEnabled && !HasProfilesConfigured(group))
+                    {
+                        AssignFirstBrowserProfile(group);
+                    }
+
                     UrlGroupManager.UpdateGroup(group);
                     Logger.Log($"URL Group '{group.Name}' enabled: {group.IsEnabled}");
 
@@ -416,6 +424,54 @@ namespace BrowserSelector.Pages
                     LoadUrlGroups();
                 }
             }
+        }
+
+        private bool HasProfilesConfigured(UrlGroup group)
+        {
+            return (group.Profiles != null && group.Profiles.Count > 0) ||
+                   !string.IsNullOrEmpty(group.DefaultBrowserPath);
+        }
+
+        private void AssignFirstBrowserProfile(UrlGroup group)
+        {
+            var browsers = BrowserService.GetBrowsersWithColors();
+            if (browsers.Count == 0) return;
+
+            var firstBrowser = browsers[0];
+            var profiles = BrowserService.GetProfiles(firstBrowser);
+            var firstProfile = profiles.FirstOrDefault();
+
+            // Set legacy fields for backward compatibility
+            group.DefaultBrowserName = firstBrowser.Name;
+            group.DefaultBrowserPath = firstBrowser.ExecutablePath;
+            group.DefaultBrowserType = firstBrowser.Type;
+
+            if (firstProfile != null)
+            {
+                group.DefaultProfileName = firstProfile.Name;
+                group.DefaultProfilePath = firstProfile.Path;
+                group.DefaultProfileArguments = firstProfile.Arguments ?? string.Empty;
+            }
+
+            // Also add to Profiles list for modern approach
+            group.Profiles = new List<RuleProfile>
+            {
+                new RuleProfile
+                {
+                    BrowserName = firstBrowser.Name,
+                    BrowserPath = firstBrowser.ExecutablePath,
+                    BrowserType = firstBrowser.Type,
+                    ProfileName = firstProfile?.Name ?? "Default",
+                    ProfilePath = firstProfile?.Path ?? "Default",
+                    ProfileArguments = firstProfile?.Arguments ?? string.Empty,
+                    DisplayOrder = 0
+                }
+            };
+
+            group.Behavior = UrlGroupBehavior.UseDefault;
+            group.ModifiedDate = DateTime.Now;
+
+            Logger.Log($"Auto-assigned '{firstBrowser.Name}' to URL Group '{group.Name}'");
         }
 
         private void MovePatternToIndividualRule_Click(object sender, RoutedEventArgs e)

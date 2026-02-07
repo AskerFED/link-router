@@ -14,6 +14,7 @@ namespace BrowserSelector
         private EventHandler? _navigateToRulesHandler;
         private EventHandler? _testAllRulesHandler;
         private EventHandler? _dataChangedHandler;
+        private EventHandler? _dataImportedHandler;
 
         public SettingsWindow()
         {
@@ -25,6 +26,13 @@ namespace BrowserSelector
             MinWidth = 900;
             MinHeight = 600;
 
+            // Hide dev-only features in production
+            if (!AppConfig.DevMode)
+            {
+                DocsNavItem.Visibility = Visibility.Collapsed;
+                TestButton.Visibility = Visibility.Collapsed;
+            }
+
             // Auto-import built-in groups if they don't exist (disabled by default)
             UrlGroupManager.EnsureBuiltInGroupsExist();
 
@@ -32,10 +40,12 @@ namespace BrowserSelector
             _navigateToRulesHandler = (s, e) => NavigateToPage("Rules");
             _testAllRulesHandler = (s, e) => OpenTestWindow();
             _dataChangedHandler = (s, e) => UpdateRulesCount();
+            _dataImportedHandler = (s, e) => OnDataImported();
 
             HomePageControl.NavigateToRulesRequested += _navigateToRulesHandler;
             HomePageControl.TestAllRulesRequested += _testAllRulesHandler;
             RulesPageControl.DataChanged += _dataChangedHandler;
+            SettingsPageControl.DataImported += _dataImportedHandler;
 
             Closing += SettingsWindow_Closing;
 
@@ -44,7 +54,15 @@ namespace BrowserSelector
 
             // Restore last selected page from settings
             var settings = SettingsManager.LoadSettings();
-            NavigateToPage(settings.LastSelectedPage ?? "Home");
+            var lastPage = settings.LastSelectedPage ?? "Home";
+
+            // If Docs was last page but DevMode is off, redirect to Home
+            if (lastPage == "Docs" && !AppConfig.DevMode)
+            {
+                lastPage = "Home";
+            }
+
+            NavigateToPage(lastPage);
         }
 
         private void LoadAllData()
@@ -72,6 +90,17 @@ namespace BrowserSelector
             {
                 Logger.Log($"UpdateRulesCount ERROR: {ex.Message}");
             }
+        }
+
+        private void OnDataImported()
+        {
+            // Refresh navigation count
+            UpdateRulesCount();
+
+            // Refresh rules page if it exists
+            RulesPageControl.LoadData();
+
+            Logger.Log("Data imported - refreshed navigation counts and pages");
         }
 
         /// <summary>
@@ -257,6 +286,8 @@ namespace BrowserSelector
                 HomePageControl.TestAllRulesRequested -= _testAllRulesHandler;
             if (_dataChangedHandler != null)
                 RulesPageControl.DataChanged -= _dataChangedHandler;
+            if (_dataImportedHandler != null)
+                SettingsPageControl.DataImported -= _dataImportedHandler;
         }
 
         #endregion

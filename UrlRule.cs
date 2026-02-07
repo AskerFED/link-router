@@ -110,8 +110,7 @@ namespace BrowserSelector
     public static class UrlRuleManager
     {
         private static readonly string ConfigPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "BrowserSelector",
+            AppConfig.AppDataFolder,
             "rules.json"
         );
 

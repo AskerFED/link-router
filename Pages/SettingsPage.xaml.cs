@@ -9,6 +9,8 @@ namespace BrowserSelector.Pages
 {
     public partial class SettingsPage : UserControl
     {
+        public event EventHandler? DataImported;
+
         public SettingsPage()
         {
             InitializeComponent();
@@ -23,6 +25,48 @@ namespace BrowserSelector.Pages
         public void LoadData()
         {
             InitializeRulesToggle();
+            UpdateRegistrationStatus();
+        }
+
+        private void UpdateRegistrationStatus()
+        {
+            try
+            {
+                bool isRegistered = RegistryHelper.IsRegistered();
+
+                if (isRegistered)
+                {
+                    // Green badge - Set
+                    RegistrationStatusBorder.Background = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(223, 246, 221)); // #DFF6DD
+                    RegistrationStatusBorder.BorderBrush = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(165, 214, 167)); // #A5D6A7
+                    RegistrationStatusBorder.BorderThickness = new Thickness(1);
+                    StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(16, 124, 16)); // #107C10
+                    StatusText.Text = "Set";
+                    StatusText.Foreground = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(16, 124, 16));
+                }
+                else
+                {
+                    // Orange badge - Not Set
+                    RegistrationStatusBorder.Background = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(255, 243, 224)); // #FFF3E0
+                    RegistrationStatusBorder.BorderBrush = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(255, 224, 178)); // #FFE0B2
+                    RegistrationStatusBorder.BorderThickness = new Thickness(1);
+                    StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(202, 133, 0)); // #CA8500
+                    StatusText.Text = "Not Set";
+                    StatusText.Foreground = new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(202, 133, 0));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"UpdateRegistrationStatus ERROR: {ex.Message}");
+            }
         }
 
         private void InitializeRulesToggle()
@@ -168,6 +212,9 @@ namespace BrowserSelector.Pages
 
                         // Refresh the page
                         LoadData();
+
+                        // Notify parent to refresh navigation counts
+                        DataImported?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {

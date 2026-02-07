@@ -91,13 +91,26 @@ namespace BrowserSelector.Services
         /// <summary>
         /// Loads data from a JSON file with automatic backup recovery.
         /// Falls back to timestamped backups if main file is corrupted.
-        /// Shows user notification if all recovery attempts fail.
+        /// Shows user notification if all recovery attempts fail (but not on fresh install).
         /// </summary>
         public static T Load<T>(string filePath) where T : class, new()
         {
+            // Check if data directory exists - if not, this is a fresh install
+            var directory = Path.GetDirectoryName(filePath);
+            bool directoryExists = !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
+
+            // If directory doesn't exist, it's a fresh install - just return empty data
+            if (!directoryExists)
+            {
+                return new T();
+            }
+
             // Try main file first
             if (TryLoadFile<T>(filePath, out var data))
                 return data!;
+
+            // Check if main file exists (might be corrupted if it exists but didn't load)
+            bool mainFileExists = File.Exists(filePath);
 
             // Fall back to legacy .bak file
             var legacyBackupPath = filePath + ".bak";
@@ -113,11 +126,46 @@ namespace BrowserSelector.Services
             if (recoveredData != null)
                 return recoveredData;
 
-            // All recovery attempts failed - notify user
-            NotifyUserOfDataLoss(filePath);
+            // Check if any backup files exist
+            bool hasAnyBackups = HasAnyBackupFiles(filePath);
 
-            // Return new instance as last resort
+            // Only show warning if data was corrupted (file existed or backups exist)
+            // Don't show warning on fresh install (no file, no backups)
+            if (mainFileExists || hasAnyBackups)
+            {
+                NotifyUserOfDataLoss(filePath);
+            }
+
+            // Return new instance
             return new T();
+        }
+
+        /// <summary>
+        /// Checks if any backup files exist for the given file path.
+        /// </summary>
+        private static bool HasAnyBackupFiles(string filePath)
+        {
+            try
+            {
+                var directory = Path.GetDirectoryName(filePath);
+                if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+                    return false;
+
+                var fileName = Path.GetFileNameWithoutExtension(filePath);
+                var ext = Path.GetExtension(filePath);
+
+                // Check for legacy backup
+                if (File.Exists(filePath + ".bak"))
+                    return true;
+
+                // Check for timestamped backups
+                var backups = Directory.GetFiles(directory, $"{fileName}.*.bak{ext}");
+                return backups.Length > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>

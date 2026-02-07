@@ -12,6 +12,12 @@ namespace BrowserSelector
             MessageText.Text = message;
             YesButton.Content = yesText;
             NoButton.Content = noText;
+
+            // Use danger style for destructive actions
+            if (yesText.Contains("Delete") || yesText.Contains("Clear") || yesText.Contains("Remove"))
+            {
+                YesButton.Style = (Style)FindResource("DangerButtonStyle");
+            }
         }
 
         private void Yes_Click(object sender, RoutedEventArgs e)

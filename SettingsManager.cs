@@ -70,8 +70,7 @@ namespace BrowserSelector
     public static class SettingsManager
     {
         private static readonly string SettingsPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "BrowserSelector",
+            AppConfig.AppDataFolder,
             "settings.json"
         );
 

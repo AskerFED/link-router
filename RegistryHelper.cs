@@ -237,7 +237,7 @@ namespace BrowserSelector
                             {
                                 string? registeredPath = commandKey.GetValue("")?.ToString();
                                 if (!string.IsNullOrEmpty(registeredPath) &&
-                                    (registeredPath.Contains("BrowserSelector.exe") || registeredPath.Contains("LinkRouter.exe")))
+                                    registeredPath.Contains("LinkRouter.exe"))
                                 {
                                     return true;
                                 }

@@ -12,9 +12,7 @@ namespace BrowserSelector
     /// </summary>
     public static class UrlGroupManager
     {
-        private static readonly string ConfigDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "BrowserSelector");
+        private static readonly string ConfigDirectory = AppConfig.AppDataFolder;
 
         private static readonly string GroupsConfigPath = Path.Combine(ConfigDirectory, "urlgroups.json");
         private static readonly string OverridesConfigPath = Path.Combine(ConfigDirectory, "urlgroupoverrides.json");

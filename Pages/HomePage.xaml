@@ -77,8 +77,8 @@
                 </Grid>
             </Border>
 
-            <!-- Quick Stats Section -->
-            <TextBlock Text="Quick Stats"
+            <!-- Individual Rules Stats Section -->
+            <TextBlock Text="Individual Rules"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Grid Margin="0,0,0,8">
@@ -90,7 +90,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- URL Rules Stat -->
+                <!-- Total Rules Stat -->
                 <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock x:Name="RulesCountText"
@@ -99,31 +99,120 @@
                                    FontWeight="SemiBold"
                                    Foreground="#0078D4"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Text="URL Rules"
+                        <TextBlock Text="Total"
                                    Style="{StaticResource CaptionTextStyle}"
                                    HorizontalAlignment="Center"
                                    Margin="0,4,0,0"/>
                     </StackPanel>
                 </Border>
 
-                <!-- URL Groups Stat -->
+                <!-- Enabled Rules Stat -->
                 <Border Grid.Column="2" Style="{StaticResource StatCardStyle}">
                     <StackPanel HorizontalAlignment="Center">
-                        <TextBlock x:Name="GroupsCountText"
+                        <TextBlock x:Name="EnabledRulesCountText"
                                    Text="0"
                                    FontSize="32"
                                    FontWeight="SemiBold"
                                    Foreground="#107C10"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Text="URL Groups"
+                        <TextBlock Text="Enabled"
                                    Style="{StaticResource CaptionTextStyle}"
                                    HorizontalAlignment="Center"
                                    Margin="0,4,0,0"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Browsers Stat -->
+                <!-- Disabled Rules Stat -->
                 <Border Grid.Column="4" Style="{StaticResource StatCardStyle}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock x:Name="DisabledRulesCountText"
+                                   Text="0"
+                                   FontSize="32"
+                                   FontWeight="SemiBold"
+                                   Foreground="#CA8500"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Disabled"
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- URL Groups Stats Section -->
+            <TextBlock Text="URL Groups"
+                       Style="{StaticResource SectionHeaderStyle}"/>
+
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Total Groups Stat -->
+                <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock x:Name="GroupsCountText"
+                                   Text="0"
+                                   FontSize="32"
+                                   FontWeight="SemiBold"
+                                   Foreground="#0078D4"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Total"
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Enabled Groups Stat -->
+                <Border Grid.Column="2" Style="{StaticResource StatCardStyle}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock x:Name="EnabledGroupsCountText"
+                                   Text="0"
+                                   FontSize="32"
+                                   FontWeight="SemiBold"
+                                   Foreground="#107C10"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Enabled"
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Disabled Groups Stat -->
+                <Border Grid.Column="4" Style="{StaticResource StatCardStyle}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock x:Name="DisabledGroupsCountText"
+                                   Text="0"
+                                   FontSize="32"
+                                   FontWeight="SemiBold"
+                                   Foreground="#CA8500"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Disabled"
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Browsers Stats Section -->
+            <TextBlock Text="Browsers"
+                       Style="{StaticResource SectionHeaderStyle}"/>
+
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Browsers Stat -->
+                <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock x:Name="BrowsersCountText"
                                    Text="0"
@@ -131,7 +220,7 @@
                                    FontWeight="SemiBold"
                                    Foreground="#797519"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Text="Browsers"
+                        <TextBlock Text="Installed"
                                    Style="{StaticResource CaptionTextStyle}"
                                    HorizontalAlignment="Center"
                                    Margin="0,4,0,0"/>
@@ -161,7 +250,8 @@
                 </controls:SettingsCard.ActionContent>
             </controls:SettingsCard>
 
-            <controls:SettingsCard Header="Test All Rules"
+            <controls:SettingsCard x:Name="TestAllRulesCard"
+                                   Header="Test All Rules"
                                    Description="Run automation tests on your URL rules"
                                    IsClickable="True"
                                    Click="TestAllRules_Click">

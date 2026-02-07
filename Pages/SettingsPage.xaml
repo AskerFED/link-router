@@ -24,40 +24,59 @@
                        Style="{StaticResource Title3TextStyle}"
                        Margin="0,0,0,16"/>
 
-            <!-- App Registration Section -->
-            <TextBlock Text="App Registration"
+            <!-- Default Browser Registration Section -->
+            <TextBlock Text="Default Browser Registration"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <Border Style="{StaticResource InfoBannerStyle}">
-                <StackPanel>
-                    <TextBlock Text="Set LinkRouter as your default browser:"
-                               Style="{StaticResource BodyStrongTextStyle}"
-                               Foreground="{StaticResource AccentBrush}"
-                               Margin="0,0,0,12"/>
-                    <StackPanel Margin="8,0,0,0">
-                        <TextBlock Style="{StaticResource BodyTextStyle}" Margin="0,0,0,4">
-                            <Run FontWeight="SemiBold">1.</Run>
-                            <Run>Open Windows Settings</Run>
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource BodyTextStyle}" Margin="0,0,0,4">
-                            <Run FontWeight="SemiBold">2.</Run>
-                            <Run>Go to Apps > Default apps</Run>
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource BodyTextStyle}" Margin="0,0,0,4">
-                            <Run FontWeight="SemiBold">3.</Run>
-                            <Run>Search for 'LinkRouter'</Run>
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource BodyTextStyle}">
-                            <Run FontWeight="SemiBold">4.</Run>
-                            <Run>Set it as default for HTTP and HTTPS links</Run>
-                        </TextBlock>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left content -->
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Set LinkRouter as your default browser:"
+                                   Style="{StaticResource BodyStrongTextStyle}"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   Margin="0,0,0,12"/>
+                        <StackPanel Margin="8,0,0,0">
+                            <TextBlock Style="{StaticResource BodyTextStyle}" Margin="0,0,0,4">
+                                <Run FontWeight="SemiBold">1.</Run>
+                                <Run>Open Windows Settings</Run>
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource BodyTextStyle}" Margin="0,0,0,4">
+                                <Run FontWeight="SemiBold">2.</Run>
+                                <Run>Go to Apps > Default apps</Run>
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource BodyTextStyle}" Margin="0,0,0,4">
+                                <Run FontWeight="SemiBold">3.</Run>
+                                <Run>Search for 'LinkRouter'</Run>
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource BodyTextStyle}">
+                                <Run FontWeight="SemiBold">4.</Run>
+                                <Run>Set it as default for HTTP and HTTPS links</Run>
+                            </TextBlock>
+                        </StackPanel>
+                        <Button Content="Open Windows Settings"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Click="OpenWindowsSettings_Click"
+                                Margin="0,16,0,0"
+                                HorizontalAlignment="Left"/>
                     </StackPanel>
-                    <Button Content="Open Windows Settings"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            Click="OpenWindowsSettings_Click"
-                            Margin="0,16,0,0"
-                            HorizontalAlignment="Left"/>
-                </StackPanel>
+
+                    <!-- Status Badge (right top corner) -->
+                    <Border x:Name="RegistrationStatusBorder" Grid.Column="1"
+                            Padding="14,8" CornerRadius="6"
+                            VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse x:Name="StatusIndicator" Width="10" Height="10" Margin="0,0,8,0"
+                                     VerticalAlignment="Center"/>
+                            <TextBlock x:Name="StatusText" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </Border>
 
             <!-- Rules Processing Section -->

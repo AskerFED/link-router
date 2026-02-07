@@ -59,7 +59,7 @@ namespace BrowserSelector
                     catch (Exception ex)
                     {
                         Logger.Log($"FATAL: Failed to create SettingsWindow: {ex}");
-                        MessageBox.Show($"Error starting application:\n\n{ex.Message}\n\nCheck log at D:\\BrowserSelector\\log.txt",
+                        MessageBox.Show($"Error starting application:\n\n{ex.Message}\n\nCheck log at D:\\LinkRouter\\log.txt",
                             "LinkRouter Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     Logger.Log("Shutdown after --manage");
@@ -85,7 +85,7 @@ namespace BrowserSelector
                     catch (Exception ex)
                     {
                         Logger.Log($"FATAL: Failed to create SettingsWindow: {ex}");
-                        MessageBox.Show($"Error starting application:\n\n{ex.Message}\n\nCheck log at D:\\BrowserSelector\\log.txt",
+                        MessageBox.Show($"Error starting application:\n\n{ex.Message}\n\nCheck log at D:\\LinkRouter\\log.txt",
                             "LinkRouter Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     Logger.Log("Shutdown after --register");
@@ -187,7 +187,7 @@ namespace BrowserSelector
                 catch (Exception ex)
                 {
                     Logger.Log($"FATAL: Failed to create SettingsWindow: {ex}");
-                    MessageBox.Show($"Error starting application:\n\n{ex.Message}\n\nCheck log at D:\\BrowserSelector\\log.txt",
+                    MessageBox.Show($"Error starting application:\n\n{ex.Message}\n\nCheck log at D:\\LinkRouter\\log.txt",
                         "LinkRouter Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 Logger.Log("Shutdown after SettingsWindow");
@@ -199,7 +199,7 @@ namespace BrowserSelector
 
     public static class Logger
     {
-        private static readonly string LogDirectory = @"D:\BrowserSelector";
+        private static readonly string LogDirectory = @"D:\LinkRouter";
         private static readonly string LogFilePath =
             Path.Combine(LogDirectory, "log.txt");
 

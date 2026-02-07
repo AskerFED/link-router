@@ -151,7 +151,7 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <!-- Action Bar with Search -->
@@ -265,7 +265,8 @@
                             Background="{StaticResource CardBackgroundBrush}"
                             BorderBrush="{StaticResource CardStrokeBrush}"
                             BorderThickness="1"
-                            CornerRadius="4">
+                            CornerRadius="4"
+                            MaxHeight="400">
                         <DataGrid x:Name="RulesDataGrid"
                                   Style="{StaticResource DataGridStyle}"
                                   ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
@@ -294,10 +295,11 @@
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTemplateColumn Header="Browser Profiles" Width="250" MinWidth="200">
+                                <DataGridTemplateColumn Header="Browser Profiles" Width="350" MinWidth="250">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -347,7 +349,9 @@
                                                 <!-- Profile Display Text -->
                                                 <TextBlock Text="{Binding ProfilesDisplay}"
                                                            VerticalAlignment="Center"
-                                                           Margin="4,0,0,0"/>
+                                                           Margin="4,0,0,0"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding ProfilesDisplay}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -471,7 +475,7 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <!-- Action Bar with Search -->
@@ -583,7 +587,8 @@
                     <!-- URL Groups ScrollViewer -->
                     <ScrollViewer Grid.Row="1"
                                   VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled">
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  MaxHeight="400">
                         <ItemsControl x:Name="UrlGroupsItemsControl">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>

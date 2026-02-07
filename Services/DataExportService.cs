@@ -251,9 +251,7 @@ namespace BrowserSelector.Services
         /// </summary>
         private static void CreatePreImportBackup()
         {
-            var configDir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "BrowserSelector");
+            var configDir = AppConfig.AppDataFolder;
             var backupDir = Path.Combine(configDir, "backups");
 
             if (!Directory.Exists(backupDir))

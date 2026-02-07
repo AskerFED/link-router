@@ -19,6 +19,12 @@ namespace BrowserSelector.Pages
 
         private void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
+            // Hide dev-only features in production
+            if (!AppConfig.DevMode)
+            {
+                TestAllRulesCard.Visibility = Visibility.Collapsed;
+            }
+
             LoadData();
         }
 
@@ -44,6 +50,13 @@ namespace BrowserSelector.Pages
                                 savedBrowser.ExecutablePath,
                                 StringComparison.OrdinalIgnoreCase));
                 }
+
+                // Auto-select first browser if none saved and browsers exist
+                if (DefaultBrowserComboBox.SelectedItem == null && browsers.Count > 0)
+                {
+                    DefaultBrowserComboBox.SelectedItem = browsers[0];
+                    // SelectionChanged handler will auto-save
+                }
             }
             catch (Exception ex)
             {
@@ -59,8 +72,21 @@ namespace BrowserSelector.Pages
                 var groups = UrlGroupManager.LoadGroups();
                 var browsers = BrowserDetector.GetInstalledBrowsers();
 
+                // Individual Rules stats
                 RulesCountText.Text = rules.Count.ToString();
+                int enabledRules = rules.Count(r => r.IsEnabled);
+                int disabledRules = rules.Count(r => !r.IsEnabled);
+                EnabledRulesCountText.Text = enabledRules.ToString();
+                DisabledRulesCountText.Text = disabledRules.ToString();
+
+                // URL Groups stats
                 GroupsCountText.Text = groups.Count.ToString();
+                int enabledGroups = groups.Count(g => g.IsEnabled);
+                int disabledGroups = groups.Count(g => !g.IsEnabled);
+                EnabledGroupsCountText.Text = enabledGroups.ToString();
+                DisabledGroupsCountText.Text = disabledGroups.ToString();
+
+                // Browsers stats
                 BrowsersCountText.Text = browsers.Count.ToString();
             }
             catch (Exception ex)
