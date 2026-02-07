@@ -15,6 +15,21 @@ namespace BrowserSelector
                 Logger.Log($"  Arg[{i}]: {e.Args[i]}");
             }
 
+            // Auto-register if not already registered
+            if (!RegistryHelper.IsRegistered())
+            {
+                Logger.Log("App not registered - auto-registering...");
+                try
+                {
+                    RegistryHelper.RegisterAsDefaultBrowser();
+                    Logger.Log("Auto-registration completed successfully");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Auto-registration failed: {ex.Message}");
+                }
+            }
+
             if (e.Args.Length > 0)
             {
                 var url = e.Args[0];

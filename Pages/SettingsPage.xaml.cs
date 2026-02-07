@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using BrowserSelector.Services;
 using Microsoft.Win32;
 
@@ -23,201 +22,50 @@ namespace BrowserSelector.Pages
 
         public void LoadData()
         {
-            UpdateRegistrationStatus();
-            UpdateSystemInfo();
+            InitializeRulesToggle();
         }
 
-        private void UpdateRegistrationStatus()
+        private void InitializeRulesToggle()
         {
             try
             {
-                bool isRegistered = IsApplicationRegistered();
-                bool isSystemDefault = RegistryHelper.IsSystemDefaultBrowser();
+                var settings = SettingsManager.LoadSettings();
 
-                // Show/Hide buttons based on registration status
-                RegisterButton.Visibility = isRegistered ? Visibility.Collapsed : Visibility.Visible;
-                UnregisterButton.Visibility = isRegistered ? Visibility.Visible : Visibility.Collapsed;
-                SetDefaultButton.Visibility = (isRegistered && !isSystemDefault) ? Visibility.Visible : Visibility.Collapsed;
-
-                if (!isRegistered)
-                {
-                    // State 1: Not Registered (Red)
-                    RegistrationStatusText.Text = "Not Registered";
-                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(196, 43, 28));
-                    RegistrationDetailText.Text = "Click the Register button below to set up LinkRouter.";
-                    StatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(253, 231, 233));
-                    StatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(196, 43, 28));
-                    StatusIcon.Text = "\uE711"; // Close icon
-                }
-                else if (!isSystemDefault)
-                {
-                    // State 2: Registered but Not Default (Orange)
-                    RegistrationStatusText.Text = "Registered - Not Default";
-                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(202, 133, 0));
-                    RegistrationDetailText.Text = "LinkRouter is registered but not set as the system default browser. Click 'Set as Default' to open Windows Settings.";
-                    StatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(255, 244, 206));
-                    StatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(202, 133, 0));
-                    StatusIcon.Text = "\uE7BA"; // Warning icon
-                }
-                else
-                {
-                    // State 3: Active as Default (Green)
-                    RegistrationStatusText.Text = "Active (Default Browser)";
-                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
-                    RegistrationDetailText.Text = "LinkRouter is the system default browser. All HTTP/HTTPS links will be routed through LinkRouter.";
-                    StatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
-                    StatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
-                    StatusIcon.Text = "\uE73E"; // Check icon
-                }
-
+                // Set toggle state without triggering the event
+                RulesEnabledToggle.Checked -= RulesEnabledToggle_Changed;
+                RulesEnabledToggle.Unchecked -= RulesEnabledToggle_Changed;
+                RulesEnabledToggle.IsChecked = settings.IsEnabled;
+                RulesEnabledToggle.Checked += RulesEnabledToggle_Changed;
+                RulesEnabledToggle.Unchecked += RulesEnabledToggle_Changed;
             }
             catch (Exception ex)
             {
-                Logger.Log($"SettingsPage UpdateRegistrationStatus ERROR: {ex.Message}");
+                Logger.Log($"InitializeRulesToggle ERROR: {ex.Message}");
             }
         }
 
-        private bool IsApplicationRegistered()
+        private void RulesEnabledToggle_Changed(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Check both old name and new name for compatibility
-                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Clients\StartMenuInternet\BrowserSelector"))
-                {
-                    if (key != null)
-                    {
-                        using (RegistryKey? commandKey = key.OpenSubKey(@"shell\open\command"))
-                        {
-                            if (commandKey != null)
-                            {
-                                string? registeredPath = commandKey.GetValue("")?.ToString();
-                                if (!string.IsNullOrEmpty(registeredPath) &&
-                                    (registeredPath.Contains("BrowserSelector.exe") || registeredPath.Contains("LinkRouter.exe")))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
+                var isEnabled = RulesEnabledToggle.IsChecked == true;
 
-                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Clients\StartMenuInternet\LinkRouter"))
-                {
-                    if (key != null)
-                    {
-                        using (RegistryKey? commandKey = key.OpenSubKey(@"shell\open\command"))
-                        {
-                            if (commandKey != null)
-                            {
-                                string? registeredPath = commandKey.GetValue("")?.ToString();
-                                return !string.IsNullOrEmpty(registeredPath) && registeredPath.Contains("LinkRouter.exe");
-                            }
-                        }
-                    }
-                }
+                // Save setting
+                var settings = SettingsManager.LoadSettings();
+                settings.IsEnabled = isEnabled;
+                SettingsManager.SaveSettings(settings);
 
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+                Logger.Log($"Rules processing {(isEnabled ? "enabled" : "disabled")}");
 
-        private void UpdateSystemInfo()
-        {
-            try
-            {
-                // Get .NET version
-                FrameworkText.Text = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
-
-                // Get Windows version
-                var osVersion = Environment.OSVersion;
-                if (osVersion.Version.Build >= 22000)
+                // Update navigation indicator in parent window
+                if (Window.GetWindow(this) is SettingsWindow settingsWindow)
                 {
-                    PlatformText.Text = "Windows 11";
-                }
-                else if (osVersion.Version.Major >= 10)
-                {
-                    PlatformText.Text = "Windows 10";
-                }
-                else
-                {
-                    PlatformText.Text = $"Windows {osVersion.Version.Major}.{osVersion.Version.Minor}";
+                    settingsWindow.UpdateNavigationStatus();
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log($"SettingsPage UpdateSystemInfo ERROR: {ex.Message}");
-            }
-        }
-
-        private void RegisterButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                RegistryHelper.RegisterAsDefaultBrowser();
-
-                MessageBox.Show(
-                    "LinkRouter has been registered successfully!\n\n" +
-                    "Features:\n" +
-                    "- Added to Windows startup\n" +
-                    "- Ready to intercept links\n\n" +
-                    "To set it as default:\n" +
-                    "1. Go to Windows Settings\n" +
-                    "2. Apps > Default apps\n" +
-                    "3. Search for 'LinkRouter'\n" +
-                    "4. Set it as default for HTTP and HTTPS",
-                    "Registration Complete",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                UpdateRegistrationStatus();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error during registration: {ex.Message}",
-                    "Registration Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-        }
-
-        private void UnregisterButton_Click(object sender, RoutedEventArgs e)
-        {
-            var result = MessageBox.Show(
-                "Are you sure you want to unregister LinkRouter?\n\n" +
-                "This will:\n" +
-                "- Remove it from Windows startup\n" +
-                "- Remove it as a browser option\n" +
-                "- Keep your saved rules\n\n" +
-                "You can re-register anytime.",
-                "Confirm Unregister",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                try
-                {
-                    RegistryHelper.UnregisterAsDefaultBrowser();
-
-                    MessageBox.Show(
-                        "LinkRouter has been unregistered and removed from startup.\n\n" +
-                        "Your URL rules have been preserved.",
-                        "Unregistration Complete",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-
-                    UpdateRegistrationStatus();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error during unregistration: {ex.Message}",
-                        "Unregistration Error",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                }
+                Logger.Log($"RulesEnabledToggle_Changed ERROR: {ex.Message}");
             }
         }
 
@@ -335,6 +183,257 @@ namespace BrowserSelector.Pages
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        /* Profile Auto-Detection region disabled
+        #region Profile Auto-Detection
+
+        private void AutoDetectToggle_Changed(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var isEnabled = AutoDetectToggle.IsChecked == true;
+
+                // Save setting
+                var settings = SettingsManager.LoadSettings();
+                settings.AutoDetectM365Profile = isEnabled;
+                SettingsManager.SaveSettings(settings);
+
+                if (isEnabled)
+                {
+                    // Show overwrite option
+                    OverwriteOptionCard.Visibility = Visibility.Visible;
+
+                    // Perform detection and update status
+                    UpdateAutoDetectStatus();
+                }
+                else
+                {
+                    // Hide options and status
+                    OverwriteOptionCard.Visibility = Visibility.Collapsed;
+                    AutoDetectStatusCard.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"AutoDetectToggle_Changed ERROR: {ex.Message}");
+            }
+        }
+
+        private void OverwriteCheckbox_Changed(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var isOverwrite = OverwriteCheckbox.IsChecked == true;
+
+                // Save setting
+                var settings = SettingsManager.LoadSettings();
+                settings.AutoDetectOverwriteExisting = isOverwrite;
+                SettingsManager.SaveSettings(settings);
+
+                // Re-run detection with new overwrite setting
+                if (AutoDetectToggle.IsChecked == true)
+                {
+                    UpdateAutoDetectStatus();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"OverwriteCheckbox_Changed ERROR: {ex.Message}");
+            }
+        }
+
+        private void UpdateAutoDetectStatus()
+        {
+            try
+            {
+                // Show status card
+                AutoDetectStatusCard.Visibility = Visibility.Visible;
+
+                // Detect Windows account
+                var account = WindowsAccountService.GetPrimaryAccount();
+
+                if (account == null)
+                {
+                    // No account detected - show warning
+                    SetAutoDetectStatusWarning(
+                        "No Windows Account Detected",
+                        "Sign in to Azure AD or Office 365 to use this feature");
+                    MatchingProfilesPanel.Visibility = Visibility.Collapsed;
+                    AppliedStatusText.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                // Find matching profiles
+                var matchResults = WindowsAccountService.FindMatchingProfiles(account);
+                var matchingProfiles = matchResults.Where(r => r.IsMatch).ToList();
+
+                if (matchingProfiles.Count == 0)
+                {
+                    // No matching profiles - show warning
+                    SetAutoDetectStatusWarning(
+                        "No Matching Profiles Found",
+                        $"Account: {account.UserEmail}\nSign into Edge/Chrome with your work account");
+                    MatchingProfilesPanel.Visibility = Visibility.Collapsed;
+                    AppliedStatusText.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                // Check if M365 group already has profiles
+                var m365Group = UrlGroupManager.LoadGroups()
+                    .FirstOrDefault(g => g.Id == "builtin-m365");
+                var groupHasProfiles = m365Group?.Profiles?.Count > 0 ||
+                                       !string.IsNullOrEmpty(m365Group?.DefaultBrowserPath);
+
+                var settings = SettingsManager.LoadSettings();
+                var shouldApply = !groupHasProfiles || settings.AutoDetectOverwriteExisting;
+
+                // Update status display
+                if (shouldApply)
+                {
+                    // Apply profiles and show success
+                    ApplyProfilesToM365Group(matchingProfiles);
+                    SetAutoDetectStatusSuccess(
+                        "Account Detected",
+                        $"{account.UserEmail} ({account.SourceDescription})");
+                    AppliedStatusText.Text = "✓ Applied to Microsoft 365 URL Group";
+                    AppliedStatusText.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
+                }
+                else
+                {
+                    // Group already configured, show info
+                    SetAutoDetectStatusInfo(
+                        "Account Detected",
+                        $"{account.UserEmail} ({account.SourceDescription})");
+                    AppliedStatusText.Text = "ℹ M365 group already has profiles. Enable \"Overwrite\" to apply.";
+                    AppliedStatusText.Foreground = new SolidColorBrush(Color.FromRgb(0, 120, 212));
+                }
+
+                // Show matching profiles list
+                MatchingProfilesPanel.Visibility = Visibility.Visible;
+                AppliedStatusText.Visibility = Visibility.Visible;
+
+                var profileDisplayList = matchingProfiles.Select(p =>
+                    $"{p.Browser.Name} - {p.Profile.Name} ({p.ConfidenceDescription})").ToList();
+                MatchingProfilesList.ItemsSource = profileDisplayList;
+
+                // Save detected info to settings
+                settings.DetectedAccountEmail = account.UserEmail;
+                settings.DetectedProfileCount = matchingProfiles.Count;
+                SettingsManager.SaveSettings(settings);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"UpdateAutoDetectStatus ERROR: {ex.Message}");
+                SetAutoDetectStatusWarning("Detection Error", ex.Message);
+            }
+        }
+
+        private void SetAutoDetectStatusSuccess(string title, string detail)
+        {
+            AutoDetectStatusText.Text = title;
+            AutoDetectStatusText.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
+            AutoDetectDetailText.Text = detail;
+            AutoDetectStatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
+            AutoDetectStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
+            AutoDetectStatusIcon.Text = "\uE73E"; // Check icon
+            AutoDetectStatusCard.Background = new SolidColorBrush(Color.FromRgb(232, 245, 233));
+            AutoDetectStatusCard.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 230, 201));
+            AutoDetectStatusCard.BorderThickness = new Thickness(1);
+        }
+
+        private void SetAutoDetectStatusWarning(string title, string detail)
+        {
+            AutoDetectStatusText.Text = title;
+            AutoDetectStatusText.Foreground = new SolidColorBrush(Color.FromRgb(202, 133, 0));
+            AutoDetectDetailText.Text = detail;
+            AutoDetectStatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(255, 244, 206));
+            AutoDetectStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(202, 133, 0));
+            AutoDetectStatusIcon.Text = "\uE7BA"; // Warning icon
+            AutoDetectStatusCard.Background = new SolidColorBrush(Color.FromRgb(255, 243, 224));
+            AutoDetectStatusCard.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 224, 178));
+            AutoDetectStatusCard.BorderThickness = new Thickness(1);
+        }
+
+        private void SetAutoDetectStatusInfo(string title, string detail)
+        {
+            AutoDetectStatusText.Text = title;
+            AutoDetectStatusText.Foreground = new SolidColorBrush(Color.FromRgb(0, 120, 212));
+            AutoDetectDetailText.Text = detail;
+            AutoDetectStatusIconBorder.Background = new SolidColorBrush(Color.FromRgb(227, 242, 253));
+            AutoDetectStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(0, 120, 212));
+            AutoDetectStatusIcon.Text = "\uE946"; // Info icon
+            AutoDetectStatusCard.Background = new SolidColorBrush(Color.FromRgb(227, 242, 253));
+            AutoDetectStatusCard.BorderBrush = new SolidColorBrush(Color.FromRgb(144, 202, 249));
+            AutoDetectStatusCard.BorderThickness = new Thickness(1);
+        }
+
+        private void ApplyProfilesToM365Group(List<ProfileMatchResult> matchingProfiles)
+        {
+            try
+            {
+                var m365Group = UrlGroupManager.LoadGroups()
+                    .FirstOrDefault(g => g.Id == "builtin-m365");
+
+                if (m365Group == null)
+                {
+                    Logger.Log("ApplyProfilesToM365Group: M365 group not found");
+                    return;
+                }
+
+                // Convert to RuleProfile list
+                var profiles = new List<RuleProfile>();
+                int order = 0;
+
+                foreach (var match in matchingProfiles)
+                {
+                    profiles.Add(new RuleProfile
+                    {
+                        BrowserName = match.Browser.Name,
+                        BrowserPath = match.Browser.ExecutablePath,
+                        BrowserType = match.Browser.Type,
+                        ProfileName = match.Profile.Name,
+                        ProfilePath = match.Profile.Path,
+                        ProfileArguments = match.Profile.Arguments,
+                        DisplayOrder = order++
+                    });
+                }
+
+                // Update the group
+                m365Group.Profiles = profiles;
+
+                // Also set legacy fields from first profile for compatibility
+                if (profiles.Count > 0)
+                {
+                    var first = profiles[0];
+                    m365Group.DefaultBrowserName = first.BrowserName;
+                    m365Group.DefaultBrowserPath = first.BrowserPath;
+                    m365Group.DefaultBrowserType = first.BrowserType;
+                    m365Group.DefaultProfileName = first.ProfileName;
+                    m365Group.DefaultProfilePath = first.ProfilePath;
+                    m365Group.DefaultProfileArguments = first.ProfileArguments;
+                }
+
+                // Set behavior based on profile count
+                m365Group.Behavior = profiles.Count > 1
+                    ? UrlGroupBehavior.ShowProfilePicker
+                    : UrlGroupBehavior.UseDefault;
+
+                // Enable the group if not already
+                m365Group.IsEnabled = true;
+
+                // Save
+                UrlGroupManager.UpdateGroup(m365Group);
+
+                Logger.Log($"ApplyProfilesToM365Group: Applied {profiles.Count} profiles to M365 group");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"ApplyProfilesToM365Group ERROR: {ex.Message}");
+            }
+        }
+
+        #endregion
+        End of Profile Auto-Detection region */
 
     }
 }

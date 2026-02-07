@@ -28,75 +28,9 @@
             <TextBlock Text="App Registration"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
-            <!-- Registration Status Card -->
-            <Border Style="{StaticResource SettingsCardStyle}" Padding="16">
-                <StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Status Icon -->
-                        <Border x:Name="StatusIconBorder"
-                                Grid.Column="0"
-                                Width="36" Height="36"
-                                Background="#DFF6DD"
-                                CornerRadius="4"
-                                Margin="0,0,16,0">
-                            <TextBlock x:Name="StatusIcon"
-                                       Text="&#xE73E;"
-                                       FontFamily="{StaticResource SegoeFluentIcons}"
-                                       FontSize="16"
-                                       Foreground="#107C10"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                        </Border>
-
-                        <!-- Status Text -->
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock x:Name="RegistrationStatusText"
-                                       Text="Registered"
-                                       Style="{StaticResource BodyStrongTextStyle}"/>
-                            <TextBlock x:Name="RegistrationDetailText"
-                                       Text="LinkRouter is registered and ready to use."
-                                       Style="{StaticResource CaptionTextStyle}"
-                                       TextWrapping="Wrap"
-                                       Margin="0,4,0,0"/>
-                        </StackPanel>
-                    </Grid>
-
-                    <!-- Action Buttons -->
-                    <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
-                        <Button x:Name="RegisterButton"
-                                Content="Register"
-                                Style="{StaticResource SuccessButtonStyle}"
-                                Click="RegisterButton_Click"
-                                Width="120"
-                                Margin="0,0,12,0"/>
-                        <Button x:Name="SetDefaultButton"
-                                Content="Set as Default"
-                                Style="{StaticResource PrimaryButtonStyle}"
-                                Click="OpenWindowsSettings_Click"
-                                Width="130"
-                                Margin="0,0,12,0"
-                                Visibility="Collapsed"/>
-                        <Button x:Name="UnregisterButton"
-                                Content="Unregister"
-                                Style="{StaticResource DangerButtonStyle}"
-                                Click="UnregisterButton_Click"
-                                Width="120"/>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <!-- How to Set as Default Section -->
-            <TextBlock Text="How to Set as Default"
-                       Style="{StaticResource SectionHeaderStyle}"/>
-
             <Border Style="{StaticResource InfoBannerStyle}">
                 <StackPanel>
-                    <TextBlock Text="After registering LinkRouter:"
+                    <TextBlock Text="Set LinkRouter as your default browser:"
                                Style="{StaticResource BodyStrongTextStyle}"
                                Foreground="{StaticResource AccentBrush}"
                                Margin="0,0,0,12"/>
@@ -124,6 +58,46 @@
                             Margin="0,16,0,0"
                             HorizontalAlignment="Left"/>
                 </StackPanel>
+            </Border>
+
+            <!-- Rules Processing Section -->
+            <TextBlock Text="Rules Processing"
+                       Style="{StaticResource SectionHeaderStyle}"/>
+
+            <Border Style="{StaticResource SettingsCardStyle}" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon -->
+                    <Border Grid.Column="0" Width="36" Height="36" Background="#E3F2FD" CornerRadius="4" Margin="0,0,16,0">
+                        <TextBlock Text="&#xE8FD;"
+                                   FontFamily="{StaticResource SegoeFluentIcons}"
+                                   FontSize="18"
+                                   Foreground="#1976D2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Text -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Enable Rules Processing" Style="{StaticResource BodyStrongTextStyle}"/>
+                        <TextBlock Text="When disabled, all URLs open in the fallback browser"
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <!-- Toggle -->
+                    <ToggleButton x:Name="RulesEnabledToggle"
+                                  Grid.Column="2"
+                                  Style="{StaticResource ToggleSwitchStyle}"
+                                  VerticalAlignment="Center"
+                                  Checked="RulesEnabledToggle_Changed"
+                                  Unchecked="RulesEnabledToggle_Changed"/>
+                </Grid>
             </Border>
 
             <!-- Backup & Restore Section -->
@@ -173,50 +147,6 @@
                                Style="{StaticResource CaptionTextStyle}"/>
                 </controls:SettingsCard.ActionContent>
             </controls:SettingsCard>
-
-            <Border Style="{StaticResource SettingsCardStyle}" Padding="16">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock Text="Framework" Style="{StaticResource BodyTextStyle}"/>
-                        <TextBlock Text="Application runtime information"
-                                   Style="{StaticResource CaptionTextStyle}"
-                                   Margin="0,2,0,0"/>
-                    </StackPanel>
-
-                    <TextBlock x:Name="FrameworkText"
-                               Grid.Column="1"
-                               Text=".NET 8.0"
-                               Style="{StaticResource CaptionTextStyle}"
-                               VerticalAlignment="Center"/>
-                </Grid>
-            </Border>
-
-            <Border Style="{StaticResource SettingsCardStyle}" Padding="16">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock Text="Platform" Style="{StaticResource BodyTextStyle}"/>
-                        <TextBlock Text="Operating system"
-                                   Style="{StaticResource CaptionTextStyle}"
-                                   Margin="0,2,0,0"/>
-                    </StackPanel>
-
-                    <TextBlock x:Name="PlatformText"
-                               Grid.Column="1"
-                               Text="Windows 11"
-                               Style="{StaticResource CaptionTextStyle}"
-                               VerticalAlignment="Center"/>
-                </Grid>
-            </Border>
 
         </StackPanel>
     </ScrollViewer>

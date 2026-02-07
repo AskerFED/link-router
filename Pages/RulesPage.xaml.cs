@@ -251,9 +251,18 @@ namespace BrowserSelector.Pages
         private void ClearUrlGroups_Click(object sender, RoutedEventArgs e)
         {
             if (ConfirmationDialog.Show(Window.GetWindow(this), "Clear URL Groups",
-                "Are you sure you want to delete all URL groups? This cannot be undone.", "Delete All", "Cancel"))
+                "Are you sure you want to clear all URL groups? Built-in groups will be disabled, custom groups will be deleted.", "Clear All", "Cancel"))
             {
-                UrlGroupManager.SaveGroups(new List<UrlGroup>());
+                var groups = UrlGroupManager.LoadGroups();
+
+                // Keep built-in groups but disable them
+                var builtInGroups = groups.Where(g => g.IsBuiltIn).ToList();
+                foreach (var group in builtInGroups)
+                {
+                    group.IsEnabled = false;
+                }
+
+                UrlGroupManager.SaveGroups(builtInGroups);
                 LoadUrlGroups();
                 NotifyDataChanged();
             }

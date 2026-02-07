@@ -24,8 +24,8 @@
                        Style="{StaticResource Title3TextStyle}"
                        Margin="0,0,0,16"/>
 
-            <!-- Default Browser Section -->
-            <TextBlock Text="Default Browser"
+            <!-- Fallback Browser Section -->
+            <TextBlock Text="Fallback Browser"
                        Style="{StaticResource SectionHeaderStyle}"/>
 
             <!-- Default Browser Card -->
@@ -47,7 +47,7 @@
                     </Border>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="Default Browser" Style="{StaticResource BodyTextStyle}"/>
+                        <TextBlock Text="Fallback Browser" Style="{StaticResource BodyTextStyle}"/>
                         <TextBlock Text="Used when no rules match the URL"
                                    Style="{StaticResource CaptionTextStyle}"
                                    Margin="0,2,0,0"/>
@@ -138,58 +138,6 @@
                     </StackPanel>
                 </Border>
             </Grid>
-
-            <!-- Registration Status Section -->
-            <TextBlock Text="Registration Status"
-                       Style="{StaticResource SectionHeaderStyle}"/>
-
-            <Border x:Name="RegistrationCard" Style="{StaticResource SettingsCardStyle}" Padding="16">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Status Icon -->
-                    <Border Grid.Column="0"
-                            Width="36" Height="36"
-                            CornerRadius="4"
-                            Margin="0,0,16,0">
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Background" Value="#DFF6DD"/>
-                            </Style>
-                        </Border.Style>
-                        <TextBlock x:Name="RegistrationIcon"
-                                   Text="&#xE73E;"
-                                   FontFamily="{StaticResource SegoeFluentIcons}"
-                                   FontSize="16"
-                                   Foreground="#107C10"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
-                    </Border>
-
-                    <!-- Status Text -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock x:Name="RegistrationStatusText"
-                                   Text="Registered"
-                                   Style="{StaticResource BodyStrongTextStyle}"/>
-                        <TextBlock x:Name="RegistrationDetailText"
-                                   Text="LinkRouter is set up and ready to use"
-                                   Style="{StaticResource CaptionTextStyle}"
-                                   Margin="0,2,0,0"/>
-                    </StackPanel>
-
-                    <!-- Action Button -->
-                    <Button x:Name="OpenSettingsButton"
-                            Grid.Column="2"
-                            Content="Open Windows Settings"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            Click="OpenWindowsSettings_Click"
-                            VerticalAlignment="Center"/>
-                </Grid>
-            </Border>
 
             <!-- Quick Actions Section -->
             <TextBlock Text="Quick Actions"

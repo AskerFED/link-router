@@ -113,42 +113,51 @@
         <!-- Simple Mode Panel (Browser + Profile Selection) -->
         <StackPanel x:Name="SimpleModePanel">
             <!-- Browser Selection -->
-            <StackPanel Margin="0,0,0,10">
-                <TextBlock Text="Browser:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
-                <ComboBox x:Name="BrowserComboBox" Height="40" SelectionChanged="BrowserComboBox_SelectionChanged"
-                          Background="White" BorderBrush="#CCC" Padding="10,5">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="5">
-                                <Grid Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center">
-                                    <Image Source="{Binding Icon}" Width="16" Height="16"
-                                           Visibility="{Binding Icon, Converter={StaticResource NullToCollapsedConverter}}"
-                                           RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <Ellipse Width="14" Height="14" Fill="{Binding Color}"
-                                             Visibility="{Binding Icon, Converter={StaticResource NullToVisibleConverter}}"/>
-                                </Grid>
-                                <TextBlock Text="{Binding Name}" FontSize="13" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
+            <StackPanel Margin="0,0,0,16">
+                    <TextBlock Text="Browser"
+                               Style="{StaticResource BodyStrongTextStyle}"
+                               Margin="0,0,0,8"/>
+                    <ComboBox x:Name="BrowserComboBox"
+                              Style="{StaticResource ComboBoxStyle}"
+                              Height="36"
+                              SelectionChanged="BrowserComboBox_SelectionChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Grid Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <Image Source="{Binding Icon}" Width="16" Height="16"
+                                               Visibility="{Binding Icon, Converter={StaticResource NullToCollapsedConverter}}"
+                                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <Ellipse Width="12" Height="12" Fill="{Binding Color}"
+                                                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibleConverter}}"/>
+                                    </Grid>
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource BodyTextStyle}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
 
             <!-- Profile Selection -->
-            <StackPanel Margin="0,0,0,10">
-                <TextBlock Text="Profile:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
-                <ComboBox x:Name="ProfileComboBox" Height="40" Background="White" BorderBrush="#CCC" Padding="10,5"
-                          SelectionChanged="ProfileComboBox_SelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"/>
-                                <TextBlock Text="{Binding Path}" FontSize="10" Foreground="#666" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
+             <StackPanel Margin="0,0,0,16">
+                    <TextBlock Text="Profile"
+                               Style="{StaticResource BodyStrongTextStyle}"
+                               Margin="0,0,0,8"/>
+                    <ComboBox x:Name="ProfileComboBox"
+                              Style="{StaticResource ComboBoxStyle}"
+                              Height="36"
+                              SelectionChanged="ProfileComboBox_SelectionChanged"
+                              >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource BodyStrongTextStyle}"/>
+                                    <TextBlock Text="{Binding Path}" Style="{StaticResource CaptionTextStyle}" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
 
             <!-- Advanced Pick Link with Info Icon -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">

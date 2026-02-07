@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using BrowserSelector.Services;
 
 namespace BrowserSelector.Pages
@@ -28,7 +26,6 @@ namespace BrowserSelector.Pages
         {
             LoadDefaultBrowser();
             LoadStats();
-            UpdateRegistrationStatus();
         }
 
         private void LoadDefaultBrowser()
@@ -72,47 +69,6 @@ namespace BrowserSelector.Pages
             }
         }
 
-        private void UpdateRegistrationStatus()
-        {
-            try
-            {
-                bool isRegistered = RegistryHelper.IsRegistered();
-
-                if (isRegistered)
-                {
-                    RegistrationStatusText.Text = "Registered";
-                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
-                    RegistrationDetailText.Text = "LinkRouter is set up and ready to use";
-
-                    // Update icon background
-                    if (RegistrationIcon.Parent is Border iconBorder)
-                    {
-                        iconBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
-                    }
-                    RegistrationIcon.Foreground = new SolidColorBrush(Color.FromRgb(16, 124, 16));
-                    RegistrationIcon.Text = "\uE73E"; // Check icon
-                }
-                else
-                {
-                    RegistrationStatusText.Text = "Not Registered";
-                    RegistrationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(196, 43, 28));
-                    RegistrationDetailText.Text = "Register LinkRouter to start using it as your default browser handler";
-
-                    // Update icon background
-                    if (RegistrationIcon.Parent is Border iconBorder)
-                    {
-                        iconBorder.Background = new SolidColorBrush(Color.FromRgb(253, 231, 233));
-                    }
-                    RegistrationIcon.Foreground = new SolidColorBrush(Color.FromRgb(196, 43, 28));
-                    RegistrationIcon.Text = "\uE711"; // Close icon
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"HomePage UpdateRegistrationStatus ERROR: {ex.Message}");
-            }
-        }
-
         private void DefaultBrowserComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DefaultBrowserComboBox.SelectedItem is BrowserInfoWithColor browserWithColor)
@@ -125,24 +81,6 @@ namespace BrowserSelector.Pages
                 };
                 DefaultBrowserManager.Save(browser);
                 Logger.Log($"User changed default browser to: {browser.Name}");
-            }
-        }
-
-        private void OpenWindowsSettings_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "ms-settings:defaultapps",
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"OpenWindowsSettings_Click ERROR: {ex.Message}");
-                MessageBox.Show("Could not open Windows Settings.", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

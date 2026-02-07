@@ -50,6 +50,15 @@ namespace BrowserSelector
             Logger.Log($"CheckForMatchingRule started for URL: {_url}");
             try
             {
+                // Check if rules processing is enabled
+                var settings = SettingsManager.LoadSettings();
+                if (!settings.IsEnabled)
+                {
+                    Logger.Log("Rules processing disabled - using fallback browser");
+                    HandleNoMatch(skipNotification: true);
+                    return;
+                }
+
                 // Use the enhanced FindMatch that checks individual rules and URL groups
                 Logger.Log("Calling UrlRuleManager.FindMatch...");
                 var match = UrlRuleManager.FindMatch(_url);
@@ -240,9 +249,9 @@ namespace BrowserSelector
             Application.Current.Shutdown();
         }
 
-        private void HandleNoMatch()
+        private void HandleNoMatch(bool skipNotification = false)
         {
-            Logger.Log("HandleNoMatch called - checking for default browser...");
+            Logger.Log($"HandleNoMatch called - skipNotification: {skipNotification}, checking for default browser...");
 
             // Try to use saved default browser
             var defaultBrowser = DefaultBrowserManager.Load();
@@ -256,11 +265,13 @@ namespace BrowserSelector
                 // Open URL in default browser (no profile)
                 OpenBrowser(defaultBrowser, null, isDefault: true);
 
-                // Show notification if enabled
+                // Show notification only if:
+                // 1. Not skipping (rules are enabled, just no match found)
+                // 2. ShowNotifications is enabled in settings
                 var settings = SettingsManager.LoadSettings();
                 Logger.Log($"ShowNotifications setting: {settings.ShowNotifications}");
 
-                if (settings.ShowNotifications)
+                if (!skipNotification && settings.ShowNotifications)
                 {
                     Logger.Log("Showing notification toast...");
                     NotificationHelper.ShowNotification(_url, () =>
@@ -274,7 +285,7 @@ namespace BrowserSelector
                 else
                 {
                     // No notification - just shutdown
-                    Logger.Log("Notifications disabled - shutting down");
+                    Logger.Log(skipNotification ? "Skipping notification (rules disabled) - shutting down" : "Notifications disabled - shutting down");
                     Application.Current.Shutdown();
                 }
             }

@@ -262,7 +262,7 @@
                                                        VerticalAlignment="Center"/>
 
                                             <!-- Move to Rule button -->
-                                            <Button Grid.Column="1"
+                                            <!-- <Button Grid.Column="1"
                                                     Style="{StaticResource IconButtonOrangeStyle}"
                                                     ToolTip="Move to Individual Rule"
                                                     Tag="{Binding}"
@@ -273,7 +273,7 @@
                                                       StrokeThickness="1.5"
                                                       Width="14" Height="14"
                                                       Stretch="Uniform"/>
-                                            </Button>
+                                            </Button> -->
 
                                             <!-- Delete button -->
                                             <Button Grid.Column="2"

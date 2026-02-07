@@ -214,38 +214,28 @@ namespace BrowserSelector
         {
             try
             {
-                bool isRegistered = RegistryHelper.IsRegistered();
-                bool isDefault = RegistryHelper.IsSystemDefaultBrowser();
+                var settings = SettingsManager.LoadSettings();
+                bool isEnabled = settings.IsEnabled;
 
-                if (!isRegistered)
+                if (isEnabled)
                 {
-                    // Red - Not Registered
-                    var redColor = new SolidColorBrush(Color.FromRgb(196, 43, 28));
-                    StatusDot.Fill = redColor;
-                    StatusText.Text = "Not Registered";
-                    StatusText.Foreground = redColor;
-                    StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(253, 231, 233));
-                    StatusIndicatorBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(239, 154, 154));
-                }
-                else if (!isDefault)
-                {
-                    // Orange - Registered but Not Default
-                    var orangeColor = new SolidColorBrush(Color.FromRgb(202, 133, 0));
-                    StatusDot.Fill = orangeColor;
-                    StatusText.Text = "Not Default";
-                    StatusText.Foreground = orangeColor;
-                    StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(255, 244, 206));
-                    StatusIndicatorBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 204, 128));
-                }
-                else
-                {
-                    // Green - Active as Default
+                    // Green - Rules processing enabled
                     var greenColor = new SolidColorBrush(Color.FromRgb(16, 124, 16));
                     StatusDot.Fill = greenColor;
                     StatusText.Text = "Active";
                     StatusText.Foreground = greenColor;
                     StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
                     StatusIndicatorBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(165, 214, 167));
+                }
+                else
+                {
+                    // Gray - Rules processing disabled
+                    var grayColor = new SolidColorBrush(Color.FromRgb(93, 93, 93));
+                    StatusDot.Fill = grayColor;
+                    StatusText.Text = "Paused";
+                    StatusText.Foreground = grayColor;
+                    StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+                    StatusIndicatorBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
                 }
             }
             catch (Exception ex)

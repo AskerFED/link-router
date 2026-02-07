@@ -7,8 +7,28 @@ namespace BrowserSelector
 {
     public static class RegistryHelper
     {
-        private const string AppName = "LinkRouter";
+        public const string AppName = "LinkRouter";
         private const string AppDescription = "LinkRouter - Browser selection and URL routing utility";
+
+        public static string? GetRegisteredAppName()
+        {
+            const string regPath = @"SOFTWARE\RegisteredApplications";
+
+            using var key = Registry.LocalMachine.OpenSubKey(regPath);
+            if (key == null) return null;
+
+            foreach (var name in key.GetValueNames())
+            {
+                var value = key.GetValue(name)?.ToString();
+            //    if(value!=null) Logger.Log(value);
+                if (value != null && value.Contains(AppName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return name; // This is the registeredApp name
+                }
+            }
+
+            return null;
+        }
 
         public static void RegisterAsDefaultBrowser()
         {
@@ -375,7 +395,7 @@ namespace BrowserSelector
    
         public static class DefaultBrowserManager
         {
-            private const string RegistryPath = @"Software\BrowserSelector";
+            private const string RegistryPath = @"Software\LinkRouter";
             private const string BrowserNameKey = "DefaultBrowserName";
             private const string BrowserExeKey = "DefaultBrowserExe";
 

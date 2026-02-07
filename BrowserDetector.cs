@@ -29,6 +29,16 @@ namespace BrowserSelector
             string.IsNullOrWhiteSpace(Email)
                 ? Name
                 : $"{Name} ({Email})";
+
+        /// <summary>
+        /// Extracts the domain portion from the email address for matching.
+        /// </summary>
+        public string EmailDomain =>
+            string.IsNullOrEmpty(Email)
+                ? string.Empty
+                : Email.Contains("@")
+                    ? Email.Substring(Email.IndexOf('@') + 1).ToLowerInvariant()
+                    : string.Empty;
     }
 
 

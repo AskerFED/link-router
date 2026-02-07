@@ -43,6 +43,28 @@ namespace BrowserSelector
         /// Last selected navigation page (Home, Rules, Settings, Docs)
         /// </summary>
         public string LastSelectedPage { get; set; } = "Home";
+
+        /// <summary>
+        /// When enabled, automatically detect Windows account and apply
+        /// matching browser profiles to the M365 URL group.
+        /// </summary>
+        public bool AutoDetectM365Profile { get; set; } = false;
+
+        /// <summary>
+        /// When true, overwrite existing M365 group configuration.
+        /// When false (default), only apply if the group has no profiles configured.
+        /// </summary>
+        public bool AutoDetectOverwriteExisting { get; set; } = false;
+
+        /// <summary>
+        /// Cached detected Windows account email (for display).
+        /// </summary>
+        public string DetectedAccountEmail { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Cached count of matched profiles.
+        /// </summary>
+        public int DetectedProfileCount { get; set; } = 0;
     }
 
     public static class SettingsManager

@@ -23,12 +23,6 @@
         <!-- Scrollable Content -->
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="24,24,24,0">
             <StackPanel>
-                <!-- Title -->
-                <TextBlock x:Name="WindowTitle"
-                           Text="Add Profile"
-                           Style="{StaticResource Title3TextStyle}"
-                           Margin="0,0,0,24"/>
-
                 <!-- Browser Selection -->
                 <StackPanel Margin="0,0,0,16">
                     <TextBlock Text="Browser"

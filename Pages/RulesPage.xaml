@@ -125,6 +125,9 @@
             <TabItem x:Name="IndividualRulesTab"
                      Style="{StaticResource TabItemStyle}">
                 <TabItem.Header>
+                        <Border Background="Transparent"
+            Padding="0"
+            SnapsToDevicePixels="True">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="Individual Rules"
                                 Margin="0,0,6,0"/>
@@ -142,6 +145,8 @@
                                     TextAlignment="Center"/>
                         </Border>
                     </StackPanel>
+                                            </Border>
+
                 </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -271,7 +276,7 @@
                                   CanUserResizeColumns="True"
                                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                  MouseDoubleClick="RulesDataGrid_MouseDoubleClick">
+                                  MouseLeftButtonUp="RulesDataGrid_MouseDoubleClick">
                             <DataGrid.Columns>
                                 <!-- Enable/Disable Toggle -->
                                 <DataGridTemplateColumn Header="" Width="64" CanUserResize="False">
@@ -292,44 +297,61 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTemplateColumn Header="Browser" Width="200" MinWidth="200">
+                                <DataGridTemplateColumn Header="Browser Profiles" Width="250" MinWidth="200">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <Grid Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
-                                                    <Image Source="{Binding BrowserPath, Converter={StaticResource BrowserPathToIconConverter}}"
-                                                           Width="16" Height="16"
-                                                           RenderOptions.BitmapScalingMode="HighQuality">
-                                                        <Image.Style>
-                                                            <Style TargetType="Image">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding BrowserPath, Converter={StaticResource BrowserPathToIconConverter}}" Value="{x:Null}">
-                                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                    <Ellipse Width="14" Height="14" Fill="{Binding BrowserName, Converter={StaticResource BrowserNameToColorConverter}}">
-                                                        <Ellipse.Style>
-                                                            <Style TargetType="Ellipse">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding BrowserPath, Converter={StaticResource BrowserPathToIconConverter}}" Value="{x:Null}">
-                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Ellipse.Style>
-                                                    </Ellipse>
-                                                </Grid>
-                                                <TextBlock Text="{Binding BrowserName}" VerticalAlignment="Center"/>
+                                                <!-- Browser Icons -->
+                                                <ItemsControl ItemsSource="{Binding Profiles}" VerticalAlignment="Center">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel Orientation="Horizontal"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Width="16" Height="16" Margin="0,0,4,0"
+                                                                  VerticalAlignment="Center"
+                                                                  ToolTip="{Binding BrowserName}">
+                                                                <Image Source="{Binding BrowserPath, Converter={StaticResource BrowserPathToIconConverter}}"
+                                                                       Width="16" Height="16"
+                                                                       RenderOptions.BitmapScalingMode="HighQuality">
+                                                                    <Image.Style>
+                                                                        <Style TargetType="Image">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding BrowserPath, Converter={StaticResource BrowserPathToIconConverter}}" Value="{x:Null}">
+                                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Image.Style>
+                                                                </Image>
+                                                                <Ellipse Width="14" Height="14"
+                                                                         Fill="{Binding BrowserName, Converter={StaticResource BrowserNameToColorConverter}}">
+                                                                    <Ellipse.Style>
+                                                                        <Style TargetType="Ellipse">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding BrowserPath, Converter={StaticResource BrowserPathToIconConverter}}" Value="{x:Null}">
+                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Ellipse.Style>
+                                                                </Ellipse>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <!-- Profile Display Text -->
+                                                <TextBlock Text="{Binding ProfilesDisplay}"
+                                                           VerticalAlignment="Center"
+                                                           Margin="4,0,0,0"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Profile" Binding="{Binding ProfileName}" Width="150" MinWidth="150"/>
                                 <DataGridTemplateColumn Header="" Width="120" CanUserResize="False">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -423,6 +445,9 @@
            <TabItem x:Name="UrlGroupsTab" 
             Style="{StaticResource TabItemStyle}">
                 <TabItem.Header>
+                        <Border Background="Transparent"
+            Padding="0"
+            SnapsToDevicePixels="True">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="URL Groups"
                                 Margin="0,0,6,0"/>
@@ -440,6 +465,8 @@
                                     TextAlignment="Center"/>
                         </Border>
                     </StackPanel>
+                                            </Border>
+
                 </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>

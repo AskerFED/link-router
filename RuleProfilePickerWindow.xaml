@@ -66,25 +66,25 @@
                 BorderThickness="1"
                 CornerRadius="4"
                 Margin="0,0,0,0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="4">
                 <ItemsControl x:Name="ProfilesItemsControl">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border x:Name="ProfileBorder"
-                                    Background="#FFFFFF"
-                                    BorderBrush="#E4E4E4"
                                     BorderThickness="1"
                                     CornerRadius="4"
-                                    Padding="10"
+                                    Padding="12"
                                     Margin="0,0,0,4"
                                     Cursor="Hand"
                                     MouseLeftButtonUp="Profile_Click"
                                     Tag="{Binding}">
                                 <Border.Style>
                                     <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#FFFFFF"/>
+                                        <Setter Property="BorderBrush" Value="#E4E4E4"/>
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#F0F6FC"/>
+                                                <Setter Property="Background" Value="#E3F2FD"/>
                                                 <Setter Property="BorderBrush" Value="#0078D4"/>
                                             </Trigger>
                                         </Style.Triggers>
@@ -108,9 +108,13 @@
                                     <!-- Profile Info -->
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding DisplayName}"
-                                                   Style="{StaticResource BodyStrongTextStyle}"/>
+                                                   Style="{StaticResource BodyStrongTextStyle}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding DisplayName}"/>
                                         <TextBlock Text="{Binding BrowserProfileDescription}"
                                                    Style="{StaticResource CaptionTextStyle}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding BrowserProfileDescription}"
                                                    Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
