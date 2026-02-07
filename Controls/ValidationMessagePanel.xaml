@@ -10,6 +10,31 @@
         <Geometry x:Key="ErrorIconGeometry">M10,2 A8,8 0 1,1 10,18 A8,8 0 1,1 10,2 M10,6 L10,11 M10,13 L10,15</Geometry>
         <Geometry x:Key="WarningIconGeometry">M10,2 L18,16 L2,16 Z M10,7 L10,11 M10,13 L10,14</Geometry>
         <Geometry x:Key="InfoIconGeometry">M10,2 A8,8 0 1,1 10,18 A8,8 0 1,1 10,2 M10,6 L10,7 M10,9 L10,14</Geometry>
+        <Geometry x:Key="CloseIconGeometry">M2,2 L12,12 M12,2 L2,12</Geometry>
+
+        <!-- Close Button Style -->
+        <Style x:Key="CloseButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#20000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <StackPanel x:Name="MessagesContainer" Visibility="Collapsed">
@@ -27,6 +52,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Path Data="{StaticResource ErrorIconGeometry}"
                                   Stroke="#DC3545"
@@ -62,6 +88,18 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </StackPanel>
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource CloseButtonStyle}"
+                                    Tag="{Binding}"
+                                    Click="CloseError_Click"
+                                    ToolTip="Dismiss"
+                                    Margin="8,0,0,0">
+                                <Path Data="{StaticResource CloseIconGeometry}"
+                                      Stroke="#DC3545"
+                                      StrokeThickness="1.5"
+                                      Width="10" Height="10"
+                                      Stretch="Uniform"/>
+                            </Button>
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -82,6 +120,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Path Data="{StaticResource WarningIconGeometry}"
                                   Stroke="#B37400"
@@ -117,6 +156,18 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </StackPanel>
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource CloseButtonStyle}"
+                                    Tag="{Binding}"
+                                    Click="CloseWarning_Click"
+                                    ToolTip="Dismiss"
+                                    Margin="8,0,0,0">
+                                <Path Data="{StaticResource CloseIconGeometry}"
+                                      Stroke="#B37400"
+                                      StrokeThickness="1.5"
+                                      Width="10" Height="10"
+                                      Stretch="Uniform"/>
+                            </Button>
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -137,6 +188,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Path Data="{StaticResource InfoIconGeometry}"
                                   Stroke="#0078D4"
@@ -151,6 +203,18 @@
                                        FontSize="13"
                                        Foreground="#005A9E"
                                        TextWrapping="Wrap"/>
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource CloseButtonStyle}"
+                                    Tag="{Binding}"
+                                    Click="CloseInfo_Click"
+                                    ToolTip="Dismiss"
+                                    Margin="8,0,0,0">
+                                <Path Data="{StaticResource CloseIconGeometry}"
+                                      Stroke="#0078D4"
+                                      StrokeThickness="1.5"
+                                      Width="10" Height="10"
+                                      Stretch="Uniform"/>
+                            </Button>
                         </Grid>
                     </Border>
                 </DataTemplate>

@@ -185,6 +185,7 @@ namespace BrowserSelector
                 var warning = result.Warnings.First();
                 PatternWarningText.Text = warning.Message;
                 PatternWarningBorder.Visibility = Visibility.Visible;
+                PatternWarningBorder.BringIntoView();
             }
 
             // Add pattern (even with warning)
@@ -251,6 +252,11 @@ namespace BrowserSelector
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        private void ClosePatternWarning_Click(object sender, RoutedEventArgs e)
+        {
+            PatternWarningBorder.Visibility = Visibility.Collapsed;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)

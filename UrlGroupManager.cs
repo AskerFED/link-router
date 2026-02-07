@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
@@ -99,21 +100,7 @@ namespace BrowserSelector
             if (_cachedGroups != null)
                 return _cachedGroups;
 
-            try
-            {
-                if (File.Exists(GroupsConfigPath))
-                {
-                    var json = File.ReadAllText(GroupsConfigPath);
-                    _cachedGroups = JsonSerializer.Deserialize<List<UrlGroup>>(json) ?? new List<UrlGroup>();
-                    return _cachedGroups;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"Error loading URL groups: {ex.Message}");
-            }
-
-            _cachedGroups = new List<UrlGroup>();
+            _cachedGroups = JsonStorageService.Load<List<UrlGroup>>(GroupsConfigPath);
             return _cachedGroups;
         }
 
@@ -122,24 +109,8 @@ namespace BrowserSelector
         /// </summary>
         public static void SaveGroups(List<UrlGroup> groups)
         {
-            try
-            {
-                if (!Directory.Exists(ConfigDirectory))
-                {
-                    Directory.CreateDirectory(ConfigDirectory);
-                }
-
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var json = JsonSerializer.Serialize(groups, options);
-                File.WriteAllText(GroupsConfigPath, json);
-
-                _cachedGroups = groups;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"Error saving URL groups: {ex.Message}");
-                throw;
-            }
+            JsonStorageService.Save(GroupsConfigPath, groups);
+            _cachedGroups = groups;
         }
 
         /// <summary>
@@ -260,21 +231,7 @@ namespace BrowserSelector
             if (_cachedOverrides != null)
                 return _cachedOverrides;
 
-            try
-            {
-                if (File.Exists(OverridesConfigPath))
-                {
-                    var json = File.ReadAllText(OverridesConfigPath);
-                    _cachedOverrides = JsonSerializer.Deserialize<List<UrlGroupOverride>>(json) ?? new List<UrlGroupOverride>();
-                    return _cachedOverrides;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"Error loading URL group overrides: {ex.Message}");
-            }
-
-            _cachedOverrides = new List<UrlGroupOverride>();
+            _cachedOverrides = JsonStorageService.Load<List<UrlGroupOverride>>(OverridesConfigPath);
             return _cachedOverrides;
         }
 
@@ -283,24 +240,8 @@ namespace BrowserSelector
         /// </summary>
         public static void SaveOverrides(List<UrlGroupOverride> overrides)
         {
-            try
-            {
-                if (!Directory.Exists(ConfigDirectory))
-                {
-                    Directory.CreateDirectory(ConfigDirectory);
-                }
-
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var json = JsonSerializer.Serialize(overrides, options);
-                File.WriteAllText(OverridesConfigPath, json);
-
-                _cachedOverrides = overrides;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log($"Error saving URL group overrides: {ex.Message}");
-                throw;
-            }
+            JsonStorageService.Save(OverridesConfigPath, overrides);
+            _cachedOverrides = overrides;
         }
 
         /// <summary>

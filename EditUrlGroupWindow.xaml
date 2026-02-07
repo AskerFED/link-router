@@ -15,6 +15,7 @@
 
             <!-- Icon Geometries -->
             <Geometry x:Key="ExportIcon">M4,2 L12,2 L12,10 M12,2 L4,10</Geometry>
+            <Geometry x:Key="CloseIcon">M2,2 L12,12 M12,2 L2,12</Geometry>
 
             <!-- Icon Button Orange Style -->
             <Style x:Key="IconButtonOrangeStyle" TargetType="Button">
@@ -187,6 +188,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"
                                        Text="&#x26A0;"
@@ -200,6 +202,35 @@
                                        Foreground="#8A5A00"
                                        TextWrapping="Wrap"
                                        VerticalAlignment="Center"/>
+                            <Button Grid.Column="2"
+                                    Width="20"
+                                    Height="20"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    Click="ClosePatternWarning_Click"
+                                    ToolTip="Dismiss"
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Center">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="3">
+                                            <Path Data="{StaticResource CloseIcon}"
+                                                  Stroke="#B37400"
+                                                  StrokeThickness="1.5"
+                                                  Width="10" Height="10"
+                                                  Stretch="Uniform"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#20000000"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
                         </Grid>
                     </Border>
 

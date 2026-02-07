@@ -89,7 +89,6 @@
                              VerticalContentAlignment="Center"
                              Height="32"
                              FontSize="13"
-                             FontFamily="Consolas, Courier New"
                              KeyDown="TestUrlTextBox_KeyDown"/>
                 </Border>
 
@@ -289,7 +288,6 @@
                                 <DataGridTextColumn Header="URL Pattern" Binding="{Binding Pattern}" Width="*" MinWidth="120">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="FontFamily" Value="Consolas, Courier New"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
