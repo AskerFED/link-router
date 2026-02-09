@@ -213,18 +213,28 @@ namespace BrowserSelector
 
     public static class Logger
     {
-        private static readonly string LogDirectory = @"D:\LinkRouter";
-        private static readonly string LogFilePath =
-            Path.Combine(LogDirectory, "log.txt");
+        private static readonly string LogDirectory = AppConfig.AppDataFolder;
+        private static readonly string LogFilePath = Path.Combine(LogDirectory, "log.txt");
+        private static readonly string OldLogFilePath = Path.Combine(LogDirectory, "log.old.txt");
+        private const long MaxLogSize = 1 * 1024 * 1024; // 1 MB
 
         public static void Log(string message)
         {
             try
             {
-                // Ensure directory exists
                 if (!Directory.Exists(LogDirectory))
-                {
                     Directory.CreateDirectory(LogDirectory);
+
+                // Rotate log if it exceeds max size
+                if (File.Exists(LogFilePath))
+                {
+                    var fileInfo = new FileInfo(LogFilePath);
+                    if (fileInfo.Length > MaxLogSize)
+                    {
+                        if (File.Exists(OldLogFilePath))
+                            File.Delete(OldLogFilePath);
+                        File.Move(LogFilePath, OldLogFilePath);
+                    }
                 }
 
                 File.AppendAllText(

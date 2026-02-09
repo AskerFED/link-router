@@ -208,13 +208,37 @@ namespace BrowserSelector
         {
             try
             {
-                using var key = Registry.CurrentUser.OpenSubKey(
-                    @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice");
-                var progId = key?.GetValue("ProgId")?.ToString();
-                return progId == AppName;
+                // Windows 11 2025+ uses UserChoiceLatest, fall back to UserChoice for older versions
+                string? progId = null;
+
+                // Try UserChoiceLatest\ProgId first (Windows 11 2025+ stores ProgId as a subkey)
+                using (var key = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoiceLatest\ProgId"))
+                {
+                    progId = key?.GetValue("ProgId")?.ToString();
+                    if (!string.IsNullOrEmpty(progId))
+                    {
+                        Logger.Log($"IsSystemDefaultBrowser check (UserChoiceLatest\\ProgId) - ProgId: '{progId}', AppName: '{AppName}'");
+                    }
+                }
+
+                // Fall back to UserChoice if UserChoiceLatest not found
+                if (string.IsNullOrEmpty(progId))
+                {
+                    using var key = Registry.CurrentUser.OpenSubKey(
+                        @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice");
+                    progId = key?.GetValue("ProgId")?.ToString();
+                    Logger.Log($"IsSystemDefaultBrowser check (UserChoice) - ProgId: '{progId}', AppName: '{AppName}'");
+                }
+
+                var isDefault = string.Equals(progId, AppName, StringComparison.OrdinalIgnoreCase);
+                Logger.Log($"IsSystemDefaultBrowser result: {isDefault}");
+
+                return isDefault;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Log($"IsSystemDefaultBrowser ERROR: {ex.Message}");
                 return false;
             }
         }

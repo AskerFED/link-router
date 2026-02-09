@@ -308,14 +308,21 @@ namespace BrowserSelector
             if (!Directory.Exists(userDataPath))
                 return profiles;
 
+            // Get profile names from Local State (contains actual custom names)
+            var localStateNames = GetProfileNamesFromLocalState(userDataPath);
+
             // Add Default profile
             var defaultPrefs = System.IO.Path.Combine(userDataPath, "Default", "Preferences");
             if (File.Exists(defaultPrefs))
             {
                 var profileData = GetProfileDataFromPreferences(defaultPrefs);
+                // Prefer Local State name, fall back to Preferences name, then "Default"
+                var displayName = localStateNames.TryGetValue("Default", out var lsName)
+                    ? lsName
+                    : (profileData?.Name ?? "Default");
                 profiles.Add(new ProfileInfo
                 {
-                    Name = profileData?.Name ?? "Default",
+                    Name = displayName,
                     Email = profileData?.Email,
                     AvatarUrl = profileData?.AvatarUrl,
                     Path = System.IO.Path.Combine(userDataPath, "Default"),
@@ -332,10 +339,14 @@ namespace BrowserSelector
                 {
                     var dirName = System.IO.Path.GetFileName(dir);
                     var profileData = GetProfileDataFromPreferences(prefsFile);
+                    // Prefer Local State name, fall back to Preferences name, then directory name
+                    var displayName = localStateNames.TryGetValue(dirName, out var lsName)
+                        ? lsName
+                        : (profileData?.Name ?? dirName);
 
                     profiles.Add(new ProfileInfo
                     {
-                        Name = profileData?.Name ?? dirName,
+                        Name = displayName,
                         Email = profileData?.Email,
                         AvatarUrl = profileData?.AvatarUrl,
                         Path = dir,
@@ -380,14 +391,21 @@ namespace BrowserSelector
             if (!Directory.Exists(userDataPath))
                 return profiles;
 
+            // Get profile names from Local State (contains actual custom names)
+            var localStateNames = GetProfileNamesFromLocalState(userDataPath);
+
             // Add Default profile
             var defaultPrefs = System.IO.Path.Combine(userDataPath, "Default", "Preferences");
             if (File.Exists(defaultPrefs))
             {
                 var profileData = GetProfileDataFromPreferences(defaultPrefs);
+                // Prefer Local State name, fall back to Preferences name, then "Default"
+                var displayName = localStateNames.TryGetValue("Default", out var lsName)
+                    ? lsName
+                    : (profileData?.Name ?? "Default");
                 profiles.Add(new ProfileInfo
                 {
-                    Name = profileData?.Name ?? "Default",
+                    Name = displayName,
                     Email = profileData?.Email,
                     AvatarUrl = profileData?.AvatarUrl,
                     Path = System.IO.Path.Combine(userDataPath, "Default"),
@@ -404,9 +422,13 @@ namespace BrowserSelector
                 {
                     var dirName = System.IO.Path.GetFileName(dir);
                     var profileData = GetProfileDataFromPreferences(prefsFile);
+                    // Prefer Local State name, fall back to Preferences name, then directory name
+                    var displayName = localStateNames.TryGetValue(dirName, out var lsName)
+                        ? lsName
+                        : (profileData?.Name ?? dirName);
                     profiles.Add(new ProfileInfo
                     {
-                        Name = profileData?.Name ?? dirName,
+                        Name = displayName,
                         Email = profileData?.Email,
                         AvatarUrl = profileData?.AvatarUrl,
                         Path = dir,
@@ -457,6 +479,52 @@ namespace BrowserSelector
                 !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Email)
                     ? $"{Name} ({Email})"
                     : Name;
+        }
+
+        /// <summary>
+        /// Reads profile display names from Chrome/Edge Local State file.
+        /// This contains the actual user-customized profile names.
+        /// </summary>
+        private static Dictionary<string, string> GetProfileNamesFromLocalState(string userDataPath)
+        {
+            var names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var localStatePath = System.IO.Path.Combine(userDataPath, "Local State");
+
+            if (!File.Exists(localStatePath))
+                return names;
+
+            try
+            {
+                var json = File.ReadAllText(localStatePath);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                // Navigate to profile.info_cache
+                if (root.TryGetProperty("profile", out var profileProp) &&
+                    profileProp.TryGetProperty("info_cache", out var infoCache))
+                {
+                    foreach (var profileEntry in infoCache.EnumerateObject())
+                    {
+                        string profileDir = profileEntry.Name; // e.g., "Default", "Profile 1"
+
+                        if (profileEntry.Value.TryGetProperty("name", out var nameProp))
+                        {
+                            var profileName = nameProp.GetString();
+                            if (!string.IsNullOrEmpty(profileName))
+                            {
+                                names[profileDir] = profileName;
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // If Local State parsing fails, return empty dictionary
+                // Callers will fall back to Preferences file names
+            }
+
+            return names;
         }
 
         private static ProfilePreferencesData GetProfileDataFromPreferences(string preferencesPath)
