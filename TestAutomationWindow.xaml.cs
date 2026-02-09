@@ -123,7 +123,11 @@ namespace BrowserSelector
                         Name = "Test Automation Group",
                         Description = "Created by test automation",
                         IsEnabled = true,
-                        UrlPatterns = new List<string> { "test-auto-1.com", "test-auto-2.com" },
+                        UrlPatterns = new List<UrlPattern>
+                        {
+                            new UrlPattern { Pattern = "test-auto-1.com", CreatedDate = DateTime.Now },
+                            new UrlPattern { Pattern = "test-auto-2.com", CreatedDate = DateTime.Now }
+                        },
                         Behavior = UrlGroupBehavior.UseDefault
                     };
                     UrlGroupManager.AddGroup(group);
@@ -169,7 +173,10 @@ namespace BrowserSelector
                     {
                         Name = "Priority Test URL Group",
                         IsEnabled = true,
-                        UrlPatterns = new List<string> { "priority-test.example.com" },
+                        UrlPatterns = new List<UrlPattern>
+                        {
+                            new UrlPattern { Pattern = "priority-test.example.com", CreatedDate = DateTime.Now }
+                        },
                         Behavior = UrlGroupBehavior.UseDefault,
                         DefaultBrowserName = "URLGroupBrowser"
                     };

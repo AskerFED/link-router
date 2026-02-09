@@ -17,6 +17,9 @@
             <Geometry x:Key="ExportIcon">M4,2 L12,2 L12,10 M12,2 L4,10</Geometry>
             <Geometry x:Key="CloseIcon">M2,2 L12,12 M12,2 L2,12</Geometry>
 
+            <!-- Converters -->
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
             <!-- Icon Button Orange Style -->
             <Style x:Key="IconButtonOrangeStyle" TargetType="Button">
                 <Setter Property="Width" Value="24"/>
@@ -373,23 +376,46 @@
                                             BorderBrush="#E4E4E4"
                                             BorderThickness="1">
                                         <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <TextBlock Grid.Column="0"
-                                                       Text="{Binding}"
-                                                       Style="{StaticResource BodyTextStyle}"
-                                                       VerticalAlignment="Center"/>
+                                            <!-- Pattern text with Built-in badge -->
+                                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Pattern}"
+                                                           Style="{StaticResource BodyTextStyle}"
+                                                           VerticalAlignment="Center"/>
+                                                <!-- Built-in badge (after pattern text) -->
+                                                <Border Background="#E3F2FD"
+                                                        CornerRadius="3"
+                                                        Padding="5,1"
+                                                        Margin="8,0,0,0"
+                                                        Visibility="{Binding IsBuiltIn, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                    <TextBlock Text="Built-in"
+                                                               FontSize="10"
+                                                               Foreground="#1976D2"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <!-- Timestamp below pattern -->
+                                            <TextBlock Grid.Row="1" Grid.Column="0"
+                                                       Text="{Binding DateDisplay}"
+                                                       FontSize="11"
+                                                       Foreground="#999"
+                                                       Margin="0,3,0,0"/>
 
                                             <!-- Move to Rule button -->
-                                            <Button Grid.Column="1"
+                                            <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
                                                     Style="{StaticResource IconButtonOrangeStyle}"
                                                     ToolTip="Move to Individual Rule"
-                                                    Tag="{Binding}"
                                                     Margin="0,0,6,0"
+                                                    VerticalAlignment="Center"
                                                     Click="MovePatternToRule_Click">
                                                 <Path Data="{StaticResource ExportIcon}"
                                                       Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
@@ -399,10 +425,10 @@
                                             </Button>
 
                                             <!-- Delete button -->
-                                            <Button Grid.Column="2"
+                                            <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
                                                     Content="X"
-                                                    Tag="{Binding}"
                                                     Click="RemovePattern_Click"
+                                                    VerticalAlignment="Center"
                                                     Style="{StaticResource DeletePatternButtonStyle}"/>
                                         </Grid>
                                     </Border>

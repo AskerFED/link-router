@@ -32,9 +32,9 @@ namespace BrowserSelector.Pages
         {
             try
             {
-                bool isRegistered = RegistryHelper.IsRegistered();
+                bool isDefaultBrowser = RegistryHelper.IsSystemDefaultBrowser();
 
-                if (isRegistered)
+                if (isDefaultBrowser)
                 {
                     // Green badge - Set
                     RegistrationStatusBorder.Background = new System.Windows.Media.SolidColorBrush(

@@ -1,9 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace BrowserSelector
 {
+    /// <summary>
+    /// Represents a URL pattern with metadata for tracking and versioning
+    /// </summary>
+    public class UrlPattern
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Pattern { get; set; } = string.Empty;
+        public bool IsBuiltIn { get; set; } = false;
+        public string? VersionAdded { get; set; }  // e.g., "1.0.0", "1.1.0"
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime? UpdatedDate { get; set; }
+
+        /// <summary>
+        /// Display-friendly date showing when this pattern was last modified
+        /// </summary>
+        [JsonIgnore]
+        public string DateDisplay => UpdatedDate.HasValue
+            ? $"Updated {UpdatedDate.Value:MMM d, yyyy}"
+            : $"Added {CreatedDate:MMM d, yyyy}";
+    }
+
     /// <summary>
     /// Helper class for displaying indexed URL patterns in lists
     /// </summary>
@@ -12,6 +34,7 @@ namespace BrowserSelector
         public int Index { get; set; }
         public string Pattern { get; set; } = string.Empty;
         public string GroupId { get; set; } = string.Empty;
+        public UrlPattern? PatternObject { get; set; }
     }
 
     /// <summary>
@@ -40,7 +63,24 @@ namespace BrowserSelector
         public string Description { get; set; } = string.Empty;
         public bool IsBuiltIn { get; set; } = false;
         public bool IsEnabled { get; set; } = true;
-        public List<string> UrlPatterns { get; set; } = new List<string>();
+
+        /// <summary>
+        /// URL patterns with metadata (new format)
+        /// </summary>
+        public List<UrlPattern> UrlPatterns { get; set; } = new List<UrlPattern>();
+
+        /// <summary>
+        /// Legacy URL patterns for backward compatibility during migration.
+        /// Only used when reading old JSON files.
+        /// </summary>
+        [JsonPropertyName("UrlPatternsLegacy")]
+        public List<string>? LegacyUrlPatterns { get; set; }
+
+        /// <summary>
+        /// IDs of built-in patterns the user has deleted.
+        /// These won't be re-added on template updates.
+        /// </summary>
+        public List<string> DeletedBuiltInPatternIds { get; set; } = new List<string>();
 
         // Default browser/profile for this group (used when Behavior = UseDefault)
         public string DefaultBrowserName { get; set; } = string.Empty;
@@ -73,8 +113,9 @@ namespace BrowserSelector
         /// <summary>
         /// URL patterns with index for numbered list display
         /// </summary>
+        [JsonIgnore]
         public List<IndexedUrlPattern> UrlPatternsIndexed =>
-            UrlPatterns?.Select((p, i) => new IndexedUrlPattern { Index = i + 1, Pattern = p, GroupId = this.Id }).ToList()
+            UrlPatterns?.Select((p, i) => new IndexedUrlPattern { Index = i + 1, Pattern = p.Pattern, GroupId = this.Id, PatternObject = p }).ToList()
             ?? new List<IndexedUrlPattern>();
 
         /// <summary>

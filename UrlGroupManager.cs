@@ -23,67 +23,60 @@ namespace BrowserSelector
         #region Built-in Groups
 
         /// <summary>
-        /// Returns the predefined built-in URL groups
+        /// Gets stable pattern IDs for built-in patterns during migration.
+        /// Maps group ID + pattern text to a stable pattern ID.
         /// </summary>
-        public static List<UrlGroup> GetBuiltInGroups()
+        private static readonly Dictionary<string, Dictionary<string, string>> _builtInPatternIds = new()
         {
-            return new List<UrlGroup>
+            ["builtin-m365"] = new Dictionary<string, string>
             {
-                new UrlGroup
-                {
-                    Id = "builtin-m365",
-                    Name = "Microsoft 365",
-                    Description = "Microsoft 365, Azure, and related services",
-                    IsBuiltIn = true,
-                    IsEnabled = true,
-                    UrlPatterns = new List<string>
-                    {
-                        "admin.microsoft.com",
-                        "portal.azure.com",
-                        "outlook.office.com",
-                        "outlook.office365.com",
-                        "teams.microsoft.com",
-                        "forms.office.com",
-                        "sharepoint.com",
-                        "onedrive.com",
-                        "office.com",
-                        "microsoft365.com",
-                        "live.com",
-                        "microsoftonline.com",
-                        "azure.com",
-                        "dynamics.com",
-                        "powerbi.com",
-                        "powerapps.com",
-                        "flow.microsoft.com"
-                    },
-                    Behavior = UrlGroupBehavior.UseDefault
-                },
-                new UrlGroup
-                {
-                    Id = "builtin-google",
-                    Name = "Google Suite",
-                    Description = "Google Workspace and related services",
-                    IsBuiltIn = true,
-                    IsEnabled = true,
-                    UrlPatterns = new List<string>
-                    {
-                        "mail.google.com",
-                        "drive.google.com",
-                        "docs.google.com",
-                        "sheets.google.com",
-                        "slides.google.com",
-                        "calendar.google.com",
-                        "meet.google.com",
-                        "chat.google.com",
-                        "keep.google.com",
-                        "contacts.google.com",
-                        "admin.google.com",
-                        "cloud.google.com",
-                        "console.cloud.google.com"
-                    },
-                    Behavior = UrlGroupBehavior.UseDefault
-                }
-            };
+                ["admin.microsoft.com"] = "m365-admin",
+                ["portal.azure.com"] = "m365-azure",
+                ["outlook.office.com"] = "m365-outlook",
+                ["outlook.office365.com"] = "m365-outlook365",
+                ["teams.microsoft.com"] = "m365-teams",
+                ["forms.office.com"] = "m365-forms",
+                ["sharepoint.com"] = "m365-sharepoint",
+                ["onedrive.com"] = "m365-onedrive",
+                ["office.com"] = "m365-office",
+                ["microsoft365.com"] = "m365-m365",
+                ["live.com"] = "m365-live",
+                ["microsoftonline.com"] = "m365-online",
+                ["azure.com"] = "m365-azurecom",
+                ["dynamics.com"] = "m365-dynamics",
+                ["powerbi.com"] = "m365-powerbi",
+                ["powerapps.com"] = "m365-powerapps",
+                ["flow.microsoft.com"] = "m365-flow"
+            },
+            ["builtin-google"] = new Dictionary<string, string>
+            {
+                ["mail.google.com"] = "google-mail",
+                ["drive.google.com"] = "google-drive",
+                ["docs.google.com"] = "google-docs",
+                ["sheets.google.com"] = "google-sheets",
+                ["slides.google.com"] = "google-slides",
+                ["calendar.google.com"] = "google-calendar",
+                ["meet.google.com"] = "google-meet",
+                ["chat.google.com"] = "google-chat",
+                ["keep.google.com"] = "google-keep",
+                ["contacts.google.com"] = "google-contacts",
+                ["admin.google.com"] = "google-admin",
+                ["cloud.google.com"] = "google-cloud",
+                ["console.cloud.google.com"] = "google-console"
+            }
+        };
+
+        /// <summary>
+        /// Gets the stable ID for a built-in pattern, or generates a new one.
+        /// </summary>
+        private static string GetStablePatternId(string groupId, string pattern)
+        {
+            if (_builtInPatternIds.TryGetValue(groupId, out var patterns) &&
+                patterns.TryGetValue(pattern, out var id))
+            {
+                return id;
+            }
+            return Guid.NewGuid().ToString();
         }
 
         #endregion
@@ -91,7 +84,7 @@ namespace BrowserSelector
         #region URL Groups CRUD
 
         /// <summary>
-        /// Loads all URL groups from the config file
+        /// Loads all URL groups from the config file, migrating legacy data if needed.
         /// </summary>
         public static List<UrlGroup> LoadGroups()
         {
@@ -99,6 +92,42 @@ namespace BrowserSelector
                 return _cachedGroups;
 
             _cachedGroups = JsonStorageService.Load<List<UrlGroup>>(GroupsConfigPath);
+
+            // Check if migration is needed (legacy patterns exist)
+            bool needsMigration = _cachedGroups.Any(g =>
+                g.LegacyUrlPatterns != null && g.LegacyUrlPatterns.Count > 0 &&
+                (g.UrlPatterns == null || g.UrlPatterns.Count == 0));
+
+            if (needsMigration)
+            {
+                Logger.Log("Migrating URL groups from legacy string patterns to UrlPattern objects");
+                JsonStorageService.CreatePreMigrationBackup(GroupsConfigPath, "string-to-urlpattern");
+
+                foreach (var group in _cachedGroups)
+                {
+                    if (group.LegacyUrlPatterns != null && group.LegacyUrlPatterns.Count > 0 &&
+                        (group.UrlPatterns == null || group.UrlPatterns.Count == 0))
+                    {
+                        group.UrlPatterns = group.LegacyUrlPatterns.Select(p => new UrlPattern
+                        {
+                            Id = group.IsBuiltIn ? GetStablePatternId(group.Id, p) : Guid.NewGuid().ToString(),
+                            Pattern = p,
+                            IsBuiltIn = group.IsBuiltIn,
+                            VersionAdded = group.IsBuiltIn ? "1.0.0" : null,
+                            CreatedDate = group.CreatedDate
+                        }).ToList();
+
+                        // Clear legacy patterns after migration
+                        group.LegacyUrlPatterns = null;
+
+                        Logger.Log($"Migrated {group.UrlPatterns.Count} patterns for group '{group.Name}'");
+                    }
+                }
+
+                SaveGroups(_cachedGroups);
+                Logger.Log("URL group migration complete");
+            }
+
             return _cachedGroups;
         }
 
@@ -162,51 +191,39 @@ namespace BrowserSelector
         }
 
         /// <summary>
-        /// Imports built-in groups (adds them if they don't exist)
-        /// Note: This enables them when manually imported by user
+        /// Imports built-in groups (adds them if they don't exist) and enables them.
+        /// Called when user manually requests import.
         /// </summary>
         public static void ImportBuiltInGroups()
         {
+            // Use BuiltInTemplateManager for template-based updates
+            BuiltInTemplateManager.ApplyTemplateUpdates();
+
+            // Enable all built-in groups when manually imported
             var groups = LoadGroups();
-            var builtInGroups = GetBuiltInGroups();
-
-            foreach (var builtIn in builtInGroups)
-            {
-                if (!groups.Any(g => g.Id == builtIn.Id))
-                {
-                    builtIn.IsEnabled = true; // Enable when user manually imports
-                    groups.Add(builtIn);
-                }
-            }
-
-            SaveGroups(groups);
-        }
-
-        /// <summary>
-        /// Ensures built-in groups exist in the config (auto-imported as DISABLED)
-        /// Called automatically when app starts - user can enable as needed
-        /// </summary>
-        public static void EnsureBuiltInGroupsExist()
-        {
-            var groups = LoadGroups();
-            var builtInGroups = GetBuiltInGroups();
             bool changed = false;
 
-            foreach (var builtIn in builtInGroups)
+            foreach (var group in groups.Where(g => g.IsBuiltIn && !g.IsEnabled))
             {
-                if (!groups.Any(g => g.Id == builtIn.Id))
-                {
-                    builtIn.IsEnabled = false; // DISABLED by default for auto-import
-                    groups.Add(builtIn);
-                    changed = true;
-                    Logger.Log($"Auto-imported built-in group '{builtIn.Name}' as disabled");
-                }
+                group.IsEnabled = true;
+                changed = true;
+                Logger.Log($"Enabled built-in group '{group.Name}'");
             }
 
             if (changed)
             {
                 SaveGroups(groups);
             }
+        }
+
+        /// <summary>
+        /// Ensures built-in groups exist and applies any template updates.
+        /// Called automatically when app starts.
+        /// </summary>
+        public static void EnsureBuiltInGroupsExist()
+        {
+            // Apply template updates (adds new groups disabled, merges new patterns)
+            BuiltInTemplateManager.ApplyTemplateUpdates();
         }
 
         /// <summary>
@@ -325,7 +342,7 @@ namespace BrowserSelector
         /// <summary>
         /// Checks if a URL matches any of the patterns in the list
         /// </summary>
-        private static bool MatchesGroupPatterns(string url, List<string> patterns)
+        private static bool MatchesGroupPatterns(string url, List<UrlPattern> patterns)
         {
             if (patterns == null || patterns.Count == 0)
                 return false;
@@ -344,9 +361,9 @@ namespace BrowserSelector
                 // If URL parsing fails, use the full URL for matching
             }
 
-            foreach (var pattern in patterns)
+            foreach (var urlPattern in patterns)
             {
-                string patternLower = pattern.ToLower();
+                string patternLower = urlPattern.Pattern.ToLower();
 
                 // Check if URL contains the pattern
                 if (urlLower.Contains(patternLower))

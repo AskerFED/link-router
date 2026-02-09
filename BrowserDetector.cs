@@ -18,12 +18,12 @@ namespace BrowserSelector
     public class ProfileInfo
     {
         public string Name { get; set; }
-        public string Email { get; set; }
+        public string? Email { get; set; }
         public string Path { get; set; }
         public string Arguments { get; set; }
 
-        public string AvatarUrl { get; set; }   // NEW
-        public int ProfileIndex { get; set; }   // NEW (fallback)
+        public string? AvatarUrl { get; set; }
+        public int ProfileIndex { get; set; }
 
         public string DisplayName =>
             string.IsNullOrWhiteSpace(Email)
@@ -312,10 +312,12 @@ namespace BrowserSelector
             var defaultPrefs = System.IO.Path.Combine(userDataPath, "Default", "Preferences");
             if (File.Exists(defaultPrefs))
             {
-                var profileName = GetProfileNameFromPreferences(defaultPrefs) ?? "Default";
+                var profileData = GetProfileDataFromPreferences(defaultPrefs);
                 profiles.Add(new ProfileInfo
                 {
-                    Name = profileName,
+                    Name = profileData?.Name ?? "Default",
+                    Email = profileData?.Email,
+                    AvatarUrl = profileData?.AvatarUrl,
                     Path = System.IO.Path.Combine(userDataPath, "Default"),
                     Arguments = "--profile-directory=\"Default\""
                 });
@@ -329,11 +331,13 @@ namespace BrowserSelector
                 if (File.Exists(prefsFile))
                 {
                     var dirName = System.IO.Path.GetFileName(dir);
-                    var profileName = GetProfileNameFromPreferences(prefsFile) ?? dirName;
+                    var profileData = GetProfileDataFromPreferences(prefsFile);
 
                     profiles.Add(new ProfileInfo
                     {
-                        Name = profileName,
+                        Name = profileData?.Name ?? dirName,
+                        Email = profileData?.Email,
+                        AvatarUrl = profileData?.AvatarUrl,
                         Path = dir,
                         Arguments = $"--profile-directory=\"{dirName}\""
                     });
@@ -380,10 +384,12 @@ namespace BrowserSelector
             var defaultPrefs = System.IO.Path.Combine(userDataPath, "Default", "Preferences");
             if (File.Exists(defaultPrefs))
             {
-                var profileName = GetProfileNameFromPreferences(defaultPrefs) ?? "Default";
+                var profileData = GetProfileDataFromPreferences(defaultPrefs);
                 profiles.Add(new ProfileInfo
                 {
-                    Name = profileName,
+                    Name = profileData?.Name ?? "Default",
+                    Email = profileData?.Email,
+                    AvatarUrl = profileData?.AvatarUrl,
                     Path = System.IO.Path.Combine(userDataPath, "Default"),
                     Arguments = "--profile-directory=\"Default\""
                 });
@@ -397,10 +403,12 @@ namespace BrowserSelector
                 if (File.Exists(prefsFile))
                 {
                     var dirName = System.IO.Path.GetFileName(dir);
-                    var profileName = GetProfileNameFromPreferences(prefsFile) ?? dirName;
+                    var profileData = GetProfileDataFromPreferences(prefsFile);
                     profiles.Add(new ProfileInfo
                     {
-                        Name = profileName,
+                        Name = profileData?.Name ?? dirName,
+                        Email = profileData?.Email,
+                        AvatarUrl = profileData?.AvatarUrl,
                         Path = dir,
                         Arguments = $"--profile-directory=\"{dirName}\""
                     });
@@ -436,7 +444,22 @@ namespace BrowserSelector
         }
 
          
-        private static string GetProfileNameFromPreferences(string preferencesPath)
+        /// <summary>
+        /// Data extracted from Chrome/Edge Preferences JSON file
+        /// </summary>
+        private class ProfilePreferencesData
+        {
+            public string? Name { get; set; }
+            public string? Email { get; set; }
+            public string? AvatarUrl { get; set; }
+
+            public string? DisplayName =>
+                !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Email)
+                    ? $"{Name} ({Email})"
+                    : Name;
+        }
+
+        private static ProfilePreferencesData GetProfileDataFromPreferences(string preferencesPath)
         {
             try
             {
@@ -446,7 +469,7 @@ namespace BrowserSelector
 
                 string profileName = null;
                 string email = null;
-
+                string avatarUrl = null;
 
                 // profile.name
                 if (root.TryGetProperty("profile", out var profileProp) &&
@@ -455,34 +478,42 @@ namespace BrowserSelector
                     profileName = nameProp.GetString();
                 }
 
-                // account_info[0].email
+                // account_info[0] - email and avatar
                 if (root.TryGetProperty("account_info", out var accountInfo) &&
                     accountInfo.ValueKind == System.Text.Json.JsonValueKind.Array &&
                     accountInfo.GetArrayLength() > 0)
                 {
                     var account = accountInfo[0];
 
-
                     if (account.TryGetProperty("email", out var emailProp))
                     {
                         email = emailProp.GetString();
                     }
+
+                    // Extract avatar URL (picture_url or last_downloaded_image_url_with_size)
+                    if (account.TryGetProperty("picture_url", out var pictureUrlProp))
+                    {
+                        avatarUrl = pictureUrlProp.GetString();
+                    }
+                    else if (account.TryGetProperty("last_downloaded_image_url_with_size", out var lastImageProp))
+                    {
+                        avatarUrl = lastImageProp.GetString();
+                    }
                 }
 
-                // Compose display name
-                if (!string.IsNullOrWhiteSpace(profileName) &&
-                    !string.IsNullOrWhiteSpace(email))
+                return new ProfilePreferencesData
                 {
-                    return $"{profileName} ({email})";
-                }
-
-                return profileName;
+                    Name = profileName,
+                    Email = email,
+                    AvatarUrl = avatarUrl
+                };
             }
             catch
             {
                 return null;
             }
         }
+
 
         public static BrowserInfo MatchBrowserByPath(string path)
         {

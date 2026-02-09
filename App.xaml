@@ -13,6 +13,9 @@
             <converters:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
             <converters:BrowserPathToIconConverter x:Key="BrowserPathToIconConverter"/>
             <converters:BrowserNameToColorConverter x:Key="BrowserNameToColorConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>
+            <converters:StringNullOrEmptyToCollapsedConverter x:Key="StringNullOrEmptyToCollapsedConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

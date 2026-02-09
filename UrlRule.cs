@@ -74,6 +74,19 @@ namespace BrowserSelector
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         /// <summary>
+        /// When this rule was last modified. Null if never modified after creation.
+        /// </summary>
+        public DateTime? ModifiedDate { get; set; }
+
+        /// <summary>
+        /// Display-friendly date showing when this rule was last modified
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string ModifiedDateDisplay => ModifiedDate.HasValue
+            ? ModifiedDate.Value.ToString("MMM d, yyyy")
+            : CreatedDate.ToString("MMM d, yyyy");
+
+        /// <summary>
         /// Gets the first profile for display purposes
         /// </summary>
         public RuleProfile? FirstProfile => Profiles?.FirstOrDefault();
@@ -187,6 +200,7 @@ namespace BrowserSelector
             var index = rules.FindIndex(r => r.Id == rule.Id);
             if (index >= 0)
             {
+                rule.ModifiedDate = DateTime.Now; // Track modification time
                 rules[index] = rule; // Replace at same position to preserve order
                 SaveRules(rules);
             }

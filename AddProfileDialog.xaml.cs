@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using BrowserSelector.Models;
 using BrowserSelector.Services;
 
 namespace BrowserSelector
@@ -61,7 +63,7 @@ namespace BrowserSelector
                 // Wait for profiles to load, then select matching profile
                 Dispatcher.BeginInvoke(new System.Action(() =>
                 {
-                    var profiles = ProfileComboBox.ItemsSource as IEnumerable<ProfileInfo>;
+                    var profiles = ProfileComboBox.ItemsSource as IEnumerable<ProfileDisplayInfo>;
                     if (profiles != null)
                     {
                         var matchingProfile = profiles.FirstOrDefault(p =>
@@ -91,11 +93,33 @@ namespace BrowserSelector
             if (BrowserComboBox.SelectedItem is BrowserInfoWithColor browser)
             {
                 var profiles = BrowserService.GetProfiles(browser);
-                ProfileComboBox.ItemsSource = profiles;
 
-                if (profiles.Count > 0)
+                // Convert to display models with avatar support
+                var displayProfiles = profiles.Select(ProfileDisplayInfo.FromProfileInfo).ToList();
+                ProfileComboBox.ItemsSource = displayProfiles;
+
+                if (displayProfiles.Count > 0)
                 {
                     ProfileComboBox.SelectedIndex = 0;
+                }
+
+                // Load avatars asynchronously in background
+                _ = LoadAvatarsAsync(displayProfiles);
+            }
+        }
+
+        private async Task LoadAvatarsAsync(List<ProfileDisplayInfo> profiles)
+        {
+            foreach (var profile in profiles)
+            {
+                if (!string.IsNullOrEmpty(profile.AvatarUrl))
+                {
+                    var avatar = await ProfileAvatarService.GetAvatarAsync(profile.AvatarUrl, profile.Path);
+                    if (avatar != null)
+                    {
+                        // Update on UI thread - PropertyChanged will refresh the binding
+                        await Dispatcher.InvokeAsync(() => profile.Avatar = avatar);
+                    }
                 }
             }
         }
@@ -103,10 +127,19 @@ namespace BrowserSelector
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if (BrowserComboBox.SelectedItem is BrowserInfoWithColor browser &&
-                ProfileComboBox.SelectedItem is ProfileInfo profile)
+                ProfileComboBox.SelectedItem is ProfileDisplayInfo displayProfile)
             {
                 SelectedBrowser = browser;
-                SelectedProfile = profile;
+                // Convert back to ProfileInfo for callers
+                SelectedProfile = new ProfileInfo
+                {
+                    Name = displayProfile.Name,
+                    Email = displayProfile.Email,
+                    Path = displayProfile.Path,
+                    Arguments = displayProfile.Arguments,
+                    AvatarUrl = displayProfile.AvatarUrl,
+                    ProfileIndex = displayProfile.ProfileIndex
+                };
                 CustomDisplayName = CustomNameTextBox.Text?.Trim() ?? string.Empty;
                 DialogResult = true;
                 Close();

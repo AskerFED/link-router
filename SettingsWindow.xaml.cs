@@ -245,16 +245,27 @@ namespace BrowserSelector
             {
                 var settings = SettingsManager.LoadSettings();
                 bool isEnabled = settings.IsEnabled;
+                bool isDefaultBrowser = RegistryHelper.IsSystemDefaultBrowser();
 
-                if (isEnabled)
+                if (isEnabled && isDefaultBrowser)
                 {
-                    // Green - Rules processing enabled
+                    // Green - Rules processing enabled AND is default browser
                     var greenColor = new SolidColorBrush(Color.FromRgb(16, 124, 16));
                     StatusDot.Fill = greenColor;
                     StatusText.Text = "Active";
                     StatusText.Foreground = greenColor;
                     StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(223, 246, 221));
                     StatusIndicatorBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(165, 214, 167));
+                }
+                else if (isEnabled && !isDefaultBrowser)
+                {
+                    // Orange - Rules enabled but not default browser
+                    var orangeColor = new SolidColorBrush(Color.FromRgb(202, 133, 0));
+                    StatusDot.Fill = orangeColor;
+                    StatusText.Text = "Not Default";
+                    StatusText.Foreground = orangeColor;
+                    StatusIndicatorBorder.Background = new SolidColorBrush(Color.FromRgb(255, 243, 224));
+                    StatusIndicatorBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 224, 178));
                 }
                 else
                 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
@@ -13,6 +14,19 @@ namespace BrowserSelector
             for (int i = 0; i < e.Args.Length; i++)
             {
                 Logger.Log($"  Arg[{i}]: {e.Args[i]}");
+            }
+
+            // Pre-load profile avatars in background for better UX
+            ProfileAvatarService.LoadAllAvatarsAtStartup();
+
+            // Initialize built-in templates and apply any updates
+            try
+            {
+                UrlGroupManager.EnsureBuiltInGroupsExist();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Warning: Failed to initialize built-in templates: {ex.Message}");
             }
 
             // Auto-register if not already registered

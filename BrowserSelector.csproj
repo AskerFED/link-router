@@ -43,4 +43,8 @@
     <Resource Include="app.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\builtin-templates.json" />
+  </ItemGroup>
+
 </Project>

@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using BrowserSelector.Models;
 using BrowserSelector.Services;
 
 namespace BrowserSelector.Controls
@@ -82,7 +84,7 @@ namespace BrowserSelector.Controls
                 // Wait for profiles to load, then select the matching profile
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    var profiles = ProfileComboBox.ItemsSource as IEnumerable<ProfileInfo>;
+                    var profiles = ProfileComboBox.ItemsSource as IEnumerable<ProfileDisplayInfo>;
                     var matchingProfile = profiles?.FirstOrDefault(p => p.Path == profilePath);
                     if (matchingProfile != null)
                     {
@@ -143,7 +145,7 @@ namespace BrowserSelector.Controls
             }
 
             if (BrowserComboBox.SelectedItem is BrowserInfoWithColor browser &&
-                ProfileComboBox.SelectedItem is ProfileInfo profile)
+                ProfileComboBox.SelectedItem is ProfileDisplayInfo profile)
             {
                 return new RuleProfile
                 {
@@ -215,7 +217,7 @@ namespace BrowserSelector.Controls
         {
             // Add current selection to profiles list if valid
             if (BrowserComboBox.SelectedItem is BrowserInfoWithColor browser &&
-                ProfileComboBox.SelectedItem is ProfileInfo profile)
+                ProfileComboBox.SelectedItem is ProfileDisplayInfo profile)
             {
                 var ruleProfile = new RuleProfile
                 {
@@ -257,7 +259,7 @@ namespace BrowserSelector.Controls
 
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        var profiles = ProfileComboBox.ItemsSource as IEnumerable<ProfileInfo>;
+                        var profiles = ProfileComboBox.ItemsSource as IEnumerable<ProfileDisplayInfo>;
                         var matchingProfile = profiles?.FirstOrDefault(p => p.Path == firstProfile.ProfilePath);
                         if (matchingProfile != null)
                         {
@@ -293,15 +295,37 @@ namespace BrowserSelector.Controls
             if (BrowserComboBox.SelectedItem is BrowserInfoWithColor browser)
             {
                 var profiles = BrowserService.GetProfiles(browser);
-                ProfileComboBox.ItemsSource = profiles;
 
-                if (profiles.Count > 0)
+                // Convert to display models with avatar support
+                var displayProfiles = profiles.Select(ProfileDisplayInfo.FromProfileInfo).ToList();
+                ProfileComboBox.ItemsSource = displayProfiles;
+
+                if (displayProfiles.Count > 0)
                 {
                     ProfileComboBox.SelectedIndex = 0;
                 }
+
+                // Load avatars asynchronously in background
+                _ = LoadAvatarsAsync(displayProfiles);
             }
 
             SelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private async Task LoadAvatarsAsync(List<ProfileDisplayInfo> profiles)
+        {
+            foreach (var profile in profiles)
+            {
+                if (!string.IsNullOrEmpty(profile.AvatarUrl))
+                {
+                    var avatar = await ProfileAvatarService.GetAvatarAsync(profile.AvatarUrl, profile.Path);
+                    if (avatar != null)
+                    {
+                        // Update on UI thread - PropertyChanged will refresh the binding
+                        await Dispatcher.InvokeAsync(() => profile.Avatar = avatar);
+                    }
+                }
+            }
         }
 
         private void ProfileComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

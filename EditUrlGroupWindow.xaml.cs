@@ -20,9 +20,9 @@ namespace BrowserSelector
         private UrlGroup _group;
         private bool _isEditMode;
         private bool _isBuiltIn;
-        private ObservableCollection<string> _patterns;
-        private List<string> _filteredPatterns = new List<string>();
-        private List<string> _originalBuiltInPatterns = new List<string>();
+        private ObservableCollection<UrlPattern> _patterns;
+        private List<UrlPattern> _filteredPatterns = new List<UrlPattern>();
+        private List<UrlPattern> _originalBuiltInPatterns = new List<UrlPattern>();
 
         /// <summary>
         /// Indicates if individual rules were added via "Move to Rule" during this session.
@@ -53,16 +53,23 @@ namespace BrowserSelector
             _isEditMode = existingGroup != null;
             _group = existingGroup ?? new UrlGroup();
             _isBuiltIn = _group.IsBuiltIn;
-            _patterns = new ObservableCollection<string>(_group.UrlPatterns ?? new List<string>());
+            _patterns = new ObservableCollection<UrlPattern>(_group.UrlPatterns ?? new List<UrlPattern>());
 
             // Store original patterns for built-in groups to enable restore
             if (_isBuiltIn)
             {
-                var builtInDefinition = UrlGroupManager.GetBuiltInGroups()
-                    .FirstOrDefault(g => g.Id == _group.Id);
-                if (builtInDefinition != null)
+                // Load original patterns from the template manifest
+                var manifest = Services.BuiltInTemplateManager.LoadTemplateManifest();
+                var builtInTemplate = manifest.Templates.FirstOrDefault(t => t.Id == _group.Id);
+                if (builtInTemplate != null)
                 {
-                    _originalBuiltInPatterns = new List<string>(builtInDefinition.UrlPatterns);
+                    _originalBuiltInPatterns = builtInTemplate.Patterns.Select(p => new UrlPattern
+                    {
+                        Id = p.Id,
+                        Pattern = p.Pattern,
+                        IsBuiltIn = true,
+                        VersionAdded = p.VersionAdded
+                    }).ToList();
                 }
             }
 
@@ -104,8 +111,9 @@ namespace BrowserSelector
             }
 
             // Calculate which patterns are deleted (exist in original but not in current)
+            var currentPatternStrings = _patterns.Select(p => p.Pattern.ToLower()).ToHashSet();
             var deletedCount = _originalBuiltInPatterns
-                .Count(p => !_patterns.Contains(p));
+                .Count(p => !currentPatternStrings.Contains(p.Pattern.ToLower()));
 
             RestoreButton.IsEnabled = deletedCount > 0;
             RestoreButton.Content = deletedCount > 0
@@ -207,11 +215,11 @@ namespace BrowserSelector
             {
                 // Filter patterns that contain the search text
                 _filteredPatterns = _patterns
-                    .Where(p => p.ToLower().Contains(searchText))
+                    .Where(p => p.Pattern.ToLower().Contains(searchText))
                     .ToList();
 
                 // Enable Add button only when no matches found and pattern doesn't already exist
-                bool exactMatch = _patterns.Any(p => p.ToLower() == searchText);
+                bool exactMatch = _patterns.Any(p => p.Pattern.ToLower() == searchText);
                 if (AddPatternButton != null)
                     AddPatternButton.IsEnabled = _filteredPatterns.Count == 0 && !exactMatch;
             }
@@ -265,7 +273,7 @@ namespace BrowserSelector
             var normalizedPattern = result.NormalizedValue ?? pattern.ToLower();
 
             // Check for duplicate in current list
-            if (_patterns.Contains(normalizedPattern))
+            if (_patterns.Any(p => p.Pattern.ToLower() == normalizedPattern.ToLower()))
             {
                 MessageBox.Show("This pattern is already in the list.",
                     "Duplicate", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -284,8 +292,13 @@ namespace BrowserSelector
                 return;
             }
 
-            // Add pattern
-            _patterns.Add(normalizedPattern);
+            // Add pattern as new UrlPattern object
+            _patterns.Add(new UrlPattern
+            {
+                Pattern = normalizedPattern,
+                IsBuiltIn = false,
+                CreatedDate = DateTime.Now
+            });
             NewPatternTextBox.Clear();
             NewPatternTextBox.Focus();
             FilterPatterns(); // Reset filter state after adding
@@ -299,13 +312,40 @@ namespace BrowserSelector
 
         private void RemovePattern_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is string pattern)
+            if (sender is Button button)
             {
-                if (ConfirmationDialog.Show(this, "Remove Pattern",
-                    $"Are you sure you want to remove '{pattern}' from this group?", "Remove", "Cancel"))
+                UrlPattern? patternToRemove = null;
+                string patternText = "";
+
+                // Handle both UrlPattern object binding and string binding
+                if (button.Tag is UrlPattern urlPattern)
                 {
-                    _patterns.Remove(pattern);
-                    RefreshPatternsList();
+                    patternToRemove = urlPattern;
+                    patternText = urlPattern.Pattern;
+                }
+                else if (button.DataContext is UrlPattern dcPattern)
+                {
+                    patternToRemove = dcPattern;
+                    patternText = dcPattern.Pattern;
+                }
+
+                if (patternToRemove != null)
+                {
+                    if (ConfirmationDialog.Show(this, "Remove Pattern",
+                        $"Are you sure you want to remove '{patternText}' from this group?", "Remove", "Cancel"))
+                    {
+                        // Track deleted built-in patterns so they won't be re-added on template updates
+                        if (patternToRemove.IsBuiltIn && !string.IsNullOrEmpty(patternToRemove.Id))
+                        {
+                            if (!_group.DeletedBuiltInPatternIds.Contains(patternToRemove.Id))
+                            {
+                                _group.DeletedBuiltInPatternIds.Add(patternToRemove.Id);
+                            }
+                        }
+
+                        _patterns.Remove(patternToRemove);
+                        RefreshPatternsList();
+                    }
                 }
             }
         }
@@ -313,17 +353,29 @@ namespace BrowserSelector
         private void RestorePatterns_Click(object sender, RoutedEventArgs e)
         {
             // Calculate which patterns are deleted
+            var currentPatternStrings = _patterns.Select(p => p.Pattern.ToLower()).ToHashSet();
             var deletedPatterns = _originalBuiltInPatterns
-                .Where(p => !_patterns.Contains(p))
+                .Where(p => !currentPatternStrings.Contains(p.Pattern.ToLower()))
                 .ToList();
 
             if (deletedPatterns.Count == 0) return;
 
             foreach (var pattern in deletedPatterns)
             {
-                if (!_patterns.Contains(pattern))
+                if (!currentPatternStrings.Contains(pattern.Pattern.ToLower()))
                 {
-                    _patterns.Add(pattern);
+                    // Add restored pattern with updated timestamp
+                    _patterns.Add(new UrlPattern
+                    {
+                        Id = pattern.Id,
+                        Pattern = pattern.Pattern,
+                        IsBuiltIn = true,
+                        VersionAdded = pattern.VersionAdded,
+                        CreatedDate = DateTime.Now
+                    });
+
+                    // Remove from deleted list if it was tracked
+                    _group.DeletedBuiltInPatternIds.Remove(pattern.Id);
                 }
             }
 
@@ -332,33 +384,57 @@ namespace BrowserSelector
 
         private void MovePatternToRule_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is string pattern)
+            if (sender is Button button)
             {
-                try
+                UrlPattern? patternToMove = null;
+
+                // Handle both UrlPattern object binding and DataContext
+                if (button.Tag is UrlPattern urlPattern)
                 {
-                    // Open AddRuleWindow with the pattern pre-filled, passing group ID to exclude from validation
-                    var addWindow = new AddRuleWindow(pattern, _group.Id);
-                    addWindow.Owner = this;
-
-                    if (addWindow.ShowDialog() == true)
-                    {
-                        // Remove pattern from current group
-                        _patterns.Remove(pattern);
-                        RefreshPatternsList();
-
-                        // Flag that rules were modified so caller can refresh rules list
-                        RulesWereModified = true;
-
-                        // Show confirmation
-                        MessageBox.Show($"Pattern '{pattern}' has been moved to an individual rule.",
-                            "Pattern Moved", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
+                    patternToMove = urlPattern;
                 }
-                catch (Exception ex)
+                else if (button.DataContext is UrlPattern dcPattern)
                 {
-                    Logger.Log($"MovePatternToRule_Click ERROR: {ex.Message}");
-                    MessageBox.Show($"Error moving pattern: {ex.Message}", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    patternToMove = dcPattern;
+                }
+
+                if (patternToMove != null)
+                {
+                    try
+                    {
+                        // Open AddRuleWindow with the pattern pre-filled, passing group ID to exclude from validation
+                        var addWindow = new AddRuleWindow(patternToMove.Pattern, _group.Id);
+                        addWindow.Owner = this;
+
+                        if (addWindow.ShowDialog() == true)
+                        {
+                            // Track deleted built-in patterns
+                            if (patternToMove.IsBuiltIn && !string.IsNullOrEmpty(patternToMove.Id))
+                            {
+                                if (!_group.DeletedBuiltInPatternIds.Contains(patternToMove.Id))
+                                {
+                                    _group.DeletedBuiltInPatternIds.Add(patternToMove.Id);
+                                }
+                            }
+
+                            // Remove pattern from current group
+                            _patterns.Remove(patternToMove);
+                            RefreshPatternsList();
+
+                            // Flag that rules were modified so caller can refresh rules list
+                            RulesWereModified = true;
+
+                            // Show confirmation
+                            MessageBox.Show($"Pattern '{patternToMove.Pattern}' has been moved to an individual rule.",
+                                "Pattern Moved", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log($"MovePatternToRule_Click ERROR: {ex.Message}");
+                        MessageBox.Show($"Error moving pattern: {ex.Message}", "Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -376,10 +452,10 @@ namespace BrowserSelector
             // Get profiles from the selector
             var profiles = ProfileSelector.GetAllProfiles();
 
-            // Validate using ValidationService
+            // Validate using ValidationService (pass pattern strings for validation)
             var result = ValidationService.ValidateUrlGroup(
                 GroupNameTextBox.Text,
-                _patterns.ToList(),
+                _patterns.Select(p => p.Pattern).ToList(),
                 profiles,
                 _isEditMode ? _group?.Id : null
             );
@@ -406,6 +482,7 @@ namespace BrowserSelector
             _group.Name = GroupNameTextBox.Text.Trim();
             _group.Description = DescriptionTextBox.Text.Trim();
             _group.UrlPatterns = _patterns.ToList();
+            _group.ModifiedDate = DateTime.Now;
             _group.Profiles = profiles;
 
             // Set behavior based on profile count

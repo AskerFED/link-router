@@ -299,7 +299,7 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTemplateColumn Header="Browser Profiles" Width="350" MinWidth="250">
+                                <DataGridTemplateColumn Header="Browser Profiles" Width="280" MinWidth="200">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -356,6 +356,16 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <!-- Updated Date Column -->
+                                <DataGridTextColumn Header="Updated" Binding="{Binding ModifiedDateDisplay}" Width="100" MinWidth="80">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Foreground" Value="#666"/>
+                                            <Setter Property="FontSize" Value="12"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
                                 <DataGridTemplateColumn Header="" Width="120" CanUserResize="False">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -617,17 +627,13 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <!-- Name and Badges -->
+                                            <!-- Name and Info -->
                                             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Name}"
                                                            Style="{StaticResource BodyStrongTextStyle}"/>
-                                                <Border Style="{StaticResource BadgeStyle}"
-                                                        Margin="8,0,0,0"
-                                                        Visibility="{Binding IsBuiltIn, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                    <TextBlock Text="Built-in" Style="{StaticResource BadgeTextStyle}"/>
-                                                </Border>
                                                 <TextBlock Text="{Binding PatternCount, StringFormat=' ({0} URLs)'}"
                                                            Style="{StaticResource CaptionTextStyle}"
                                                            VerticalAlignment="Center"
@@ -691,8 +697,17 @@
                                                 </ItemsControl>
                                             </StackPanel>
 
+                                            <!-- Built-in Badge (right side of title) -->
+                                            <Border Grid.Column="1"
+                                                    Style="{StaticResource BadgeStyle}"
+                                                    Margin="0,0,12,0"
+                                                    VerticalAlignment="Center"
+                                                    Visibility="{Binding IsBuiltIn, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <TextBlock Text="Built-in" Style="{StaticResource BadgeTextStyle}"/>
+                                            </Border>
+
                                             <!-- Enable Toggle -->
-                                            <ToggleButton Grid.Column="1"
+                                            <ToggleButton Grid.Column="2"
                                                           Style="{StaticResource ToggleSwitchStyle}"
                                                           IsChecked="{Binding IsEnabled, Mode=TwoWay}"
                                                           Click="UrlGroupEnabled_Click"
@@ -700,12 +715,12 @@
                                                           Margin="0,0,16,0"/>
 
                                             <!-- Edit Button -->
-                                            <Button Grid.Column="2" Style="{StaticResource IconButtonBlueStyle}" ToolTip="Edit" Tag="{Binding Id}" Margin="0,0,4,0" Click="EditUrlGroup_Click">
+                                            <Button Grid.Column="3" Style="{StaticResource IconButtonBlueStyle}" ToolTip="Edit" Tag="{Binding Id}" Margin="0,0,4,0" Click="EditUrlGroup_Click">
                                                 <TextBlock Text="&#xE70F;" FontFamily="{StaticResource SegoeFluentIcons}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" UseLayoutRounding="True" SnapsToDevicePixels="True"/>
                                             </Button>
 
                                             <!-- Delete Button -->
-                                            <Button Grid.Column="3" Tag="{Binding Id}" Click="DeleteUrlGroup_Click">
+                                            <Button Grid.Column="4" Tag="{Binding Id}" Click="DeleteUrlGroup_Click">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource IconButtonRedStyle}">
                                                         <Setter Property="IsEnabled" Value="True"/>

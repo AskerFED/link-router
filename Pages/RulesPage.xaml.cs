@@ -308,10 +308,15 @@ namespace BrowserSelector.Pages
                 var group = UrlGroupManager.GetGroup(groupId);
                 if (group == null) return;
 
-                // Add pattern to group
-                if (!group.UrlPatterns.Contains(_ruleBeingMoved.Pattern))
+                // Add pattern to group if it doesn't already exist
+                if (!group.UrlPatterns.Any(p => p.Pattern.ToLower() == _ruleBeingMoved.Pattern.ToLower()))
                 {
-                    group.UrlPatterns.Add(_ruleBeingMoved.Pattern);
+                    group.UrlPatterns.Add(new UrlPattern
+                    {
+                        Pattern = _ruleBeingMoved.Pattern,
+                        IsBuiltIn = false,
+                        CreatedDate = DateTime.Now
+                    });
                     UrlGroupManager.UpdateGroup(group);
                 }
 
@@ -498,7 +503,20 @@ namespace BrowserSelector.Pages
                         var group = UrlGroupManager.GetGroup(patternInfo.GroupId);
                         if (group != null)
                         {
-                            group.UrlPatterns.Remove(patternInfo.Pattern);
+                            // Find and remove the pattern by pattern string
+                            var patternToRemove = group.UrlPatterns.FirstOrDefault(p => p.Pattern == patternInfo.Pattern);
+                            if (patternToRemove != null)
+                            {
+                                // Track deleted built-in patterns
+                                if (patternToRemove.IsBuiltIn && !string.IsNullOrEmpty(patternToRemove.Id))
+                                {
+                                    if (!group.DeletedBuiltInPatternIds.Contains(patternToRemove.Id))
+                                    {
+                                        group.DeletedBuiltInPatternIds.Add(patternToRemove.Id);
+                                    }
+                                }
+                                group.UrlPatterns.Remove(patternToRemove);
+                            }
                             UrlGroupManager.UpdateGroup(group);
                             LoadUrlGroups();
                         }
@@ -580,7 +598,7 @@ namespace BrowserSelector.Pages
                 UrlGroupsItemsControl.ItemsSource = _allGroups
                     .Where(g => g.Name.ToLowerInvariant().Contains(filter) ||
                                (g.Description?.ToLowerInvariant().Contains(filter) ?? false) ||
-                                g.UrlPatterns.Any(p => p.ToLowerInvariant().Contains(filter)))
+                                g.UrlPatterns.Any(p => p.Pattern.ToLowerInvariant().Contains(filter)))
                     .ToList();
             }
         }

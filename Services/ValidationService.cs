@@ -206,7 +206,7 @@ namespace BrowserSelector.Services
             foreach (var otherGroup in allGroups)
             {
                 var matchingPattern = otherGroup.UrlPatterns?
-                    .FirstOrDefault(p => NormalizePattern(p) == normalizedPattern);
+                    .FirstOrDefault(p => NormalizePattern(p.Pattern) == normalizedPattern);
 
                 if (matchingPattern != null)
                 {
@@ -457,7 +457,7 @@ namespace BrowserSelector.Services
                 foreach (var otherGroup in allGroups)
                 {
                     var matchingPattern = otherGroup.UrlPatterns?
-                        .FirstOrDefault(p => NormalizePattern(p) == normalizedPattern);
+                        .FirstOrDefault(p => NormalizePattern(p.Pattern) == normalizedPattern);
 
                     if (matchingPattern != null)
                     {
@@ -590,7 +590,7 @@ namespace BrowserSelector.Services
 
                 foreach (var groupPattern in group.UrlPatterns)
                 {
-                    var groupNormalized = NormalizePattern(groupPattern);
+                    var groupNormalized = NormalizePattern(groupPattern.Pattern);
 
                     if (groupNormalized == normalizedPattern)
                     {

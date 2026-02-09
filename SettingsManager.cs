@@ -65,6 +65,12 @@ namespace BrowserSelector
         /// Cached count of matched profiles.
         /// </summary>
         public int DetectedProfileCount { get; set; } = 0;
+
+        /// <summary>
+        /// Version of the built-in templates that have been applied.
+        /// Used to determine if template updates need to be applied on app startup.
+        /// </summary>
+        public string InstalledTemplateVersion { get; set; } = string.Empty;
     }
 
     public static class SettingsManager
@@ -78,8 +84,12 @@ namespace BrowserSelector
 
         /// <summary>
         /// Current schema version. Increment when making breaking changes to data format.
+        /// Version history:
+        /// - 1: Initial version (implicit, pre-versioning)
+        /// - 2: Added schema versioning, multi-profile rules
+        /// - 3: Added UrlPattern objects with metadata, template versioning
         /// </summary>
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 3;
 
         public static AppSettings LoadSettings()
         {
@@ -108,13 +118,24 @@ namespace BrowserSelector
             // Version 0/1 -> 2: Add schema versioning (no data changes needed)
             if (settings.SchemaVersion < 2)
             {
-                Logger.Log($"Migrating settings from schema v{settings.SchemaVersion} to v{CurrentSchemaVersion}");
-                settings.SchemaVersion = CurrentSchemaVersion;
-                SaveSettings(settings);
+                Logger.Log($"Migrating settings from schema v{settings.SchemaVersion} to v2");
+                settings.SchemaVersion = 2;
             }
 
-            // Future migrations would go here:
-            // if (settings.SchemaVersion < 3) { ... }
+            // Version 2 -> 3: Added UrlPattern objects with metadata, template versioning
+            // Note: URL group pattern migration is handled in UrlGroupManager.LoadGroups()
+            if (settings.SchemaVersion < 3)
+            {
+                Logger.Log($"Migrating settings from schema v{settings.SchemaVersion} to v3");
+                settings.SchemaVersion = 3;
+                // InstalledTemplateVersion will be set by BuiltInTemplateManager on first run
+            }
+
+            // Save after all migrations
+            if (settings.SchemaVersion == CurrentSchemaVersion)
+            {
+                SaveSettings(settings);
+            }
         }
 
         public static void SaveSettings(AppSettings settings)
