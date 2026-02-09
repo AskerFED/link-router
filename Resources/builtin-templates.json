@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "updatedDate": "2026-02-09T00:00:00Z",
+  "templates": [
+    {
+      "id": "builtin-m365",
+      "name": "Microsoft 365",
+      "description": "Microsoft 365, Azure, and related services",
+      "patterns": [
+        { "id": "m365-admin", "pattern": "admin.microsoft.com", "versionAdded": "1.0.0" },
+        { "id": "m365-azure", "pattern": "portal.azure.com", "versionAdded": "1.0.0" },
+        { "id": "m365-outlook", "pattern": "outlook.office.com", "versionAdded": "1.0.0" },
+        { "id": "m365-outlook365", "pattern": "outlook.office365.com", "versionAdded": "1.0.0" },
+        { "id": "m365-teams", "pattern": "teams.microsoft.com", "versionAdded": "1.0.0" },
+        { "id": "m365-forms", "pattern": "forms.office.com", "versionAdded": "1.0.0" },
+        { "id": "m365-sharepoint", "pattern": "sharepoint.com", "versionAdded": "1.0.0" },
+        { "id": "m365-onedrive", "pattern": "onedrive.com", "versionAdded": "1.0.0" },
+        { "id": "m365-office", "pattern": "office.com", "versionAdded": "1.0.0" },
+        { "id": "m365-m365", "pattern": "microsoft365.com", "versionAdded": "1.0.0" },
+        { "id": "m365-live", "pattern": "live.com", "versionAdded": "1.0.0" },
+        { "id": "m365-online", "pattern": "microsoftonline.com", "versionAdded": "1.0.0" },
+        { "id": "m365-azurecom", "pattern": "azure.com", "versionAdded": "1.0.0" },
+        { "id": "m365-dynamics", "pattern": "dynamics.com", "versionAdded": "1.0.0" },
+        { "id": "m365-powerbi", "pattern": "powerbi.com", "versionAdded": "1.0.0" },
+        { "id": "m365-powerapps", "pattern": "powerapps.com", "versionAdded": "1.0.0" },
+        { "id": "m365-flow", "pattern": "flow.microsoft.com", "versionAdded": "1.0.0" }
+      ]
+    },
+    {
+      "id": "builtin-google",
+      "name": "Google Suite",
+      "description": "Google Workspace and related services",
+      "patterns": [
+        { "id": "google-mail", "pattern": "mail.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-drive", "pattern": "drive.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-docs", "pattern": "docs.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-sheets", "pattern": "sheets.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-slides", "pattern": "slides.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-calendar", "pattern": "calendar.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-meet", "pattern": "meet.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-chat", "pattern": "chat.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-keep", "pattern": "keep.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-contacts", "pattern": "contacts.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-admin", "pattern": "admin.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-cloud", "pattern": "cloud.google.com", "versionAdded": "1.0.0" },
+        { "id": "google-console", "pattern": "console.cloud.google.com", "versionAdded": "1.0.0" }
+      ]
+    }
+  ]
+}
