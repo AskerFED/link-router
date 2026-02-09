@@ -87,6 +87,14 @@ namespace BrowserSelector
             : CreatedDate.ToString("MMM d, yyyy");
 
         /// <summary>
+        /// Full date and time for tooltip display
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string ModifiedDateTooltip => ModifiedDate.HasValue
+            ? ModifiedDate.Value.ToString("MMMM d, yyyy 'at' h:mm tt")
+            : CreatedDate.ToString("MMMM d, yyyy 'at' h:mm tt");
+
+        /// <summary>
         /// Gets the first profile for display purposes
         /// </summary>
         public RuleProfile? FirstProfile => Profiles?.FirstOrDefault();

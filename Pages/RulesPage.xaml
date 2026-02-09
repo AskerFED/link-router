@@ -363,6 +363,7 @@
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="Foreground" Value="#666"/>
                                             <Setter Property="FontSize" Value="12"/>
+                                            <Setter Property="ToolTip" Value="{Binding ModifiedDateTooltip}"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
