@@ -1,7 +1,7 @@
 <Window x:Class="BrowserSelector.Dialogs.ValidationWarningDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Validation Warnings"
+        Title="Confirm Save"
         Height="360" Width="480"
         WindowStartupLocation="CenterOwner"
         Background="#FFFFFF"

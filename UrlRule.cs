@@ -303,14 +303,26 @@ namespace BrowserSelector
 
         /// <summary>
         /// Enhanced URL matching with priority:
-        /// 1. URL Groups (auto-open) - highest priority
-        /// 2. Profile Groups (shows picker)
-        /// 3. Individual Rules (auto-open)
+        /// 1. Individual Rules (auto-open) - highest priority
+        /// 2. URL Groups (auto-open)
+        /// 3. Profile Groups (shows picker)
         /// 4. No Match (use default browser or show picker)
         /// </summary>
         public static MatchResult FindMatch(string url)
         {
-            // Priority 1: Check for URL Group match with auto-open behavior
+            // Priority 1: Check for individual URL rule match
+            var rule = FindMatchingRule(url);
+            if (rule != null)
+            {
+                Logger.Log($"URL matched individual rule: {rule.Pattern}");
+                return new MatchResult
+                {
+                    Type = MatchType.IndividualRule,
+                    Rule = rule
+                };
+            }
+
+            // Priority 2: Check for URL Group match with auto-open behavior
             var (group, groupOverride) = UrlGroupManager.FindMatchingGroup(url);
 
             if (group != null)
@@ -336,19 +348,7 @@ namespace BrowserSelector
                 };
             }
 
-            // Priority 2: Check for individual URL rule match
-            var rule = FindMatchingRule(url);
-            if (rule != null)
-            {
-                Logger.Log($"URL matched individual rule: {rule.Pattern}");
-                return new MatchResult
-                {
-                    Type = MatchType.IndividualRule,
-                    Rule = rule
-                };
-            }
-
-            // Priority 4: No match found
+            // Priority 3: No match found
             Logger.Log($"No match found for URL: {url}");
             return new MatchResult { Type = MatchType.NoMatch };
         }

@@ -347,7 +347,7 @@ namespace BrowserSelector.Services
                 {
                     Code = ValidationCodes.PATTERN_EXISTS_IN_GROUP,
                     Severity = ValidationSeverity.Warning,
-                    Message = "This pattern exists in a URL Group and will be overridden by this rule.",
+                    Message = "The group rules will be overridden by the individual rule.",
                     Details = $"Group: {group.Name}",
                     ConflictingEntity = group.Name
                 });
