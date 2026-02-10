@@ -309,7 +309,8 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-.orbit-item svg {
+.orbit-item svg,
+.orbit-item img {
     width: 36px;
     height: 36px;
 }
@@ -423,7 +424,8 @@ body {
     opacity: 1;
 }
 
-.browser-logo svg {
+.browser-logo svg,
+.browser-logo img {
     width: 48px;
     height: 48px;
 }
@@ -828,7 +830,8 @@ body {
         gap: 20px;
     }
 
-    .browser-logo svg {
+    .browser-logo svg,
+    .browser-logo img {
         width: 40px;
         height: 40px;
     }
@@ -916,7 +919,8 @@ body {
         gap: 16px;
     }
 
-    .browser-logo svg {
+    .browser-logo svg,
+    .browser-logo img {
         width: 32px;
         height: 32px;
     }
