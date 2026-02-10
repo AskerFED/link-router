@@ -37,6 +37,10 @@ A Windows desktop application that intelligently routes URLs to the correct brow
 - **Move Patterns** - Easily move URL patterns between groups and individual rules
 - **Pattern Validation** - Real-time validation with conflict detection and warnings
 - **Default Browser Fallback** - Set a fallback browser when no rules match
+- **Toast Notifications** - Quick rule creation from notification when no rule matches
+- **Clipboard Monitoring** - Monitor clipboard for URLs and automatically route them
+- **System Tray Integration** - Minimize to system tray with quick access menu
+- **Single Instance** - Prevents multiple instances from running simultaneously
 - **Windows Integration** - Registers as a Windows browser handler for http/https protocols
 - **Import/Export** - Full backup and restore functionality
 - **Atomic Saves** - Safe file operations with automatic rolling backups
@@ -215,6 +219,9 @@ This allows flexible reorganization of your URL routing configuration.
 | Rules Processing | Master toggle to enable/disable all rule processing |
 | Show Notifications | Toast notification when no rule matches, with option to create a rule |
 | Use Last Active Browser | Remember recently used browser/profile |
+| Clipboard Monitoring | Watch clipboard for URLs and route them through rules |
+| Minimize to Tray | Keep app running in system tray when window is closed |
+| Start with Windows | Launch LinkRouter automatically on Windows startup |
 
 ### Data Storage
 
