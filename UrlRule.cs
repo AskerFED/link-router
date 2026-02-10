@@ -255,6 +255,47 @@ namespace BrowserSelector
             }
         }
 
+        /// <summary>
+        /// Checks if a disabled rule would have matched the given URL.
+        /// Used to suppress "Create Rule" notifications when a rule exists but is disabled.
+        /// </summary>
+        public static bool HasDisabledMatchingRule(string url)
+        {
+            var disabledRules = LoadRules().Where(r => !r.IsEnabled).ToList();
+
+            if (disabledRules.Count == 0)
+                return false;
+
+            // Apply same matching logic as FindMatchingRule
+            // Try exact match first
+            var exactMatch = disabledRules.FirstOrDefault(r =>
+                url.IndexOf(r.Pattern, StringComparison.OrdinalIgnoreCase) >= 0);
+
+            if (exactMatch != null)
+                return true;
+
+            // Try domain match
+            try
+            {
+                var uri = new Uri(url);
+                var domain = uri.Host.ToLowerInvariant();
+
+                var domainMatch = disabledRules.FirstOrDefault(r =>
+                {
+                    var pattern = r.Pattern.ToLowerInvariant();
+                    return domain.EndsWith(pattern) ||
+                           domain.Equals(pattern) ||
+                           domain.Contains(pattern);
+                });
+
+                return domainMatch != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static void ClearCache()
         {
             _cachedRules = null;

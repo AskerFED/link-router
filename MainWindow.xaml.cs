@@ -87,9 +87,18 @@ namespace BrowserSelector
 
                     case MatchType.NoMatch:
                     default:
-                        // No match - use default browser or show window
-                        Logger.Log("Match type: NoMatch - will try default browser or show window");
-                        HandleNoMatch();
+                        // Check if a disabled rule or group would have matched
+                        bool hasDisabledMatch = UrlRuleManager.HasDisabledMatchingRule(_url) ||
+                                                UrlGroupManager.HasDisabledMatchingGroup(_url);
+                        if (hasDisabledMatch)
+                        {
+                            Logger.Log("Match type: NoMatch (disabled rule/group exists) - suppressing notification");
+                        }
+                        else
+                        {
+                            Logger.Log("Match type: NoMatch - will try default browser or show window");
+                        }
+                        HandleNoMatch(skipNotification: hasDisabledMatch);
                         break;
                 }
             }

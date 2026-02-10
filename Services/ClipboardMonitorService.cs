@@ -228,7 +228,17 @@ namespace BrowserSelector.Services
                 var match = UrlRuleManager.FindMatch(url);
                 if (match.Type == MatchType.NoMatch)
                 {
-                    Logger.Log($"ClipboardMonitorService: URL doesn't match any rule, ignoring");
+                    // Also check if a disabled rule would have matched - suppress notification
+                    bool hasDisabledMatch = UrlRuleManager.HasDisabledMatchingRule(url) ||
+                                            UrlGroupManager.HasDisabledMatchingGroup(url);
+                    if (hasDisabledMatch)
+                    {
+                        Logger.Log($"ClipboardMonitorService: Disabled rule/group exists for URL, suppressing notification");
+                    }
+                    else
+                    {
+                        Logger.Log($"ClipboardMonitorService: URL doesn't match any rule, ignoring");
+                    }
                     return;
                 }
 

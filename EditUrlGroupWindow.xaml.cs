@@ -24,6 +24,13 @@ namespace BrowserSelector
         private List<UrlPattern> _filteredPatterns = new List<UrlPattern>();
         private List<UrlPattern> _originalBuiltInPatterns = new List<UrlPattern>();
 
+        // Change detection fields for edit mode
+        private string _initialName = "";
+        private string _initialDescription = "";
+        private bool _initialClipboardNotify = true;
+        private List<string> _initialPatternStrings = new List<string>();
+        private List<RuleProfile> _initialProfiles = new List<RuleProfile>();
+
         /// <summary>
         /// Indicates if individual rules were added via "Move to Rule" during this session.
         /// The caller should check this to refresh the rules list.
@@ -87,10 +94,45 @@ namespace BrowserSelector
 
                 // Load profiles into the selector
                 LoadExistingProfiles();
+
+                // Store initial values for change detection
+                _initialName = _group.Name ?? "";
+                _initialDescription = _group.Description ?? "";
+                _initialClipboardNotify = _group.ClipboardNotificationsEnabled;
+                _initialPatternStrings = _patterns.Select(p => p.Pattern).ToList();
+                _initialProfiles = _group.Profiles?.Select(p => new RuleProfile
+                {
+                    BrowserName = p.BrowserName,
+                    BrowserPath = p.BrowserPath,
+                    BrowserType = p.BrowserType,
+                    ProfileName = p.ProfileName,
+                    ProfilePath = p.ProfilePath,
+                    ProfileArguments = p.ProfileArguments
+                }).ToList() ?? new List<RuleProfile>();
+
+                // Hide Save button until changes detected
+                SaveButton.Visibility = Visibility.Collapsed;
+
+                // Wire up change detection events
+                GroupNameTextBox.TextChanged += (s, e) => CheckForChanges();
+                DescriptionTextBox.TextChanged += (s, e) => CheckForChanges();
+                ClipboardNotifyToggle.Checked += (s, e) => CheckForChanges();
+                ClipboardNotifyToggle.Unchecked += (s, e) => CheckForChanges();
+                ProfileSelector.SelectionChanged += (s, e) => CheckForChanges();
             }
             else
             {
                 Title = "New URL Group";
+                SaveButton.Content = "Add";
+            }
+
+            // Disable clipboard toggle if global clipboard monitoring is off
+            var globalSettings = SettingsManager.LoadSettings();
+            if (!globalSettings.ClipboardMonitoring.IsEnabled)
+            {
+                ClipboardNotifyToggle.IsEnabled = false;
+                ClipboardNotifyPanel.Opacity = 0.5;
+                ClipboardNotifyPanel.ToolTip = "Enable clipboard monitoring in Settings to use this feature";
             }
 
             RefreshPatternsList();
@@ -182,6 +224,45 @@ namespace BrowserSelector
             PatternCountBadge.Text = totalCount.ToString();
 
             UpdateRestoreButtonState();
+        }
+
+        private void CheckForChanges()
+        {
+            if (!_isEditMode) return;
+
+            var currentPatternStrings = _patterns.Select(p => p.Pattern).ToList();
+            bool patternsChanged = !PatternsAreEqual(_initialPatternStrings, currentPatternStrings);
+
+            var currentProfiles = ProfileSelector.GetAllProfiles();
+            bool profilesChanged = !ProfilesAreEqual(_initialProfiles, currentProfiles);
+
+            bool hasChanges = GroupNameTextBox.Text.Trim() != _initialName
+                || DescriptionTextBox.Text.Trim() != _initialDescription
+                || ClipboardNotifyToggle.IsChecked != _initialClipboardNotify
+                || patternsChanged
+                || profilesChanged;
+
+            SaveButton.Visibility = hasChanges ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private static bool PatternsAreEqual(List<string> initial, List<string> current)
+        {
+            if (initial.Count != current.Count) return false;
+            var sortedInitial = initial.OrderBy(p => p).ToList();
+            var sortedCurrent = current.OrderBy(p => p).ToList();
+            return sortedInitial.SequenceEqual(sortedCurrent);
+        }
+
+        private static bool ProfilesAreEqual(List<RuleProfile> initial, List<RuleProfile> current)
+        {
+            if (initial.Count != current.Count) return false;
+            for (int i = 0; i < initial.Count; i++)
+            {
+                if (initial[i].BrowserPath != current[i].BrowserPath ||
+                    initial[i].ProfilePath != current[i].ProfilePath)
+                    return false;
+            }
+            return true;
         }
 
         private void NewPatternTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -305,6 +386,7 @@ namespace BrowserSelector
             NewPatternTextBox.Clear();
             NewPatternTextBox.Focus();
             FilterPatterns(); // Reset filter state after adding
+            CheckForChanges(); // Update save button visibility
 
             // Scroll to bottom to show newly added pattern (after layout update)
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, new Action(() =>
@@ -348,6 +430,7 @@ namespace BrowserSelector
 
                         _patterns.Remove(patternToRemove);
                         RefreshPatternsList();
+                        CheckForChanges(); // Update save button visibility
                     }
                 }
             }
@@ -383,6 +466,7 @@ namespace BrowserSelector
             }
 
             RefreshPatternsList();
+            CheckForChanges(); // Update save button visibility
         }
 
         private void MovePatternToRule_Click(object sender, RoutedEventArgs e)
@@ -423,6 +507,7 @@ namespace BrowserSelector
                             // Remove pattern from current group
                             _patterns.Remove(patternToMove);
                             RefreshPatternsList();
+                            CheckForChanges(); // Update save button visibility
 
                             // Flag that rules were modified so caller can refresh rules list
                             RulesWereModified = true;

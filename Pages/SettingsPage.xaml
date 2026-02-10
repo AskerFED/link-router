@@ -157,6 +157,43 @@
                 </Grid>
             </Border>
 
+            <!-- Notifications Section -->
+            <TextBlock Text="Notifications"
+                       Style="{StaticResource SectionHeaderStyle}"/>
+
+            <Border Style="{StaticResource SettingsCardStyle}" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="40" Height="40" CornerRadius="8" Background="#E3F2FD">
+                        <TextBlock Text="&#xE7E7;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="18"
+                                   Foreground="#1976D2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="16,0,0,0">
+                        <TextBlock Text="Show Unmatched URL Notifications" Style="{StaticResource BodyStrongTextStyle}"/>
+                        <TextBlock Text="Display notification when a URL doesn't match any rule and opens in default browser"
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <ToggleButton x:Name="NotificationsToggle"
+                                  Grid.Column="2"
+                                  Style="{StaticResource ToggleSwitchStyle}"
+                                  VerticalAlignment="Center"
+                                  Checked="NotificationsToggle_Changed"
+                                  Unchecked="NotificationsToggle_Changed"/>
+                </Grid>
+            </Border>
+
             <!-- Backup & Restore Section -->
             <TextBlock Text="Backup &amp; Restore"
                        Style="{StaticResource SectionHeaderStyle}"/>

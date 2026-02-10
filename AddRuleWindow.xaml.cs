@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using BrowserSelector.Dialogs;
@@ -12,9 +13,14 @@ namespace BrowserSelector
     /// </summary>
     public partial class AddRuleWindow : Window
     {
-        private UrlRule _existingRule;
+        private UrlRule? _existingRule;
         private bool _isEditMode;
         private string? _sourceGroupId;
+
+        // Change detection fields for edit mode
+        private string _initialPattern = "";
+        private bool _initialClipboardNotify = true;
+        private List<RuleProfile> _initialProfiles = new List<RuleProfile>();
 
         /// <summary>
         /// Constructor for adding a new rule
@@ -23,6 +29,16 @@ namespace BrowserSelector
         {
             InitializeComponent();
             _isEditMode = false;
+            SaveButton.Content = "Add";
+
+            // Disable clipboard toggle if global clipboard monitoring is off
+            var globalSettings = SettingsManager.LoadSettings();
+            if (!globalSettings.ClipboardMonitoring.IsEnabled)
+            {
+                ClipboardNotifyToggle.IsEnabled = false;
+                ClipboardNotifyPanel.Opacity = 0.5;
+                ClipboardNotifyPanel.ToolTip = "Enable clipboard monitoring in Settings to use this feature";
+            }
         }
 
         /// <summary>
@@ -52,6 +68,8 @@ namespace BrowserSelector
 
             // Update UI for edit mode
             RuleEditorWindow.Title = "Edit URL Rule";
+            SaveButton.Content = "Save";
+            SaveButton.Visibility = Visibility.Collapsed; // Hide until changes detected
 
             // Load existing data
             PatternTextBox.Text = existingRule.Pattern;
@@ -69,6 +87,52 @@ namespace BrowserSelector
 
             // Load clipboard notification setting
             ClipboardNotifyToggle.IsChecked = existingRule.ClipboardNotificationsEnabled;
+
+            // Store initial values for change detection
+            _initialPattern = existingRule.Pattern ?? "";
+            _initialClipboardNotify = existingRule.ClipboardNotificationsEnabled;
+            _initialProfiles = existingRule.Profiles?.Select(p => new RuleProfile
+            {
+                BrowserName = p.BrowserName,
+                BrowserPath = p.BrowserPath,
+                BrowserType = p.BrowserType,
+                ProfileName = p.ProfileName,
+                ProfilePath = p.ProfilePath,
+                ProfileArguments = p.ProfileArguments
+            }).ToList() ?? new List<RuleProfile>();
+
+            // Wire up change detection events
+            PatternTextBox.TextChanged += (s, e) => CheckForChanges();
+            ClipboardNotifyToggle.Checked += (s, e) => CheckForChanges();
+            ClipboardNotifyToggle.Unchecked += (s, e) => CheckForChanges();
+            ProfileSelector.SelectionChanged += (s, e) => CheckForChanges();
+        }
+
+        private void CheckForChanges()
+        {
+            if (!_isEditMode) return;
+
+            var currentProfiles = ProfileSelector.GetAllProfiles();
+            bool profilesChanged = !ProfilesAreEqual(_initialProfiles, currentProfiles);
+
+            bool hasChanges = PatternTextBox.Text.Trim() != _initialPattern
+                || ClipboardNotifyToggle.IsChecked != _initialClipboardNotify
+                || profilesChanged;
+
+            SaveButton.Visibility = hasChanges ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private bool ProfilesAreEqual(List<RuleProfile> initial, List<RuleProfile> current)
+        {
+            if (initial.Count != current.Count) return false;
+
+            for (int i = 0; i < initial.Count; i++)
+            {
+                if (initial[i].BrowserPath != current[i].BrowserPath ||
+                    initial[i].ProfilePath != current[i].ProfilePath)
+                    return false;
+            }
+            return true;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)

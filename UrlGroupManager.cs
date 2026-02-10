@@ -384,6 +384,26 @@ namespace BrowserSelector
             return false;
         }
 
+        /// <summary>
+        /// Checks if a disabled URL group would have matched the given URL.
+        /// Used to suppress "Create Rule" notifications when a group exists but is disabled.
+        /// </summary>
+        public static bool HasDisabledMatchingGroup(string url)
+        {
+            var disabledGroups = LoadGroups().Where(g => !g.IsEnabled).ToList();
+
+            if (disabledGroups.Count == 0)
+                return false;
+
+            foreach (var group in disabledGroups)
+            {
+                if (MatchesGroupPatterns(url, group.UrlPatterns))
+                    return true;
+            }
+
+            return false;
+        }
+
         #endregion
     }
 }

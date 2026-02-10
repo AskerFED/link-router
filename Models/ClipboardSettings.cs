@@ -9,9 +9,9 @@ namespace BrowserSelector.Models
     public class ClipboardSettings
     {
         /// <summary>
-        /// Whether clipboard monitoring is enabled globally. Opt-in by default.
+        /// Whether clipboard monitoring is enabled globally. Enabled by default.
         /// </summary>
-        public bool IsEnabled { get; set; } = false;
+        public bool IsEnabled { get; set; } = true;
 
         /// <summary>
         /// Internal cooldown in seconds between notifications for the same domain.

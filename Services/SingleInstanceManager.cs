@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Pipes;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -158,12 +159,22 @@ namespace BrowserSelector.Services
             {
                 try
                 {
-                    using var pipeServer = new NamedPipeServerStream(
+                    // Create pipe with security settings that allow current user access
+                    var pipeSecurity = new PipeSecurity();
+                    pipeSecurity.AddAccessRule(new PipeAccessRule(
+                        WindowsIdentity.GetCurrent().User!,
+                        PipeAccessRights.FullControl,
+                        System.Security.AccessControl.AccessControlType.Allow));
+
+                    using var pipeServer = NamedPipeServerStreamAcl.Create(
                         PipeName,
                         PipeDirection.In,
                         1,
                         PipeTransmissionMode.Byte,
-                        PipeOptions.Asynchronous);
+                        PipeOptions.Asynchronous,
+                        0,  // inBufferSize
+                        0,  // outBufferSize
+                        pipeSecurity);
 
                     await pipeServer.WaitForConnectionAsync(ct);
 

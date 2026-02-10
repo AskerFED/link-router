@@ -27,6 +27,7 @@ namespace BrowserSelector.Pages
         {
             InitializeRulesToggle();
             InitializeClipboardMonitoringSettings();
+            InitializeNotificationsToggle();
             UpdateRegistrationStatus();
         }
 
@@ -112,6 +113,43 @@ namespace BrowserSelector.Pages
             catch (Exception ex)
             {
                 Logger.Log($"RulesEnabledToggle_Changed ERROR: {ex.Message}");
+            }
+        }
+
+        private void InitializeNotificationsToggle()
+        {
+            try
+            {
+                var settings = SettingsManager.LoadSettings();
+
+                // Set toggle state without triggering the event
+                NotificationsToggle.Checked -= NotificationsToggle_Changed;
+                NotificationsToggle.Unchecked -= NotificationsToggle_Changed;
+                NotificationsToggle.IsChecked = settings.ShowNotifications;
+                NotificationsToggle.Checked += NotificationsToggle_Changed;
+                NotificationsToggle.Unchecked += NotificationsToggle_Changed;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"InitializeNotificationsToggle ERROR: {ex.Message}");
+            }
+        }
+
+        private void NotificationsToggle_Changed(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var isEnabled = NotificationsToggle.IsChecked == true;
+
+                var settings = SettingsManager.LoadSettings();
+                settings.ShowNotifications = isEnabled;
+                SettingsManager.SaveSettings(settings);
+
+                Logger.Log($"Unmatched URL notifications {(isEnabled ? "enabled" : "disabled")}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"NotificationsToggle_Changed ERROR: {ex.Message}");
             }
         }
 
